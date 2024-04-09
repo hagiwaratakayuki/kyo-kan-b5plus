@@ -9,6 +9,7 @@ const { getSubLoopType, getSubLoopTypeId } = require('./loop_type');
  * @typedef {import('./base_type').SubLoopDocumentList} SubLoopDocumentList
  * @typedef {import('./base_type').LoopStep } LoopStep
  * @typedef {Pick<LoopStep, 's'> | LoopStep} RouteStep
+ * @typedef { [number[], string[]] } LoopStepPathPaire
 */
 
 const PATH_DElIMITER = '/';
@@ -32,7 +33,18 @@ class Brige extends JSONSerializer {
         /**
          * @type {RouteStep}
          */
-        this._rootLoop = {
+        this._rootLoop = this._getInitialRoot()
+
+
+
+
+    }
+    /**
+     * 
+     * @returns {RouteStep}
+     */
+    _getInitialRoot() {
+        return {
             s: {
                 '': {
                     t: '0',
@@ -41,12 +53,7 @@ class Brige extends JSONSerializer {
                 }
             }
         };
-
-
-
-
     }
-
 
     resetPosition() {
         /**
@@ -80,6 +87,36 @@ class Brige extends JSONSerializer {
     builderRegistration(builderID, builderConfig) {
         this.builderConfigMap[builderID] = builderConfig
     }
+    /**
+     * 
+     * @param {LoopStepPathPaire[]}paths  
+    */
+    getStepTree(paths) {
+        const leafs = []
+        for (const [loopStepPath, loopStepKeyPath] of paths) {
+            const depth = loopStepPath.length
+
+            leafs.push({ loopStepKeyPath, loopStepPath, depth, })
+
+
+        }
+
+        leafs.sort(function (a, b) {
+            return a.depth - b.depth
+        })
+        const root = this._getInitialRoot();
+        const minDepth = leafs[0].depth
+        for (const { loopStepPath, loopStepKeyPath, depth } of leafs) {
+            if (depth != minDepth) {
+                break
+            }
+            const stepLeaf = this._traverseStepTree(loopStepPath, loopStepKeyPath)
+            root.s[loopStepKeyPath[depth - 1]].stp[loopStepPath[depth - 1]] = merge({}, stepLeaf)
+
+        }
+        return root
+
+    }
     _toJSON(filters = []) {
         return super._toJSON(["builderConfigMap"].concat(filters));
     }
@@ -92,14 +129,23 @@ class Brige extends JSONSerializer {
     _getLoopStep(loopStepPath, loopStepKeyPath) {
         const _loopStepPath = loopStepPath || this.loopStepPath
         const _loopStepKeyPath = loopStepKeyPath || this.loopStepKeyPath
-        const limit = _loopStepPath.length
+        return this._traverseStepTree(_loopStepPath, _loopStepKeyPath)
+
+    }
+    /** 
+    * @param { number[]} loopStepPath
+    * @param { string[]} loopStepKeyPath
+    */
+    _traverseStepTree(loopStepPath, loopStepKeyPath) {
+
+        const limit = loopStepPath.length
         let index = 0;
         /**
          * @type {RouteStep}
          */
         let result = this._rootLoop;
         while (index < limit) {
-            result = result.s[_loopStepKeyPath[index]].stp[_loopStepPath[index]]
+            result = result.s[loopStepKeyPath[index]].stp[loopStepPath[index]]
             index++;
 
         }
