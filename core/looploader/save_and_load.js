@@ -95,6 +95,12 @@ class Brige extends JSONSerializer {
         const leafs = []
         for (const [loopStepPath, loopStepKeyPath] of paths) {
             const depth = loopStepPath.length
+            let index = 0;
+            const pathArray = []
+            while (index < depth) {
+                pathArray.push(loopStepKeyPath[index])
+                pathArray.push(loopStepPath)
+            }
 
             leafs.push({ loopStepKeyPath, loopStepPath, depth, })
 
