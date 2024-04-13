@@ -1,12 +1,7 @@
 const express = require('express')
-const { middleware } = require('@line/bot-sdk')
-const { CHANNEL_SECRET } = require('./secret/line')
-/**
- * @type {import('@line/bot-sdk').TextMessage}
- */
-const test = {
-
-}
+const { middleware, messagingApi } = require('@line/bot-sdk')
+messagingApi.MessagingApiBlobClient
+const t = require("datastore/index")
 const app = express()
 /**
  * @type {import('@line/bot-sdk').MiddlewareConfig}

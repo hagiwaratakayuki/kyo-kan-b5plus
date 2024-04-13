@@ -13,9 +13,13 @@
   "license": "AGPL-3.0-or-later",
   "dependencies": {
     "@line/bot-sdk": "^9.1.0",
-    "express": "^4.19.2"
+    "express": "^4.19.2",
+    "datastore": "file:./datastore"
   },
   "devDependencies": {
     "nodemon": "^3.1.0"
+  },
+  "engines": {
+    "node": "20"
   }
 }

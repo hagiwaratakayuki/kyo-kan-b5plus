@@ -1,0 +1,24 @@
+{
+    "hosting": {
+        "public": "public",
+        "ignore": [
+            "firebase.json",
+            "**/.*",
+            "**/node_modules/**"
+        ],
+        "rewrites": [
+            {
+                "source": "**",
+                "function": "nextjsFunc"
+            }
+        ]
+    },
+    "functions": {
+        "source": "./workspace",
+        "codebase": "workspace",
+        "predeploy": [
+            "npm --prefix ./workspace install",
+            "npm --prefix ./workspace run build"
+        ]
+    }
+}
