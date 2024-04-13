@@ -1,9 +1,6 @@
 #based on  https://note.com/ryoppei/n/n0ef91620674a
 
 steps:
-  #Package Install
-  - name: "gcr.io/cloud-builders/npm:node-${_NODE_VERSION}"
-    args: ["install"]
   
   #Build image
   - name: "gcr.io/cloud-builders/docker"
@@ -15,11 +12,11 @@ steps:
     args: ["push", "gcr.io/$PROJECT_ID/${_IMAGE_NAME}"]
 
   #Deploy image
-  - name: "gcr.io/cloud-builders/gcloud"
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
     id: "deploy-cloud-run"
+    entrypoint: gcloud
     args:
       [
-        "beta",
         "run",
         "deploy",
         "${_SERVICE_NAME}",
@@ -27,8 +24,6 @@ steps:
         "gcr.io/$PROJECT_ID/${_SERVICE_NAME}",
         "--region",
         "${_REGION}",
-        "--platform",
-        "managed",
         "--allow-unauthenticated",
       ]
 
