@@ -4,21 +4,28 @@
         "ignore": [
             "firebase.json",
             "**/.*",
-            "**/node_modules/**"
+            "**/node_modules/**",
+            "secret-manager/**",
+            "tools/**"
         ],
         "rewrites": [
             {
+                "source": "/bot/*",
+                "function": "botFunc"
+            },
+            {
                 "source": "**",
-                "function": "nextjsFunc"
+                "run": {
+                    "serviceId": "workspace",
+                    "region": "asia-northeast1"
+                }
             }
         ]
     },
-    "functions": {
-        "source": "./workspace",
-        "codebase": "workspace",
-        "predeploy": [
-            "npm --prefix ./workspace install",
-            "npm --prefix ./workspace run build"
-        ]
-    }
+    "functions": [
+        {
+            "source": "./bot",
+            "codebase": "bot"
+        }
+    ]
 }
