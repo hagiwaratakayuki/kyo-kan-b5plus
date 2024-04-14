@@ -1,1 +1,0 @@
-module.exports.CHANNEL_SECRET = "YOUR CHANNEL SECRET"

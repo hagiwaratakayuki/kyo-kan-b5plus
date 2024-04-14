@@ -131,4 +131,4 @@ dist
 
 **/secret/*
 !**/secret/*.example.*
-
+!**/secret/.gitkeep

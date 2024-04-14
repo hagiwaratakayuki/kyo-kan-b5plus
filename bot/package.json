@@ -12,8 +12,10 @@
   "author": "hagiwara takayuki",
   "license": "AGPL-3.0-or-later",
   "dependencies": {
+    "@google-cloud/datastore": "^8.7.0",
     "@line/bot-sdk": "^9.1.0",
-    "express": "^4.19.2"
+    "express": "^4.19.2",
+    "node-jose": "^2.2.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.0"
