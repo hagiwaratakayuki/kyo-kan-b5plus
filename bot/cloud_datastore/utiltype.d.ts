@@ -12,7 +12,13 @@ export type PropertyHooks = excludeFromIndexes & {
     onLoad?: (value: any) => any
 
 }
-export type PropertyHooksMarked = PropertyHooks & {
-    isHook: true
+export type PropertyHooksMap<T> = {
+    [k in keyof T]?: PropertyHooks
 }
-
+export type DatastoreEntity<DataType> = {
+    key: Key
+    data: DataType
+    excludeFromIndexs?: string[]
+    excludeLargeProperties?: boolean
+    method: "insert" | "upsert" | "update"
+}

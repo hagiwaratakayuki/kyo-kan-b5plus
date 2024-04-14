@@ -1,34 +1,120 @@
 const { Datastore, Key } = require('@google-cloud/datastore');
 let DATA_STORE = new Datastore()
+export { setDataStore, Model }
+
+/**
+ * @template T
+ * @typedef {import("./utiltype").DatastoreEntity<T>} DatastoreEntity
+ */
+
 
 function setDataStore(mock) {
     DATA_STORE = mock
 }
-/**
- * @template T
- * @typedef {{
- *      key:Object
- *      data: T 
- * }} Entity<T> 
- */
+
 
 
 /**
  * @typedef {import("./utiltype").PropertyHooks} PropertyHooks
-
+ * @typedef {import("./utiltype").PropertyHooksMap} PropertyHooksMap
  */
 
 class Model {
+    /**
+     * @type {string[]}
+     */
+    static excludeFromIndexs = null
+    static isExcludeFromIndexsExist = false
+
+    properties = {}
+    hooks = {}
 
 
 
-    constructor(id = null, values = {}) {
-        const _values = Object.assign({}, this.properties || {}, values)
-        this._isHookExist = 'hooks' in this;
-        this.properties = this._callHook(_values, 'init')
-        this.excludeFromIndexs = []
 
 
+    /**
+     * @type {boolean?}
+     */
+    static __isHookExist = null
+    /**
+     * @type {boolean?}
+     */
+    _isHookExist = null
+
+    /**
+     * @type {boolean?}
+     */
+    excludeLargeProperties = null
+
+
+    /**
+     * @type {Key?}
+     */
+    key = null
+    /**
+     *      * 
+     * @param {*} idOrKey 
+     * @param {*} values 
+     */
+    constructor(values = {}, idOrKey = null) {
+
+        this._isHookExist = this.constructor._isHookExist(this.hooks)
+
+        this.properties = this._callHook(Object.assign({}, this.properties || {}, values || {}), 'init', true)
+        this.constructor._setExcludeFromIndexes(hooks)
+        if (idOrKey instanceof Key === true) {
+            this.key = key
+        }
+        else if (idOrKey !== null) {
+            this.key = this.constructor.getKey(idOrKey)
+        }
+
+
+
+
+    }
+    /**
+     * 
+     * @param {Object?} values 
+     */
+    save(values = {}) {
+        Object.assign(this.properties, values)
+        return this.constructor.save(this)
+
+    }
+    getSaveData() {
+        return this._callHook(this.properties, "onSave")
+    }
+
+    /**
+     * 
+     */
+    static _checkHookExist(hooks) {
+
+        if (this.__isHookExist === null) {
+            this.__isHookExist = !!hooks && Object.keys(hooks).length !== 0
+        }
+        return this.__isHookExist
+
+    }
+    /**
+     * 
+     * @param {PropertyHooksMap} hooks 
+     */
+    static _setExcludeFromIndexes(hooks) {
+
+        if (this.excludeFromIndexs === null) {
+            const excludes = [];
+            for (const [hookKey, hook] of Object.entries(excludes)) {
+                if (!!hook[hookKey] === true) {
+                    excludes.push(hookKey)
+                }
+
+            }
+            this.excludeFromIndexs = excludes
+            this.isExcludeFromIndexsExist = excludes.length > 0
+        }
 
     }
     /**
@@ -56,7 +142,54 @@ class Model {
     static async getById(id = null, path = null) {
         const key = this.getKey(id, path);
         const [resp] = await DATA_STORE.get(key);
-        return new this(resp)
+
+
+        const ret = new this(resp, resp[Datastore.KEY])
+
+        return ret.properties, ret
+
+
+    }
+    /**
+     * 
+     * @param {Model} model 
+     */
+    static save(model) {
+        return DATA_STORE.save(this.getSaveEntity(model))
+
+    }
+    /**
+     * 
+     * @param {Model[]} models 
+     */
+    static saveMulti(models) {
+        const entities = models.map(this.getSaveEntity)
+        return DATA_STORE.save(entities)
+
+    }
+    /**
+     * 
+     * @param {Model} model 
+     * @returns 
+     */
+    static getSaveEntity(model) {
+
+        const data = model.getSaveData();
+        const key = model.key !== null ? model.key : this.getKey()
+        /**
+         * @type {DatastoreEntity<typeof data>}
+         */
+        const entity = { data, key }
+        if (this.isExcludeFromIndexsExist === true) {
+            entity.excludeFromIndexs = this.excludeFromIndexs
+        }
+        if (model.excludeLargeProperties !== null) {
+            entity.excludeLargeProperties = model.excludeLargeProperties
+        }
+        return entity
+    }
+    static query() {
+        return DATA_STORE.createQuery(this.name)
 
 
     }
@@ -65,21 +198,21 @@ class Model {
 
 
 
+
     /**
      * 
      * @param {any} values 
-     * @param {keyof PropertyHooks} funcName 
+     * @param {keyof PropertyHooks} funcName
+     * @param {boolean} isForce  
      * @returns 
      */
-    _callHook(values, funcName) {
-
-
+    _callHook(values, funcName, isForce = false) {
 
 
         if (this._isHookExist === true) {
-            for (const [key, value] of Object.entries(values)) {
-                if (isHooksExist === true && key in this.hooks === true && funcName in this.hooks[key]) {
-                    values[key] = this.hooks[key][funcName](value)
+            for (const [key, hook] of Object.entries(this.hooks)) {
+                if (isForce === true || key in values === true && funcName in this.hooks[key]) {
+                    values[key] = hook[funcName](values[key])
                 }
 
             }
@@ -93,10 +226,8 @@ class Model {
     }
 
 }
-const a = { 1: 2 }
-delete a[1]
 
-a['']
+
 
 /**
  * 
@@ -104,18 +235,3 @@ a['']
 function setPropertyHooks() {
 
 }
-
-/**
- * @typedef {{ab:Array}} props
- * @type {props}
- */
-class Sample extends Model {
-
-
-
-
-
-}
-new Sample()
-// Creates a client
-const datastore = new Datastore();
