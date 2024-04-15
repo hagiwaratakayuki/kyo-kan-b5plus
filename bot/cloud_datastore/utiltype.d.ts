@@ -15,9 +15,13 @@ export type PropertyHooks = excludeFromIndexes & {
 export type PropertyHooksMap<T> = {
     [k in keyof T]?: PropertyHooks
 }
-export type DatastoreEntity<DataType> = {
+
+
+export type MinimumEntity<DataType> = {
     key: Key
     data: DataType
+}
+export type DatastoreEntity<DataType> = MinimumEntity<DataType> & {
     excludeFromIndexs?: string[]
     excludeLargeProperties?: boolean
     method: "insert" | "upsert" | "update"

@@ -53,15 +53,16 @@ class Model {
      */
     key = null
     /**
-     *      * 
+     *       
      * @param {*} idOrKey 
-     * @param {*} values 
+     * @param {*} values
+     * @param {keyof PropertyHooks} [mode="init"]  
      */
-    constructor(values = {}, idOrKey = null) {
+    constructor(values = {}, idOrKey = null, mode = "init") {
 
         this._isHookExist = this.constructor._isHookExist(this.hooks)
 
-        this.properties = this._callHook(Object.assign({}, this.properties || {}, values || {}), 'init', true)
+        this.properties = this._callHook(Object.assign({}, this.properties || {}, values || {}), mode, true)
         this.constructor._setExcludeFromIndexes(hooks)
         if (idOrKey instanceof Key === true) {
             this.key = key
@@ -193,6 +194,54 @@ class Model {
 
 
     }
+    /**
+     * @typedef {{hasNext:boolean, cursor:string?}} Info
+     * @param {import('@google-cloud/datastore').Query} query 
+     * @param {boolean} [raw=false] 
+     * @returns {[any[], Info]}
+     */
+    static runQuery(query, raw = false) {
+        /**
+         * @type { [any[], import("@google-cloud/datastore/build/src/query").RunQueryInfo]}
+        */
+        const [_results, rqInfo] = query.run()
+        const results = []
+        /**
+         * @type {Info}
+         */
+        const info = {}
+
+        if (rqInfo.moreResults && rqInfo.moreResults != Datastore.NO_MORE_RESULTS) {
+            info.cursor = rqInfo.endCursor
+            info.hasNext = true
+        }
+        else {
+            info.hasNext = false
+        }
+
+        if (raw === true) {
+            for (const result of _results) {
+                /**
+                 * 
+                 * @type {import("./utiltype").MinimumEntity<any>}
+                 */
+                const minEnt = {}
+                minEnt.key = result[Datastore.key]
+                minEnt.data = result
+                results.push(minEnt)
+
+
+            }
+
+        }
+        else {
+            for (const result of _results) {
+                results.push(new this(result, result[Datastore.KEY], "onLoad"))
+            }
+        }
+        return [results, info]
+    }
+
 
 
 
@@ -229,9 +278,4 @@ class Model {
 
 
 
-/**
- * 
- */
-function setPropertyHooks() {
 
-}
