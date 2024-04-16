@@ -16,8 +16,11 @@ function setDataStore(mock) {
 
 /**
  * @typedef {import("./utiltype").PropertyHooks} PropertyHooks
- * @typedef {import("./utiltype").PropertyHooksMap} PropertyHooksMap
- */
+ * */
+/**
+*  @template T
+* @typedef {import("./utiltype").PropertyHooksMap<T>} PropertyHooksMap<T>
+*/
 
 class Model {
     /**
@@ -138,16 +141,18 @@ class Model {
      * 
      * @param {any?} id
      * @param {any[]?} path 
-     * @returns 
+     * @returns {Promise<any>}
      */
     static async getById(id = null, path = null) {
         const key = this.getKey(id, path);
         const [resp] = await DATA_STORE.get(key);
 
 
-        const ret = new this(resp, resp[Datastore.KEY])
 
-        return ret.properties, ret
+
+        return new this(resp, resp[Datastore.KEY], "onLoad")
+
+
 
 
     }

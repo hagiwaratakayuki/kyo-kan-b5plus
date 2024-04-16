@@ -1,11 +1,11 @@
-type excludeFromIndexes = {
+type ExcludeFromIndexes = {
     excludeFromIndexes?: true
 }
 
-export type PropertyHooksOptions<T> = excludeFromIndexes & {
+export type PropertyHooksOptions<T> = ExcludeFromIndexes & {
     defualtValue?: T
 }
-export type PropertyHooks = excludeFromIndexes & {
+export type PropertyHooks = ExcludeFromIndexes & {
     init?: () => any
 
     onSave?: (value: any) => any

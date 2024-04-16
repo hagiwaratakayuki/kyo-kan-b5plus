@@ -9,6 +9,7 @@
   "author": "hagiwara takayuki",
   "license": "AGPL-3.0-or-later",
   "dependencies": {
+    "ejs": "^3.1.10",
     "execa": "^8.0.1"
   }
 }

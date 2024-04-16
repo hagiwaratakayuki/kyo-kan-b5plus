@@ -1,3 +1,6 @@
+
+
+require("@enjoyjs/node-mecab");
 // Imports the Google Cloud client library
 const { Datastore, Key, PropertyFilter } = require('@google-cloud/datastore');
 Symbol('KEY').description
