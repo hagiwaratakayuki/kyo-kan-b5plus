@@ -1,4 +1,5 @@
 {
     "channelId": "your channel id",
-    "channelSecret": "your channel secret"
+    "channelSecret": "your channel secret",
+    "kid": "your kid"
 }

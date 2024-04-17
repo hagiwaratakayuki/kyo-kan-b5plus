@@ -1,15 +1,19 @@
 const jose = require("node-jose");
 const { addDays, compareAsc, parseJSON } = require("date-fns");
-const { Secret } = require("../../cloud_datastore/secret")
+const { Secret } = require("../../cloud_datastore/secret");
+const { loadLocal, saveLocal } = require("./local_reader");
+
 
 /** 
-* @typedef {{channelId?:string, channelSecret?:string, accessToken?:{key_id:string, token:string}, privateKey?:any, expireLimit?:Date, kid?:string}} LineSecret
+* @typedef {import('./message').LineSecret } LineSecret
 * @typedef {keyof LineSecret} KeyOfLineSecret
 **/
 
 const expAssertionSecond = 30 * 60
 const expTokenDays = 30
 const URLofTokenApi = "https://api.line.me/oauth2/v2.1/token"
+
+
 
 module.exports = { getChannelSecret, getAccessToken, saveSecret }
 
@@ -47,7 +51,7 @@ async function getChannelSecret() {
     /**
      * @type {LineSecret}
      */
-    const ret = { accessToken: secret.accessToken, channelId: secret.channelId }
+    const ret = { channelSecret: secret.accessToken, channelId: secret.channelId }
     return ret;
 
 
@@ -137,27 +141,48 @@ async function sign(lineSecret) {
 const SecretIdOfLine = 'line';
 /**
  * 
- * @param {LineSecret} values 
+ * @param {LineSecret} values
+ * @param {boolean} [isLocal=false]   
  */
-async function saveSecret(values) {
+async function saveSecret(values, isLocal = false) {
     CACHE = values;
-    const entity = new Secret(values, SecretIdOfLine);
-    return await Secret.save(entity)
-}
+    if (isLocal === false) {
+        const entity = new Secret(values, SecretIdOfLine);
+        return await Secret.save(entity)
+    }
+    return await saveLocal(values)
 
-async function loadSecret() {
+}
+/**
+ * 
+ * @param {boolean} [isLocal=false]
+ * @param {boolean} [autoSign=true] 
+ * @returns 
+ */
+async function loadSecret(isLocal = false, autoSign = true) {
     if (Object.keys(CACHE).length === 0) {
-        /**
-         * @type {Secret}
-         */
-        const entity = await Secret.getById('line')
-        const data = entity.properties.value
+        let data
+        if (isLocal === false) {
+            /**
+             * @type {Secret}
+             */
+            const entity = await Secret.getById('line')
+            /**
+             * @type {LineSecret}
+             */
+            data = entity.properties.value
+
+        }
+        else {
+            data = await loadLocal()
+        }
         if (KeyOfExpireLimit in data) {
-            data[KeyOfExpireLimit] = parseJSON(data[KeyOfExpireLimit])
+            data.expireLimit = parseJSON(data.expireLimit)
         }
         CACHE = data;
     }
-    if (KeyOfAccessToken in secret === false || compareAsc(addDays(new Date(), 1), secret[KeyOfExpireLimit]) > -1) {
+
+    if (autoSign === true && KeyOfAccessToken in CACHE === false || compareAsc(addDays(new Date(), 1), CACHE.expireLimit) > -1) {
         const signed = await sign(CACHE)
         saveSecret(signed)
     }
