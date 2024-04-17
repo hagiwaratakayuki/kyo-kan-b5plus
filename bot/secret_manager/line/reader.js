@@ -41,7 +41,7 @@ async function getAccessToken() {
 
 
 }
-async function getAccessToken() {
+async function getChannelSecret() {
 
     const secret = await loadSecret()
     /**
@@ -82,7 +82,7 @@ async function sign(lineSecret) {
         "token_exp": expTokenDays * 60 * 24
 
     }
-    const heeder = {
+    const header = {
         "alg": "RS256",
         "typ": "JWT",
         "kid": lineSecret.kid

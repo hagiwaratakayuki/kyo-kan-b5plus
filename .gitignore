@@ -129,6 +129,5 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
-**/secret/*
-!**/secret/*.example.*
-!**/secret/.gitkeep
+secret/*
+!secret/.gitkeep
