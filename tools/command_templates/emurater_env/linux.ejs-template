@@ -1,0 +1,5 @@
+#!/bin/bash
+# use with source command
+
+<% for (const [key, value] of Object.entries(envValues)) { %>export <%= key %>=<%= value %>
+<% } %>
