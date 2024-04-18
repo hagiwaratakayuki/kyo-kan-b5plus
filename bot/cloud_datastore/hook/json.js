@@ -24,4 +24,3 @@ module.exports.JsonHook = function (hooks = {}) {
     }, hooks)
 
 }
-}

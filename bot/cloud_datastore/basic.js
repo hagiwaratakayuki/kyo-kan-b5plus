@@ -1,6 +1,6 @@
 const { Datastore, Key } = require('@google-cloud/datastore');
 let DATA_STORE = new Datastore()
-export { setDataStore, Model }
+
 
 /**
  * @template T
@@ -282,5 +282,5 @@ class Model {
 }
 
 
-
+module.exports = { setDataStore, Model }
 

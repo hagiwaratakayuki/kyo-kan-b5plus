@@ -1,4 +1,4 @@
-const { execa } = await import('execa');
+
 const path = require('node:path')
 const fs = require('node:fs/promises')
 const process = require('node:process');
@@ -10,15 +10,15 @@ IS_LOCAL = process.argv.length == 3
 
 
 async function main() {
-
+        const { execa } = await import('execa');
         const targetCwd = path.join(__dirname, '../../../bot/');
-        const relPath = path.relative(targetCwd, path.join(__dirname, '../../../bot/secret_manager/set_secret/line.js')).replace(path.sep, '/')
+        const relPath = path.relative(targetCwd, path.join(__dirname, '../../../bot/secret_manager/tools/line/setdata.js')).replace(path.sep, '/')
         const commands = [relPath]
         /**
-         * @type {import('../../../bot/secret_manager/set_secret/line_message').LineArgv}
+         * @type {import('../../../bot/secret_manager/tools/line/line_message').LineArgv}
          */
         const argV = JSON.parse((await fs.readFile(path.join(__dirname, '../../../secret/line/channel.json'), { encoding: 'utf-8' })))
-        argV.privateKey = JSON.parse((await fs.readFile(path.join(__dirname, '../../../secret/line/private.json'))))
+        argV.privateKey = path.join(__dirname, '../../../secret/line/private.json')
 
         if (IS_LOCAL) {
                 argV.local = 'local'
@@ -30,6 +30,7 @@ async function main() {
 
         try {
                 const { stdout } = await execa('node', commands, { cwd: targetCwd });
+                console.log(stdout)
 
         } catch (error) {
                 console.log(error)
@@ -39,3 +40,5 @@ async function main() {
 
 
 }
+
+main()

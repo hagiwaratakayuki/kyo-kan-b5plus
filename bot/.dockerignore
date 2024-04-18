@@ -2,4 +2,4 @@
 node_modules
 README.md
 .gitignore
-secret_manager/set_secret
+secret_manager/tools

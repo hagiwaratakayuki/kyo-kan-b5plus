@@ -17,5 +17,6 @@ async function loadLocal() {
 }
 
 async function saveLocal(data) {
+
     return await fs.writeFile(localSecretFile, JSON.stringify(data), { encoding: 'utf-8' })
 }

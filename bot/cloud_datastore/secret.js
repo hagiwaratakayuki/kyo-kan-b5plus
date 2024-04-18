@@ -1,6 +1,6 @@
 const { Model } = require('./basic')
 const { JsonHook } = require('./hook/json')
-module.exports = { Secret }
+
 
 
 /**
@@ -27,3 +27,4 @@ class Secret extends Model {
 
 }
 
+module.exports = { Secret }

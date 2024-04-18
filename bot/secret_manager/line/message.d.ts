@@ -3,7 +3,9 @@ export type LineSecret = {
     channelSecret?: string,
     accessToken?: {
         key_id: string,
-        token: string
+        token: string,
+        expires_in: number
+
     },
     privateKey?: any,
     expireLimit?: Date | string,

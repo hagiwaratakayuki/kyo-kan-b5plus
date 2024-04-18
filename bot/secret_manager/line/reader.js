@@ -15,7 +15,7 @@ const URLofTokenApi = "https://api.line.me/oauth2/v2.1/token"
 
 
 
-module.exports = { getChannelSecret, getAccessToken, saveSecret }
+module.exports = { getChannelSecret, getAccessToken, saveSecret, sign, loadSecret }
 
 /**
  * @type {LineSecret}
@@ -72,8 +72,9 @@ async function getChannelSecret() {
 /**
  * 
  * @param {LineSecret} lineSecret 
+ * @param {boolean} [autoFetch=true]    
  */
-async function sign(lineSecret) {
+async function sign(lineSecret, autoFetch = true) {
     const privateKey = lineSecret.privateKey;
     const now = new Date();
     const exp = now.getTime() / 1000 + expAssertionSecond;
@@ -83,7 +84,7 @@ async function sign(lineSecret) {
         "sub": lineSecret.channelId,
         "aud": "https://api.line.me/",
         "exp": exp,
-        "token_exp": expTokenDays * 60 * 24
+        "token_exp": expTokenDays * 24 * 60 * 60
 
     }
     const header = {
@@ -93,12 +94,12 @@ async function sign(lineSecret) {
     }
     const assertion = await jose.JWS.createSign(
         { format: "compact", fields: header },
-        JSON.parse(privateKey)
+        privateKey
     )
         .update(JSON.stringify(payload))
         .final()
 
-    console.log(assertion)
+
 
     const data = {
         grant_type: 'client_credentials',
@@ -120,6 +121,9 @@ async function sign(lineSecret) {
         },
         body: encodedData,
     };
+    if (autoFetch === false) {
+        return [data, options]
+    }
 
 
     const response = await fetch(URLofTokenApi, options)
@@ -129,9 +133,11 @@ async function sign(lineSecret) {
     else {
         const accessToken = await response.json()
         lineSecret.accessToken = accessToken
+        lineSecret.expireLimit = new Date(now.getTime() + accessToken.expires_in * 1000)
         console.log(accessToken)
     }
     saveSecret(lineSecret)
+
 
 
 
@@ -146,6 +152,7 @@ const SecretIdOfLine = 'line';
  */
 async function saveSecret(values, isLocal = false) {
     CACHE = values;
+    console.log(values)
     if (isLocal === false) {
         const entity = new Secret(values, SecretIdOfLine);
         return await Secret.save(entity)
