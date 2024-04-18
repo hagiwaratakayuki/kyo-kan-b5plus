@@ -23,6 +23,9 @@ async function main() {
         if (IS_LOCAL) {
                 argV.local = 'local'
         }
+        else {
+                delete argV.accessToken
+        }
         for (const keyValue of Object.entries(argV)) {
                 commands.push(keyValue.join('='))
         }

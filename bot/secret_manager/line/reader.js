@@ -45,9 +45,9 @@ async function getAccessToken() {
 
 
 }
-async function getChannelSecret() {
+async function getChannelSecret(isLocal = false) {
 
-    const secret = await loadSecret()
+    const secret = await loadSecret(isLocal, !isLocal)
     /**
      * @type {LineSecret}
      */
@@ -57,18 +57,7 @@ async function getChannelSecret() {
 
 
 }
-async function getChannelSecret() {
 
-    const secret = await loadSecret()
-    /**
-     * @type {LineSecret}
-     */
-    const ret = { channelSecret: secret.channelSecret, channelId: secret.channelId }
-    return ret;
-
-
-
-}
 /**
  * 
  * @param {LineSecret} lineSecret 
@@ -152,12 +141,15 @@ const SecretIdOfLine = 'line';
  */
 async function saveSecret(values, isLocal = false) {
     CACHE = values;
-    console.log(values)
+
     if (isLocal === false) {
         const entity = new Secret(values, SecretIdOfLine);
         return await Secret.save(entity)
     }
-    return await saveLocal(values)
+    else {
+        return await saveLocal(values)
+    }
+
 
 }
 /**
