@@ -5,20 +5,19 @@ import { Builder, PlugIn } from "../plugin";
 
 export type i18nFunc<T = string> = (language: string, options: any) => T
 
-export type Schema = {
-    uri: string,
-    descriptions: any // recursive dictionaly like {a:{b:{c:"that"}}}
-    definitions: any// recursive dictionaly like {a:{b:{c:"that"}}}
-}
-
-export type SchemaMap = {
-    loopData: Schema
+export type Schema = any // json schema
+export type ShareValues = string[] // json path for Schema
+export type ShareValuesMap = {
+    request: ShareValues
+    response: ShareValues
+    loop: ShareValues
 }
 
 export type DocumentLoader {
     title: i18nFunc
     description: i18nFunc
-    schema?: i18nFunc<SchemaMap>
+    schema?: i18nFunc<Schema>
+    shareValuesMap?: ShareValuesMap
 
 
 }
