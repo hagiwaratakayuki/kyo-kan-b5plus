@@ -47,12 +47,12 @@ class LineConnector extends Basic {
     }
     /**
      * 
-     * @param {import("../../types/responsetypes/basic").Message} message
+     * @param {import("../../types/responsetypes/basic").BaseStateResponse} message
      * @param {any[]} result  
      */
     async _call(message, result) {
-        if (message?.responseType) {
-            result.push(await this.hooks[message.responseType](message))
+        if (message?.response?.responsType) {
+            result.push(await this.hooks[message.response.responsType](response))
         }
         return result
     }

@@ -10,13 +10,15 @@ export type PlugIn = Partial<{
 export type BackTarget = "in" | "latest"
 export type Builder = (options: any, language?: string, i18n?: any) => PlugIn
 
-export type StateResponse = {
+export type StateResponse<ResponseType = any> = {
     state?: state
     subid?: number
     subkey?: string
     callback?: string //Funcname Use when state is wait. Default is "wait"
     subLoopInit?: any
     backTarget?: BackTarget
+    response: ResponseType
+
 
 }
 

@@ -1,9 +1,14 @@
+import type { StateResponse } from "../../../kyo-kan/plugin";
 export type BaseResponse<ResponseType> = {
-    text?: string
+    title?: string
+    description?: string
     responsType: ResponseType
 }
+export type BaseStateResponse<ResponseType = any> = StateResponse<BaseResponse<ResponseType>>
+
+
 export type SelectOptionBase<ValueType = string> = {
-    text: string
+    label: string
     value: ValueType
 
 
@@ -16,7 +21,7 @@ export type SelectionResponseBase<ResponseType, SelectOptionType = SelectOptionB
     options: SelectOptionType[]
 
 }
-export type SelectionResponse = SelectionResponseBase<SelectOptionType = SelectOption > & {
+export type SelectionResponse<SelectOptionType = SelectOption> = SelectionResponseBase<SelectOptionType> & {
     isMultiple?: boolean
 }
 export type SelectionResponseYN<SelectOptionType = SelectOptionBase> = SelectOptionBase<ResponseTypeYN>
