@@ -24,7 +24,7 @@ const SelectionHook = {
         /**
          * @type {import("../../../types/responsetypes/line").LineSelectionResponseType}
          */
-        const response = pluginResponse.response
+        const response = pluginResponse.response.responsType
         let text = response.text
 
 
