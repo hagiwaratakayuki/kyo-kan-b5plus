@@ -1,7 +1,7 @@
 const readlineSync = require('readline-sync');
 const { Basic } = require('./basic');
 /**
-* @typedef { import("./message").Message } message 
+* @typedef { import("../types/responsetypes/basic").Message } message 
 * */
 class Connector extends Basic {
     async run(jsonData) {
@@ -26,7 +26,7 @@ class Connector extends Basic {
     /**
     * 
     * @param {message} message
-    * @param {import('./message').CallbackMessage} result  
+    * @param {import('../types/responsetypes/basic').CallbackMessage} result  
     */
     question(message, result) {
         result.answer = readlineSync.question(message.text)
@@ -35,7 +35,7 @@ class Connector extends Basic {
     /**
     * 
     * @param {message} message
-    * @param {import('./message').CallbackMessage} result  
+    * @param {import('../types/responsetypes/basic').CallbackMessage} result  
     */
     YN(message, result) {
         result.YN = readlineSync.keyInYNStrict(message.text)
@@ -43,7 +43,7 @@ class Connector extends Basic {
     /**
     * 
     * @param { message } message
-    * @param { import('./message').CallbackMessage } result
+    * @param { import('../types/responsetypes/basic').CallbackMessage } result
     */
     selection(message, result) {
         result.selection = readlineSync.keyInSelect(message.selectOptions, message.text);

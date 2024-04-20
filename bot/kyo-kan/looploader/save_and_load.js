@@ -572,4 +572,4 @@ const Loader = class extends Brige {
 }
 
 
-module.exports = { Saver, Loader };
+module.exports = { Saver, Loader, Brige };

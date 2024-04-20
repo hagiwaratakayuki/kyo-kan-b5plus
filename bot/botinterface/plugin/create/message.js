@@ -9,8 +9,8 @@ const { name } = require('../message');
  * @typedef import("../../../kyo-kan/looploader/base_type").BuilderConfig 
  * @typedef {import("../../kyo-kan/looploader/save_and_load").Saver} Saver
  * @typedef {{message:string}} MessageOption
- * @typedef {import("../../connecter/message").Message} Message
- * @typedef {import("../../connecter/message").CallbackMessage} CallbackMessage 
+ * @typedef {import("../../types/responsetypes/basic").Message} Message
+ * @typedef {import("../../types/responsetypes/basic").CallbackMessage} CallbackMessage 
  * @typedef {import("../../create_request").CreateRequest<CallbackMessage} CreateRequest
          
  */

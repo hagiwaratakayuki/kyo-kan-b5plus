@@ -2,14 +2,14 @@
 
 /**
  *  
- * @typedef { import('../kyo-kan/plugin').StateResponse } StateResponse
+ * @typedef { import('../../../kyo-kan/plugin').StateResponse } StateResponse
  * 
- * @typedef import("../../../kyo-kan/looploader/base_type").BuilderConfig
- * @typedef { import("../../kyo-kan/looploader/save_and_load").Saver } Saver
+ * @typedef { import("../../../kyo-kan/looploader/base_type.d.ts").BuilderCo fig} BuilderConfig
+ * @typedef { import("../../../kyo-kan/looploader/save_and_load").Saver } Saver
  * @typedef { { message: string } } MessageOption
- * @typedef { import("../bot2bot/connecter/message").Message } Message
- * @typedef { import("../bot2bot/connecter/message").CallbackMessage } CallbackMessage
- * @typedef { import("../bot2bot/create_request").CreateRequest <CallbackMessage> } CreateRequest
+ * @typedef { import("../../types/responsetypes/basic").Message } Message
+ * @typedef { import("../../types/responsetypes/basic").CallbackMessage } CallbackMessage
+ * @typedef { import("../../create_request").CreateRequest <CallbackMessage> } CreateRequest
 
 * */
 const name = "example"
