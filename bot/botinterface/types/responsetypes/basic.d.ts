@@ -11,8 +11,19 @@ export type BaseResponse<ResponseType> = {
 export type BaseResponse<ResponseType> = {
     responsType: ResponseType
 }
-
 export type BaseStateResponse<ResponseDifinition> = StateResponse<ResponseDifinition>
+
+export type ResponseTypeMessage = "message"
+export type MessageResponse = BaseResponse<ResponseTypeMessage> & {
+    text: string
+}
+export type MessageStateResponse = StateResponse<MessageResponse>
+
+
+export type ResponseTypeSelection = "selection"
+export type ResponseTypeYN = "YN"
+
+
 
 
 export type SelectOptionBase<ValueType = string> = {
@@ -22,8 +33,7 @@ export type SelectOptionBase<ValueType = string> = {
 
 }
 
-export type ResponseTypeSelection = "selection"
-export type ResponseTypeYN = "YN"
+
 
 
 export type SelectionResponseBase<ResponseType, SelectOptionType = SelectOptionBase> = BaseResponse<ResponseType> & {

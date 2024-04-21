@@ -1,14 +1,14 @@
 /**
- * @typedef {import("../../../types/responsetypes/basic").ResponseTypeSelection} SelectionType
+ * @typedef {import("../../../types/responsetypes/basic").ResponseTypeYN} SelectionType
  * 
  * @type {import("../../../types/responsetypes/utiltype").ConnectorHooks<SelectionType>}
  */
-const SelectionHook = {
+const YNHook = {
     /**
      *
-     * @param {import("../../../types/responsetypes/line").LineSelectionPluginResponse } pluginResponse 
+     * @param {import("../../../types/responsetypes/line").LineSelectionStateResponse } pluginResponse 
      */
-    selection(pluginResponse) {
+    YN(pluginResponse) {
         /**
          * @type {import("@line/bot-sdk").TemplateMessage}
          */
@@ -16,7 +16,7 @@ const SelectionHook = {
             type: "template",
             altText: pluginResponse.response.altText.slice(0, 400),
             template: {
-                type: "buttons"
+                type: "confirm"
 
 
             }
@@ -24,16 +24,10 @@ const SelectionHook = {
         /**
          * @type {import("../../../types/responsetypes/line").LineSelectionResponseType}
          */
-        const response = pluginResponse.response.
+        const response = pluginResponse.response.responsType
         let text = response.text
 
-        if (!!response.title === true) {
-            ret.template.title = pluginMessage.response.title.slice(0, 40)
-            text = text.slice(0, 60)
-        }
-        else {
-            text = text.slice(0, 60)
-        }
+
         ret.template.text = text
         const actions = response.options.map(function (r) {
             /**
@@ -54,4 +48,4 @@ const SelectionHook = {
     }
 }
 
-module.exports = { SelectionHook }
+module.exports = { YNHook }

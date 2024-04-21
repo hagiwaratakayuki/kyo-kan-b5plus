@@ -1,7 +1,7 @@
 
 const { messagingApi } = require('@line/bot-sdk');
 const { Basic } = require('../basic');
-const messageHooks = require('./hooks')
+const messageHandlers = require('./handlers')
 
 
 
@@ -11,7 +11,7 @@ const messageHooks = require('./hooks')
 * @typedef { import("../../types/responsetypes/basic").Message } message 
 * */
 class LineConnector extends Basic {
-    hooks = messageHooks
+    handlers = messageHandlers
     /**
      * 
      * @param {*} controller 
@@ -52,7 +52,7 @@ class LineConnector extends Basic {
      */
     async _call(message, result) {
         if (message?.response?.responsType) {
-            result.push(await this.hooks[message.response.responsType](response))
+            result.push(await this.handlers[message.response.responsType](response))
         }
         return result
     }

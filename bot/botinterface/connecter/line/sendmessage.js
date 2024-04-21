@@ -6,7 +6,7 @@
  * @param {string?} replyToken
  *   
  */
-function callMessage(client, messages, replyToken) {
+function sendMessage(client, messages, replyToken) {
     /**
      * @type {import('@line/bot-sdk').messagingApi.ReplyMessageRequest | import('@line/bot-sdk').messagingApi.PushMessageRequest}
      *  */
