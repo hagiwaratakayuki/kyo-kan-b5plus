@@ -484,7 +484,7 @@ const Loader = class extends Brige {
     }
     /**
      * @param {boolean} isIgnoreCache 
-     * @returns {import('../plugin').PlugIn}
+     * @returns {import('../plugin_type').PlugIn}
      */
     getNow(isIgnoreCache = false) {
         const loopStep = this._getLoopStep();
@@ -523,7 +523,7 @@ const Loader = class extends Brige {
     */
     getSubLoopDocuments(language, filter = ["description", "title"], subLoopKey = '') {
         // @ts-ignore
-        const subLoopsCount = this._getLoopStep().s[subLoopKey].steps.length
+        const subLoopsCount = this._getLoopStep().s[subLoopKey].stp.length
         /**
          * @type {SubLoopDocumentList}
          */
@@ -544,9 +544,23 @@ const Loader = class extends Brige {
      * @returns {Document}  
      */
     getSubLoopDocument(subid, language, filter = ["description", "title"], subLoopKey = '') {
-        const document = {}
-        const { builderID, options } = this._getLoopStep(this.loopStepPath.concat([subid]), this.loopStepKeyPath.concat([subLoopKey]));
+        return this.getDocument(subid, language, filter, this.loopStepPath.concat([subid]), this.loopStepKeyPath.concat([subLoopKey]))
+    }
+    /**
+     * @param {string} language
+     * @param {string[]} [filter=[]]  
+     * @param {number[]?} loopStepPath 
+     * @param {string[]?} loopStepKeyPath 
+     * @returns {Document}
+     */
+    getDocument(language, filter = ["description", "title"], loopStepPath, loopStepKeyPath) {
+        const { builderID, options } = this._getLoopStep(loopStepPath, loopStepKeyPath);
+        return this._getDocument(language, filter, builderID, options)
+    }
+    _getDocument(language, filter = ["description", "title"], builderID, options) {
 
+
+        const document = {}
         const { documentLoader } = this.builderConfigMap[builderID]
 
         if (!documentLoader) {

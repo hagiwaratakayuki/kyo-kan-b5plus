@@ -6,8 +6,8 @@ const merge = require('deepmerge')
 
 
 /**
- * @typedef {import("./state_emitter").state} state
- * @typedef {import("./plugin").PlugIn} PlugIns
+ * @typedef {import("./state_emitter").State} state
+ * @typedef {import("./plugin_type").PlugIn} PlugIns
  * @typedef {{ request:any, response:any, context:any, loopStepIndex:any, state:state }} HistoryRecord
  */
 /** 
@@ -18,7 +18,7 @@ const stateKeys = ["start", "in", "wait", "forwardOut", "forwardToSub", "returnF
 
 
 /**
- *  @typedef {import("./plugin").StateResponse} StateResponse
+ *  @typedef {import("./plugin_type").StateResponse} StateResponse
  */
 
 class StateController extends JSONSerializer {
@@ -266,9 +266,9 @@ class StateController extends JSONSerializer {
         const responses = await this._callHookFunction("back", request, response, false)
         if (this._emitter.getState() === "back") {
             /**
-             * @type {import('./plugin').BackTarget}
+             * @type {import('./plugin_type').BackTarget}
              */
-            let backTarget = "in";
+            //let backTarget = "in";
 
             const limit = this._history.getNowHistoryLength() - 1;
             for (let index = 0; index < limit; index++) {
@@ -357,7 +357,7 @@ class StateController extends JSONSerializer {
         /**
          * @type {state}
          */
-        const callState = stateKeys.indexOf(funcname) !== -1 ? this._emitter.getState() : funcname
+        const callState = stateKeys.indexOf(funcname) === -1 ? this._emitter.getState() : funcname
         if (this.isDebug === true || callState === "in" || callState === "wait") {
             context = merge({}, this._context.toJSON())
         }
@@ -367,7 +367,7 @@ class StateController extends JSONSerializer {
          * @type {StateResponse}
          */
         const response = await plugins[funcname].call(plugins, request, this._context, this, ...args) || {}
-        if (this.isDebug === trye || callState === "in" || callState === "wait") {
+        if (this.isDebug === true || callState === "in" || callState === "wait") {
             /**
              * @type {HistoryRecord}
              */
@@ -375,7 +375,9 @@ class StateController extends JSONSerializer {
             this._history.push(record)
             this._emitter.setState(response.state || "forwardOut");
         }
-
+        if (callState === "in" || callState === "wait") {
+            this._emitter.setState(response.state || "forwardOut");
+        }
         return response;
 
     }

@@ -20,9 +20,9 @@ describe('Executer', function () {
         let callBackName;
         let inCount = 0;
         /**
-         * @type {{[k in import('./state_emitter').state]:{options: any, language: any, i18n:any}}}
+         * @type {{[k in import('./state_emitter').State]:{options: any, language: any, i18n:any}}}
          */
-        let builderArgs = {};
+        let pluginArgs = {};
         /**
          * 
          * @param {MockArg} args 
@@ -47,7 +47,7 @@ describe('Executer', function () {
         let isReturnFromSubCalled = false
         /**
          * 
-         * @type  {import('./plugin').Builder}  
+         * @type  {import('./plugin_type').Builder}  
          * 
          */
         function mockBulder(options, language, i18n) {
@@ -66,7 +66,7 @@ describe('Executer', function () {
                         ret.state = "wait"
                         ret.callback = callback
                     }
-                    builderArgs['in'] = { options, language, i18n }
+                    pluginArgs['in'] = { options, language, i18n }
                     inCount++
                     return ret;
 
@@ -74,24 +74,24 @@ describe('Executer', function () {
                 },
                 forwardOut: function (...args) {
                     outArgs = args;
-                    builderArgs['out'] = { options, language, i18n }
+                    pluginArgs['out'] = { options, language, i18n }
                     return { mode: "forwardOut" };
                 },
                 wait: function (...args) {
                     callBackName = "wait"
-                    builderArgs['wait'] = { options, language, i18n }
+                    pluginArgs['wait'] = { options, language, i18n }
                     return waitfunc(args)
 
                 },
                 waitTest: function (...args) {
                     callBackName = "waitTest"
-                    builderArgs['wait'] = { options, language, i18n }
+                    pluginArgs['wait'] = { options, language, i18n }
                     return waitfunc(args)
 
                 },
                 returnFromSub: function (...args) {
                     isReturnFromSubCalled = true
-                    builderArgs['returnFromSub'] = { options, language, i18n }
+                    pluginArgs['returnFromSub'] = { options, language, i18n }
                     return { mode: "returnFromSub" }
                 }
 
@@ -102,7 +102,7 @@ describe('Executer', function () {
 
 
         /**
-         * @type {import('./base_type').DocumentLoader}
+         * @type {import('./looploader/base_type').DocumentLoader}
          */
         const mockDocumentLoader = {
             title: function (language, options) {
@@ -170,10 +170,141 @@ describe('Executer', function () {
         let mockRequest = { isForwardToSub: true, subid: 1 }
 
         res = await controlller.run(mockRequest);
-        assert(builderArgs['in'].options.selectoption, 1)
+        assert(pluginArgs['in'].options.selectoption, 1)
         assert(res[0].state, 'returnFromSub');
         assert(res[1].state, 'forwardOut');
 
     });
+    it('should works controll break', async function () {
+
+        let mockBulderArgs;
+        let inArgs;
+        let outArgs;
+        let waitArgs;
+        let callBackName;
+        let inCount = 0;
+        /**
+         * @type {{[k in import('./state_emitter').State]:{options: any, language: any, i18n:any}}}
+         */
+        let pluginArgs = {};
+        /**
+         * 
+         * @param {MockArg} args 
+         * @returns 
+         */
+        function waitfunc(args) {
+            waitArgs = args;
+            /**
+             * @type {StateResponse}
+             */
+            let response = {}
+
+            if (args[0].isForwardToSub === true) {
+                response.state = "forwardToSub"
+                if (args[0].subid) {
+                    response.subid = args[0].subid
+                }
+
+            }
+            return response
+        }
+        let isReturnFromSubCalled = false
+        /**
+         * 
+         * @type  {import('./plugin_type').Builder}  
+         * 
+         */
+        function mockTestBulder(options, language, i18n) {
+            mockBulderArgs = { options, language, i18n };
+            const isWait = options.isWait
+            const callback = options.callback
+
+            return {
+
+                in: function (...args) {
+                    inArgs = args;
+                    /**
+                     * @type {StateResponse}
+                     */
+                    const ret = { state: "forwardOut", mode: 'in' };
+                    if (isWait) {
+                        ret.state = "wait"
+                        ret.callback = callback
+                    }
+                    pluginArgs['in'] = { options, language, i18n }
+                    inCount++
+                    return ret;
+
+
+                },
+                forwardOut: function (...args) {
+                    outArgs = args;
+                    pluginArgs['out'] = { options, language, i18n }
+                    return { mode: "forwardOut" };
+                },
+                wait: function (...args) {
+                    callBackName = "wait"
+                    pluginArgs['wait'] = { options, language, i18n }
+                    return waitfunc(args)
+
+                },
+                waitTest: function (...args) {
+                    callBackName = "waitTest"
+                    pluginArgs['wait'] = { options, language, i18n }
+                    return waitfunc(args)
+
+                },
+                returnFromSub: function (...args) {
+                    isReturnFromSubCalled = true
+                    pluginArgs['returnFromSub'] = { options, language, i18n }
+
+                    return { mode: "returnFromSub" }
+                }
+
+
+            }
+
+        }
+        /**
+         * @type  {import('./plugin_type').Builder}
+         */
+        function modckControllBreakBuilder(options, language, i18n) {
+            return {
+                in: function () {
+
+                }
+            }
+
+        }
+
+        /**
+         * @type {import('./looploader/base_type').DocumentLoader}
+         */
+        const mockDocumentLoader = {
+            title: function (language, options) {
+
+            },
+            description: function (language, options) {
+
+            }
+        };
+        const saver = new Saver()
+        const builderConfigMap = {
+            'test': {
+                builder: mockTestBulder,
+                options: { loop: 'foo', notMerge: true },
+                documentLoader: mockDocumentLoader
+
+
+            }
+        }
+        saver.buildersRegistration(builderConfigMap);
+        saver.addLoopStep('test', { loop: 1 })
+        saver.addLoopStep('test', { loop: 2, isWait: true, callback: "wait" })
+        saver.startSubLoop('loop');
+        saver.addLoopStep('test', { subloop: 1 });
+
+
+    })
 
 });

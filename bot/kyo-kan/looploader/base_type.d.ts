@@ -1,5 +1,5 @@
 import { Basic } from "../../bot2bot/connecter/basic";
-import { Builder, PlugIn } from "../plugin";
+import { Builder, PlugIn } from "../plugin_type";
 
 
 
@@ -13,17 +13,23 @@ export type ShareValuesMap = {
     loop: ShareValues
 }
 
+export type SelfAndUse = {
+    self: string
+    use?: string
+
+}
+
 export type DocumentLoader {
     title: i18nFunc
     description: i18nFunc
-    schema?: i18nFunc<Schema>
+    schema?: Schema
     shareValuesMap?: ShareValuesMap
 
 
 }
 
 export type Document = Partial<{
-    [k in keyof DocumentLoader]: string
+    [k in keyof Omit<DocumentLoader, "schema" | "shareValuesMap">]: SelfAndUse
 }>
 
 export type BuilderConfig = {

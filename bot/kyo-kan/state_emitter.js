@@ -1,6 +1,6 @@
 /**
- * @typedef {"start" | "in" | "wait" | "forwardOut" | "forwardToSub" | "returnFromSub" |  "break" | "cancel" | "back" | "continue"} state
- * @typedef {{[stateKey in state]: (data:any) => void }} stateCallbacks
+ * @typedef {"start" | "in" | "wait" | "forwardOut" | "forwardToSub" | "returnFromSub" |  "break" | "cancel" | "back" | "continue"} State
+ * @typedef {{[stateKey in State]: (data:any) => void }} stateCallbacks
  */
 
 const { JSONSerializer } = require("./json_serializer");
@@ -12,7 +12,7 @@ class StateEmitter extends JSONSerializer {
     constructor(callbacks, state) {
         super();
         /**
-         * @type {state}
+         * @type {State}
          */
         this._state = "start";
 
@@ -23,7 +23,7 @@ class StateEmitter extends JSONSerializer {
 
     /**
      * 
-     * @param {state} state 
+     * @param {State} state 
      * @param {any[]} args
      * @returns {Promise<any>} 
      */
@@ -45,7 +45,7 @@ class StateEmitter extends JSONSerializer {
 
     /**
      * 
-     * @param {state?} state 
+     * @param {State?} state 
      */
     setState(state) {
         this._state = state || "forwardOut";

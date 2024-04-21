@@ -62,7 +62,7 @@ function builder(options) {
         },
         _selection: function () {
 
-        }
+        },
         /**
          * 
          * @param {CreateRequest} request

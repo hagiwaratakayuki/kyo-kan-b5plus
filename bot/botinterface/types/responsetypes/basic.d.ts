@@ -1,4 +1,4 @@
-import type { StateResponse } from "../../../kyo-kan/plugin";
+import type { StateResponse } from "../../../kyo-kan/plugin_type";
 /*
 // todo move to workspace type
 export type BaseResponse<ResponseType> = {
