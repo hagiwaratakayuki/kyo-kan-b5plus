@@ -373,7 +373,7 @@ class StateController extends JSONSerializer {
              */
             const record = { request, response, context, loopStepIndex: this.loader.getStepIndex(), state: callState }
             this._history.push(record)
-            this._emitter.setState(response.state || "forwardOut");
+
         }
         if (callState === "in" || callState === "wait") {
             this._emitter.setState(response.state || "forwardOut");
