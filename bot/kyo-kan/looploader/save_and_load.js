@@ -579,6 +579,9 @@ const Loader = class extends Brige {
     getSubKey() {
         return this.loopStepKeyPath[this.loopStepKeyPath - 1]
     }
+    getSubId() {
+        return this.loopStepPath[this.loopStepPath.length - 1]
+    }
 
 
 

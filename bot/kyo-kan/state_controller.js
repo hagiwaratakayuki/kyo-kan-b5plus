@@ -60,6 +60,12 @@ class StateController extends JSONSerializer {
          */
         this._context = new contextClass(this._history)
 
+        /**
+         * @type {string}
+         */
+
+        this._callback = undefined
+
 
 
 
@@ -118,15 +124,12 @@ class StateController extends JSONSerializer {
     async wait(request) {
         let responses = []
         const now = this.loader.getNow();
-        /**
-         * @type {{response:StateResponse}}
-         */
-        const { response: headResponse } = this._history.getHead()
+
 
         /**
          * @type {StateResponse}
          */
-        const response = await this._call(headResponse.callback || "wait", now, request)
+        const response = await this._call(this._callback || "wait", now, request)
         responses.push(response);
 
         const _responses = await this._checkState(request, response);
@@ -213,7 +216,7 @@ class StateController extends JSONSerializer {
 
         let responses = []
         let _subLoopInit = response.subLoopInit || {}
-        this._context.callback = response.callback
+        this._context.callback = response.callback;
         const hookResponses = await this._callHookFunction("forwardToSub", request, response, false);
         for (const hookResponse of hookResponses) {
             if (!!hookResponse.subLoopInit === true) {
@@ -223,6 +226,8 @@ class StateController extends JSONSerializer {
         }
         responses = responses.concat(hookResponses)
         if (this._emitter.getState() === "forwardToSub") {
+            this._context.subid = response.subid
+            this._context.subKey = response.subkey
             const subloopStep = this.loader.forwardToSub(response.subid, response.subkey)
             this._context.forwardToSub(_subLoopInit)
             const _responses = await this._inProcess(request, subloopStep);
@@ -251,16 +256,7 @@ class StateController extends JSONSerializer {
 
         return responses.concat(_responses)
     }
-    async returnFromSub(request, response, isAutoForward = true) {
 
-        this._context.subKey = this.loader.getSubKey();
-        this._context.returnFromSub();
-
-
-        return this._callHookFunction("returnFromSub", request, response, isAutoForward);
-
-
-    }
     async back(request, response) {
         const stepIndex = this.loader.getRelativePosition("now", -1)
         this.loader.setStepIndex(stepIndex)
@@ -299,48 +295,66 @@ class StateController extends JSONSerializer {
         return responses
 
     }
-    async break(request, response) {
-        let responses = [response]
-        this._context.subKey = this.loader.getSubKey();
+    async returnFromSub(request, response, isAutoForward = true) {
 
+        return this._context.returnFromSub(request, response, isAutoForward = true);
+
+
+
+    }
+    async break(request, response, isAutoForward = true) {
         const stepIndex = this.loader.getRelativePosition("super")
+        this._context.subid = this.loader.getSubId()
         this.loader.setStepIndex(stepIndex)
+        return this._subLoopFinishProcess(request, response, isAutoForward, ['break'])
+
+    }
+    /**
+     * 
+     * @param {State[]} hookEvents 
+     * @returns 
+     */
+    async _subLoopFinishProcess(request, response, isAutoForward = true, hookEvents = []) {
+        let responses = []
+        this._context.subKey = this.loader.getSubKey();
+        this._context.subId = this.loader.getSubId()
+        const initState = this._emitter.getState()
+
+
         this._context.returnFromSub()
-        const isCallbackExist = !!this._context.callback
         const now = this.loader.getNow();
+
+        /**
+        * @type {string[]}
+        */
+        const _hookEvents = hookEvents.concat(['returnFromSub'])
+        const isCallbackExist = !this._callback === false
         if (isCallbackExist === true) {
+            _hookEvents.push(this._callback)
 
-            const res = await this._call(this._context.callback, now, request)
-
-            if (!res.state === false) {
-                this._emitter.setState()
-                const hookResponses = await this._emitter.run(request, res)
-                return responses.concat(hookResponses)
-            }
-            responses.push(res)
 
         }
 
-        /**
-         * @type {State[]}
-         */
-        const states = ['break', 'returnFromSub']
-        for (const state of states) {
-            const hookResponse = await this._call("break", request, now, true)
+        for (const hookEvent of _hookEvents) {
+            const hookResponse = await this._call(hookEvent, request, now, true)
             if (!hookResponse === false) {
                 responses.push(hookResponse)
                 if (!hookResponse.state === false) {
+
                     this._emitter.setState(hookResponse.state)
-                    const hookResponses = await this._emitter.run()
+                    if (hookResponse.state === 'wait') {
+                        return hookResponses
+                    }
+                    const hookResponses = await this._emitter.run(request, response, isAutoForward)
                     responses = responses.concat(hookResponses)
                     return responses;
 
                 }
             }
         }
-        if (this._emitter.getState() === 'break') {
-            this._emitter.setState('forwardOut')
-            const hookResponses = await this._emitter.run(request, responses[responses.length - 1])
+        if (this._emitter.getState() === initState) {
+            this._emitter.setState('in')
+            const hookResponses = await this._emitter.run(request, response)
             responses = responses.concat(hookResponses)
         }
 
@@ -376,7 +390,7 @@ class StateController extends JSONSerializer {
         const now = this.loader.getNow();
         const callable = !!now[state]
         if (callable) {
-            await this._call(state, now, request, response)
+            await this._call(state, now, request)
             const responseState = this._emitter.getState()
             if (responseState !== state && responseState !== "wait") {
                 const _responses = await this._emitter.run(request, response, isAutoForward);
@@ -423,7 +437,8 @@ class StateController extends JSONSerializer {
         /**
          * @type {StateResponse}
          */
-        const response = await plugins[funcname].call(plugins, request, this._context, this, ...args) || {}
+        const response = (await plugins[funcname].call(plugins, request, this._context, this, ...args)) || {}
+        this._callback = response.callback;
         if (this.isDebug === true || callState === "in" || callState === "wait") {
             /**
              * @type {HistoryRecord}

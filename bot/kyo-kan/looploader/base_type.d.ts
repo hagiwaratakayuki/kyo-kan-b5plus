@@ -90,6 +90,7 @@ export interface BasicLoader {
     getSubLoopDocument(subid: any, language: string, filter?: DocumentPropertis): Document
     isTopLoop(): boolean
     getSubKey(): any
+    getSubId(): any
     getRelativePosition(loop: RelativeLoop, move: RelativeLoopMovement): any
 
 

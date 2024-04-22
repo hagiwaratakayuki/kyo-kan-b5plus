@@ -223,19 +223,30 @@ describe('Executer', function () {
          */
         function mockTestBulder(options, language, i18n) {
             mockBulderArgs = { options, language, i18n };
-            const isWait = options.isWait
-            const callback = options.callback
+
 
             return {
 
                 in: function (...args) {
 
                     return {
-                        state: 'forwardToSub'
+                        state: 'forwardToSub',
+                        callback: 'callback'
+
 
                     };
 
 
+                },
+                callback: function (...args) {
+                    /**
+                     * @type {StateResponse}
+                     */
+                    const ret = {
+                        state: 'wait',
+                        callback: 'test'
+                    }
+                    return ret
                 },
                 forwardOut: function (...args) {
                     outArgs = args;
