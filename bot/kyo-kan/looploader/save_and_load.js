@@ -178,7 +178,7 @@ class Brige extends JSONSerializer {
         const _loopStepPath = loopStepPath || this.loopStepPath
         const _loopStepKeyPath = loopStepKeyPath || this.loopStepKeyPath
         const superLoopStep = this._getSuperLoopStep(_loopStepPath.slice(0, -1), _loopStepKeyPath.slice(0, -1))
-        return superLoopStep.s[_loopStepKeyPath[loopStepKeyPath.length - 1]]
+        return superLoopStep.s[_loopStepKeyPath[_loopStepKeyPath.length - 1]]
     }
 
 
@@ -241,7 +241,7 @@ class Saver extends Brige {
         const step = this._getLoopStep()
         if (subLoopKey in step.s === false) {
             step.s[subLoopKey] = {
-                t: getSubLoopTypeId(subLoopType),
+                t: getSubLoopTypeId(subLoopType || "loop"),
                 stp: []
             }
         }
@@ -292,7 +292,7 @@ const Loader = class extends Brige {
     setStepIndex(stepIndex) {
         super.setStepIndex(stepIndex)
         const loopState = this._getLoopState();
-        const step = loopStepPath[loopStepPath.length - 1];
+        const step = this.loopStepPath[this.loopStepPath.length - 1];
 
         if (loopState.stp.length - 1 === step) {
 

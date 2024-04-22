@@ -9,7 +9,10 @@ const { Saver, Loader } = require('./looploader/save_and_load');
  * @typedef {import('./state_controller').StateResponse} StateResponse
  * @typedef {{isForwardToSub?:true subid?:any}} SubloopRequest
  * @typedef {[SubloopRequest, import('./context').Context]} MockArg
- */
+ * */
+
+
+
 describe('Executer', function () {
 
     it('execute first', async function () {
@@ -210,9 +213,13 @@ describe('Executer', function () {
         }
         let isReturnFromSubCalled = false
         /**
+         * @typedef {import('./protocol').PlugInProtocol<any>} PlugInProtocol
+         * @typedef {import('./protocol').PlugInBuilderProtocol<any, PlugInProtocol>} PluginBuilderProtocol
+         */
+
+        /**
          * 
-         * @type  {import('./plugin_type').Builder}  
-         * 
+         * @type {PluginBuilderProtocol}
          */
         function mockTestBulder(options, language, i18n) {
             mockBulderArgs = { options, language, i18n };
@@ -222,18 +229,11 @@ describe('Executer', function () {
             return {
 
                 in: function (...args) {
-                    inArgs = args;
-                    /**
-                     * @type {StateResponse}
-                     */
-                    const ret = { state: "forwardOut", mode: 'in' };
-                    if (isWait) {
-                        ret.state = "wait"
-                        ret.callback = callback
-                    }
-                    pluginArgs['in'] = { options, language, i18n }
-                    inCount++
-                    return ret;
+
+                    return {
+                        state: 'forwardToSub'
+
+                    };
 
 
                 },
@@ -241,18 +241,6 @@ describe('Executer', function () {
                     outArgs = args;
                     pluginArgs['out'] = { options, language, i18n }
                     return { mode: "forwardOut" };
-                },
-                wait: function (...args) {
-                    callBackName = "wait"
-                    pluginArgs['wait'] = { options, language, i18n }
-                    return waitfunc(args)
-
-                },
-                waitTest: function (...args) {
-                    callBackName = "waitTest"
-                    pluginArgs['wait'] = { options, language, i18n }
-                    return waitfunc(args)
-
                 },
                 returnFromSub: function (...args) {
                     isReturnFromSubCalled = true
@@ -266,13 +254,22 @@ describe('Executer', function () {
 
         }
         /**
-         * @type  {import('./plugin_type').Builder}
+         * 
+         * @type  {PluginBuilderProtocol}
          */
-        function modckControllBreakBuilder(options, language, i18n) {
+        function mockControllBreakBuilder(options, language, i18n) {
             return {
-                in: function () {
-
+                in(...args) {
+                    return {
+                        state: 'wait'
+                    }
+                },
+                wait(...args) {
+                    return {
+                        state: 'break'
+                    }
                 }
+
             }
 
         }
@@ -296,13 +293,32 @@ describe('Executer', function () {
                 documentLoader: mockDocumentLoader
 
 
+            },
+            'break': {
+                builder: mockControllBreakBuilder
             }
         }
         saver.buildersRegistration(builderConfigMap);
         saver.addLoopStep('test', { loop: 1 })
-        saver.addLoopStep('test', { loop: 2, isWait: true, callback: "wait" })
         saver.startSubLoop('loop');
-        saver.addLoopStep('test', { subloop: 1 });
+        saver.addLoopStep('break', { subloop: 1 });
+        saver.endSubLoop();
+
+
+        let jsonData = saver.toJSON()
+
+        let loader = new Loader(true)
+        loader.buildersRegistration(builderConfigMap);
+
+
+
+
+        let controlller = new StateController(loader);
+        let res = await controlller.run({}, { loader: jsonData });
+        console.log(res)
+        res = await controlller.run({})
+        console.log(res)
+
 
 
     })

@@ -82,7 +82,7 @@ export interface BasicLoader {
     backAll(): PlugIn
     isIndexEqual(indexA: LoopStepIndex, indexB: LoopStepIndex): boolean
 
-    forwardToSub(subid?: any,): PlugIn
+    forwardToSub(subid?: number, subkey?: string): PlugIn
     getNow(): PlugIn
     buildStep(loopStep: LoopStep): PlugIn
     getStartStep(): PlugIn[]

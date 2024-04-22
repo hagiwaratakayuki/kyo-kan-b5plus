@@ -6,12 +6,12 @@ const merge = require('deepmerge')
 
 
 /**
- * @typedef {import("./state_emitter").State} state
+ * @typedef {import("./state_emitter").State} State
  * @typedef {import("./plugin_type").PlugIn} PlugIns
- * @typedef {{ request:any, response:any, context:any, loopStepIndex:any, state:state }} HistoryRecord
+ * @typedef {{ request:any, response:any, context:any, loopStepIndex:any, state:State }} HistoryRecord
  */
 /** 
- * @type {Array<state>}
+ * @type {Array<State>}
  */
 
 const stateKeys = ["start", "in", "wait", "forwardOut", "forwardToSub", "returnFromSub", "back", 'break', 'continue']
@@ -206,13 +206,14 @@ class StateController extends JSONSerializer {
     /**
      * 
      * @param {any} request 
-     * @param {{ subid?:any, subkey?:any, subLoopInit?:any }} response 
+     * @param {StateResponse} response 
      * @returns 
      */
     async forwardToSub(request, response) {
 
         let responses = []
         let _subLoopInit = response.subLoopInit || {}
+        this._context.callback = response.callback
         const hookResponses = await this._callHookFunction("forwardToSub", request, response, false);
         for (const hookResponse of hookResponses) {
             if (!!hookResponse.subLoopInit === true) {
@@ -250,7 +251,7 @@ class StateController extends JSONSerializer {
 
         return responses.concat(_responses)
     }
-    returnFromSub(request, response, isAutoForward = true) {
+    async returnFromSub(request, response, isAutoForward = true) {
 
         this._context.subKey = this.loader.getSubKey();
         this._context.returnFromSub();
@@ -298,13 +299,64 @@ class StateController extends JSONSerializer {
         return responses
 
     }
-    break(request, response, isAutoForward = true) {
-
+    async break(request, response) {
+        let responses = [response]
         this._context.subKey = this.loader.getSubKey();
-        this.loader.setStepIndex(stepIndex)
+
         const stepIndex = this.loader.getRelativePosition("super")
+        this.loader.setStepIndex(stepIndex)
         this._context.returnFromSub()
-        return this._callHookFunction("break", request, response, isAutoForward)
+        const isCallbackExist = !!this._context.callback
+        const now = this.loader.getNow();
+        if (isCallbackExist === true) {
+
+            const res = await this._call(this._context.callback, now, request)
+
+            if (!res.state === false) {
+                this._emitter.setState()
+                const hookResponses = await this._emitter.run(request, res)
+                return responses.concat(hookResponses)
+            }
+            responses.push(res)
+
+        }
+
+        /**
+         * @type {State[]}
+         */
+        const states = ['break', 'returnFromSub']
+        for (const state of states) {
+            const hookResponse = await this._call("break", request, now, true)
+            if (!hookResponse === false) {
+                responses.push(hookResponse)
+                if (!hookResponse.state === false) {
+                    this._emitter.setState(hookResponse.state)
+                    const hookResponses = await this._emitter.run()
+                    responses = responses.concat(hookResponses)
+                    return responses;
+
+                }
+            }
+        }
+        if (this._emitter.getState() === 'break') {
+            this._emitter.setState('forwardOut')
+            const hookResponses = await this._emitter.run(request, responses[responses.length - 1])
+            responses = responses.concat(hookResponses)
+        }
+
+
+
+
+
+
+        return responses
+
+
+
+
+
+
+
     }
     continue(request, response, isAutoForward = true) {
         const stepIndex = this.loader.getRelativePosition("now", "start")
@@ -314,7 +366,7 @@ class StateController extends JSONSerializer {
     }
     /**
      * 
-     * @param {state} state 
+     * @param {State} state 
      * @param {any} request 
      * @param {any} response 
      * @param {boolean} [isAutoForward=true] 
@@ -349,13 +401,18 @@ class StateController extends JSONSerializer {
     }
     /**
      * 
-     * @param {state | string} funcname
-     * @param {PlugIns} plugins  
+     * @param {State | string} funcname
+     * @param {PlugIns} plugins 
+     * @param {boolean} [isIgnoreNotExist=false] 
+     * @param {*} args  
      */
-    async _call(funcname, plugins, request, ...args) {
+    async _call(funcname, plugins, request, isIgnoreNotExist = false, args = []) {
+        if (isIgnoreNotExist === true && funcname in plugins === false) {
+            return
+        }
         let context;
         /**
-         * @type {state}
+         * @type {State}
          */
         const callState = stateKeys.indexOf(funcname) === -1 ? this._emitter.getState() : funcname
         if (this.isDebug === true || callState === "in" || callState === "wait") {

@@ -17,6 +17,7 @@ class Context extends JSONSerializer {
          */
         this.history = history
         this.subKey = null
+        this.callback = null
 
     }
     toJSON() {

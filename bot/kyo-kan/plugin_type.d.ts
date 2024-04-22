@@ -8,7 +8,7 @@ export type PlugIn<CallbackType = Function> = Partial<{
 }
 
 export type BackTarget = "in" | "latest"
-export type Builder<OptionsType = any, CallbackType = Function, PluginType = PlugIn> = (options: OptionsType, language?: string, i18n?: any) => PluginType<CallbackType>
+export type Builder<OptionsType = any, PluginType = PlugIn> = (options: OptionsType, language?: string, i18n?: any) => PluginType
 
 export type StateResponse<ResponseType = any> = {
     state?: State
@@ -21,4 +21,3 @@ export type StateResponse<ResponseType = any> = {
 
 
 }
-
