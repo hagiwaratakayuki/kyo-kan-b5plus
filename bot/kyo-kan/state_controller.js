@@ -336,7 +336,7 @@ class StateController extends JSONSerializer {
         }
 
         for (const hookEvent of _hookEvents) {
-            const hookResponse = await this._call(hookEvent, request, now, true)
+            const hookResponse = await this._call(hookEvent, request, now, stateKeys.indexOf(hookEvent) !== -1)
             if (!hookResponse === false) {
                 responses.push(hookResponse)
                 if (!hookResponse.state === false) {
