@@ -4,8 +4,8 @@ import type { StateController } from "./state_controller";
 
 
 
-export type PluginCallbackProtocol<Request, ResponseType = any, RestParameters = []> = (request: Request, context: Context, stateController: StateController, ...rest: RestParameters) => StateResponse<ResponseType>
+export type PluginCallbackProtocol<RequestType, ResponseType = any, RestParameters = []> = (request: RequestType, context: Context, stateController: StateController, ...rest: RestParameters) => StateResponse<ResponseType>
 
 
-export type PlugInProtocol<Request, ResponseType = any, RestParameters = []> = PlugIn<PluginCallbackProtocol<Request, RestParameters>>
+export type PlugInProtocol<RequestType, ResponseType = any, RestParameters = []> = PlugIn<PluginCallbackProtocol<RequestType, RestParameters>>
 export type PlugInBuilderProtocol<OptionsType = any, PluginType = PlugInProtocol<any>> = Builder<OptionsType, PluginType>

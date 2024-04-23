@@ -1,6 +1,6 @@
 
 import type { TextMessage } from "@line/bot-sdk";
-import type { SelectionResponse, SelectionResponseYN, SelectOptionBase, BaseStateResponse, MessageStateResponse } from "./basic";
+import type { SelectionResponse, SelectionResponseYN, SelectOptionBase, BaseStateResponse, MessageStateResponse } from "../../types/responsetypes/basic";
 
 
 export type LineMessageStateResponse = MessageStateResponse<TextMessage>
@@ -21,6 +21,6 @@ export type LineAltTitleTextBasic = LineAltBasic & LineTitleTextBasic
 export type LineSelectionResponseType<SelectOptionType = SelectOptionBase> = SelectionResponse<SelectOptionType> & LineAltTitleTextBasic
 export type LineSelectionResponseTypeYN<SelectOptionType = SelectOptionBase> = SelectionResponseYN<SelectOptionType> & LineAltTitleTextBasic
 
-export type LineSelectionStateResponse<SelectOptionType = SelectOptionBase> = BaseStateResponse<LineSelectionResponseType<SelectOptionType>>
-export type LineSelectionStateResponseYN<SelectOptionType = SelectOptionBase> = BaseStateResponse<LineSelectionResponseTypeYN<SelectOptionType>>
+export type LineMessageStateResponse = BaseStateResponse<MessageStateResponse<TextMessage>>
+
 

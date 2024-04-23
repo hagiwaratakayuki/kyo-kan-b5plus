@@ -1,8 +1,12 @@
 /**
  * 
- * @type {import("./line").LinePlugIns}
+ * @type {import("../types/plugin").LinePlugInsProtocol}
  */
 const Message = {
+    /**
+     *  @type {import("../types/plugin").LineMessageResponseCallbackProtocol} 
+      
+    */
     in: function (request, context, stateController) {
         /**
          * @type {import("@line/bot-sdk").TextMessage}
@@ -16,7 +20,7 @@ const Message = {
     },
     /**
      * 
-     * @type {import("./line").LineRequestCallbackProtocol<string>} 
+     * @type {import("../types/plugin").LineMessageResponseCallbackProtocol} 
      */
     _generateMessage: function (request, context, statetController) {
 

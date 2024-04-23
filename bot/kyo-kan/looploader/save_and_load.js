@@ -275,10 +275,10 @@ const Loader = class extends Brige {
      * 
      * @param {*} isFirst 
      * @param {*} language 
-     * @param {*} i18n
+     * @param {*} functionMap
      * @returns 
      */
-    constructor(isFirst = false, language = '', i18n = {}) {
+    constructor(isFirst = false, language = '', functionMap = {}) {
         super();
         this._isFirst = isFirst
         /**
@@ -286,7 +286,7 @@ const Loader = class extends Brige {
          */
         this.positionState = { isEnd: false, isSubLoopEnd: false };
         this._language = language
-        this._i18n = i18n
+        this._functionMap = functionMap
 
     }
     setStepIndex(stepIndex) {
@@ -511,7 +511,7 @@ const Loader = class extends Brige {
      */
     buildStep(loopStep) {
         const builderConfig = this.builderConfigMap[loopStep.bID];
-        return builderConfig.builder(loopStep.o, this._language, this._i18n)
+        return builderConfig.builder(loopStep.o, this._language, this._functionMap)
     }
     /**
     * 
