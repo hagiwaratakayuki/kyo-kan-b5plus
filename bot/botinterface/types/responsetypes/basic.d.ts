@@ -14,8 +14,9 @@ export type BaseResponse<ResponseType> = {
 export type BaseStateResponse<ResponseDifinition> = StateResponse<ResponseDifinition>
 
 export type ResponseTypeMessage = "message"
-export type MessageResponse = BaseResponse<ResponseTypeMessage> & {
+export type MessageResponse<DataType = any> = BaseResponse<ResponseTypeMessage> & {
     text: string
+    data: DataType
 }
 export type MessageStateResponse = StateResponse<MessageResponse>
 

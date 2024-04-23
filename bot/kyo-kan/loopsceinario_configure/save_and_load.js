@@ -37,3 +37,4 @@ function _registartion(configureNode, saver) {
 
 
 }
+module.exports = { SaveAndLoadConfig }

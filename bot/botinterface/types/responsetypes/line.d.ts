@@ -1,6 +1,9 @@
 
+import type { TextMessage } from "@line/bot-sdk";
 import type { SelectionResponse, SelectionResponseYN, SelectOptionBase, BaseStateResponse, MessageStateResponse } from "./basic";
-export type LineMessageStateResponse = MessageStateResponse
+
+
+export type LineMessageStateResponse = MessageStateResponse<TextMessage>
 
 export type LineAltBasic = {
     altText: string
