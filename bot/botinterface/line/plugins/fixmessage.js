@@ -2,21 +2,17 @@
  * 
  * @type {import("../types/plugin").LinePlugInsProtocol}
  */
-const Message = {
+const FixMessage = {
     /**
      *  @type {import("../types/plugin").LineMessageResponseCallbackProtocol} 
       
     */
     in: function (request, context, stateController) {
-        /**
-         * @type {import("@line/bot-sdk").TextMessage}
-         */
-        const response = {
-            type: "text",
 
-
-        }
         const message = this._generateMessage(request, context, stateController)
+        return {
+            state:
+        }
     },
     /**
      * 
@@ -25,5 +21,11 @@ const Message = {
     _generateMessage: function (request, context, statetController) {
 
     }
+
+}
+/**
+ * @type {import("../../../kyo-kan/protocol").PlugInBuilderProtocol}
+ */
+function builder() {
 
 }

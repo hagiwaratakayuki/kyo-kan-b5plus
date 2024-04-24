@@ -7,11 +7,20 @@ export type PlugIn<CallbackType = Function> = Partial<{
     in: CallbackType
 }
 
+export type ExistComponents = {
+    [k: string]: string
+}
+export type CommonOptions = {
+    existComponents?: ExistComponents
+    platform?: string
+
+
+}
 export type BackTarget = "in" | "latest"
 export type BaseOption = {
     namespace: string
 }
-export type Builder<OptionsType = BaseOption, PluginType = PlugIn> = (options: OptionsType, language?: string, functionMap?: { [k string:]: Function}) => PluginType
+export type Builder<OptionsType = BaseOption, CommonOptionsType = CommonOptions, PluginType = PlugIn> = (options: OptionsType, language?: string, functionMap?: { [k string:]: Function}) => PluginType
 
 export type StateResponse<ResponseType = any> = {
     state?: State

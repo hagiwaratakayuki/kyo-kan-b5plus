@@ -27,7 +27,9 @@ export type DocumentLoader {
 
 
 }
-
+export interface Test {
+    hoge: () => void
+}
 export type Document = Partial<{
     [k in keyof Omit<DocumentLoader, "schema" | "shareValuesMap">]: SelfAndUse
 }>

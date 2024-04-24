@@ -4,7 +4,7 @@ const process = require('node:process')
 const defaultDirectory = path.join(process.cwd(), './message')
 
 function GenerateReader(namespace, directory = defaultDirectory) {
-    return reader.bind({ namespace: path.join(directory, namespace) })
+    return contract.bind({ namespace: path.join(directory, namespace) })
 }
 
 /**
@@ -12,7 +12,7 @@ function GenerateReader(namespace, directory = defaultDirectory) {
  * @param {string} name 
  * @param {string} i18n 
  */
-function reader(name, i18n = 'ja') {
+function contract(name, i18n = 'ja') {
     const filename = path.join(this.namespace, name + '.' + i18n)
     return fs.readFile(filename, { encoding: 'utf-8' })
 }

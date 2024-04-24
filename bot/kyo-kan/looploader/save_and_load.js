@@ -2,6 +2,7 @@
 const merge = require('deepmerge');
 const { JSONSerializer } = require('../json_serializer')
 const { getSubLoopType, getSubLoopTypeId } = require('./loop_type');
+
 /**
  * @typedef {import('./base_type').BuilderConfigMap} BuilderConfigMap
  * @typedef {import('./base_type').DocumentPropertis} DocumentPropertis
@@ -11,6 +12,8 @@ const { getSubLoopType, getSubLoopTypeId } = require('./loop_type');
  * @typedef {Pick<LoopStep, 's'> | LoopStep} RouteStep
  * @typedef { [number[], string[]] } LoopStepPathPaire
 */
+
+
 
 const PATH_DElIMITER = '/';
 
@@ -266,6 +269,8 @@ class Saver extends Brige {
 
 }
 
+
+
 /**
  *  @implements {import('./base_type.d.ts').BasicLoader }
  * 
@@ -273,12 +278,13 @@ class Saver extends Brige {
 const Loader = class extends Brige {
     /**
      * 
-     * @param {*} isFirst 
-     * @param {*} language 
-     * @param {*} functionMap
+     * @param {boolean} isFirst 
+     * @param {string} language
+     * @param {import('../plugin_type').CommonOptions} commonOptions  
+     * @param {any} functionMap
      * @returns 
      */
-    constructor(isFirst = false, language = '', functionMap = {}) {
+    constructor(isFirst = false, language = '', commonOptions = {}, functionMap = {}) {
         super();
         this._isFirst = isFirst
         /**
@@ -286,6 +292,7 @@ const Loader = class extends Brige {
          */
         this.positionState = { isEnd: false, isSubLoopEnd: false };
         this._language = language
+        this._commonOptions = commonOptions
         this._functionMap = functionMap
 
     }

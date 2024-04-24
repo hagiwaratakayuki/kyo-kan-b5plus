@@ -60,4 +60,4 @@ class LineConnector extends Basic {
 
 }
 
-module.exports = { Connector };
+module.exports = { LineConnector };
