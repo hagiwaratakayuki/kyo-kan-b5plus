@@ -15,7 +15,7 @@ class Switcher {
     }
     run(request) {
         const event = this.getEvent(request)
-        return this.handleSwitch(event)
+        return this.handleSwitch(event, request)
 
 
     }
@@ -40,37 +40,7 @@ class Switcher {
     }
 
 
-    /**
-     * 
-     * 
-     * @param {boolean} isStart 
-     */
-    buildController(builderConfigMap, isStart) {
-        /**
-         * @type {import("../../kyo-kan/looploader/base_type").BasicLoader}
-         */
-        const loader = new this.loaderClass(isStart)
-        loader.buildersRegistration(builderConfigMap);
 
-        return new this.controllerClass(loader)
-
-
-    }
-    buildAndRunController(request, jsonData, builderConfigMap, isStart) {
-        /**
-         * @type {StateController}
-         */
-        const controller = this.buildController(builderConfigMap, isStart)
-        let _jsonData = {}
-        if (isStart === true) {
-            _jsonData.loader = jsonData
-        }
-        else {
-            _jsonData = jsonData
-        }
-        return controller.run(request, jsonData)
-
-    }
 
 }
 

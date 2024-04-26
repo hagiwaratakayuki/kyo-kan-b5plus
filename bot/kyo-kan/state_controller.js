@@ -85,9 +85,11 @@ class StateController extends JSONSerializer {
      * @param {any} request
      * @param {any?} resumeData
      */
-    run(request, resumeData) {
+    run(request, resumeData, isFirst = false) {
+
         if (resumeData) {
-            this.fromJSON(resumeData);
+            const _resumeData = isFirst === true ? { loader: resumeData } : resumeData
+            this.fromJSON(_resumeData);
         }
 
         return this._emitter.run(request)

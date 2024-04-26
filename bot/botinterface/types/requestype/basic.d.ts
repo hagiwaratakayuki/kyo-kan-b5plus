@@ -1,24 +1,43 @@
-export type RequestTypeText = "text"
-export type RequestTypeVideo = "video"
-export type RequestTypeAudio = "audio"
-export type RequestTypeFile = "file"
-export type RequestTypeLocation = "location"
+export type StandardizedRequestTypeText = "text"
+export type StandardizedRequestTypeVideo = "video"
+export type StandardizedRequestTypeAudio = "audio"
+export type StandardizedRequestTypeFile = "file"
+export type StandardizedREquestTypeImage = "image"
+export type StandardizedRequestTypeLocation = "location"
 
-export type RequestBasic<PlatformType = any, RequestTypeT = string> = {
+
+export type StandardizedRequestBasic<PlatformType = any, StandardizedRequestTypeT = string> = {
     sourceId: string
     text?: string
     platform: PlatformType
-    type: RequestTypeT
+    type: StandardizedRequestTypeT
 
 }
 
-export type RequestText<PlatformType = any> = RequestBasic<PlatformType, RequestTypeText>
-export type RequestLocation<PlatformType = any> = RequestBasic<PlatformType, RequestTypeLocation>
+export type StandardizedRequestText<PlatformType = any> = StandardizedRequestBasic<PlatformType, StandardizedRequestTypeText>
+export type StandardizedRequestLocation<PlatformType = any> = StandardizedRequestBasic<PlatformType, StandardizedRequestTypeLocation>
 
-export type RequestBlobBasic<BlobFuncType = Function, PlatformType = any, RequestTypeT = any> = RequestBasic<PlatformType, RequestTypeT> & {
-    blob: BlobFuncType
+
+export type StandardizedBlobResponse<PlatformDataType = any> = {
+    contentType: string
+    body: BinaryData
+    platformData?: PlatformDataType
+
+
 }
 
-export type RequetAudio<BlobFuncType = Function, PlatformType = any> = RequestBlobBasic<BlobFuncType, PlatformType, RequestTypeAudio>
-export type RequestVideo<BlobFuncType = Function, PlatformType = any> = RequestBlobBasic<BlobFuncType, PlatformType, RequestTypeVideo>
-export type RequestFile<BlobFuncType = Function, PlatformType = any> = RequestBlobBasic<BlobFuncType, PlatformType, RequestTypeFile>
+
+
+export type StanderdizedBlobFunction<PlatformDataType = any> = () => Promise<StandardizedBlobResponse<PlatformDataType>>
+
+export type StandardizedRequestBlobBasic<PlatformType = any, BlobIdType = string, StandardizedRequestTypeT = any> = StandardizedRequestBasic<PlatformType, StandardizedRequestTypeT> & {
+    blob: BlobIdType
+}
+export type StandardizedRequetAudio<PlatformType = any, BlobIdType = string> = StandardizedRequestBlobBasic<PlatformType, BlobIdType, StandardizedRequestTypeAudio>
+export type StandardizedRequestVideo<PlatformType = any, BlobIdType = string> = StandardizedRequestBlobBasic<PlatformType, BlobIdType, StandardizedRequestTypeVideo>
+export type StandardizedRequestFile<PlatformType = any, BlobIdType = string> = StandardizedRequestBlobBasic<PlatformType, BlobIdType, StandardizedRequestTypeFile>
+export type StandardizedRequestImage<PlatformType = any, BlobIdType = string> = StandardizedRequestBlobBasic<PlatformType, BlobIdType, StandardizedRequestTypeImage>
+//  request must json seriararizable. for function map. see bot/kyo-kan/looploader/save_and_load.js
+export type StandardizedFunctionMap<PlatformBlobDataType = any> = {
+    requestBlob: StandardizedBlobResponse<PlatformBlobDataType>
+}
