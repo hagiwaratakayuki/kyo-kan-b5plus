@@ -60,17 +60,12 @@ class Basic {
     buildAndRunController(builderConfigMap, isStart, jsonData, language = '', commonOptions = {}, functionMap = {}) {
 
         /**
-         * @type {StateControllerController}
+         * @type {StateController}
          */
-        const controller = this.buildController(builderConfigMap, isStart)
-        let _jsonData = {}
-        if (isStart === true) {
-            _jsonData.loader = jsonData
-        }
-        else {
-            _jsonData = jsonData
-        }
-        return controller.run(request, jsonData)
+        const controller = this.buildController(builderConfigMap, isStart, language, commonOptions, functionMap)
+
+
+        return controller.run(request, jsonData, isStart)
 
     }
 

@@ -1,5 +1,5 @@
 import type { webhook, AudioEventMessage, EventMessage, FileEventMessage, LocationEventMessage, TextEventMessage, VideoEventMessage, messagingApi } from "@line/bot-sdk"
-import type { StandardizedRequestBasic, StandardizedRequestBlobBasic, StandardizedRequestFile, StandardizedRequestLocation, StandardizedRequestText, StandardizedRequestVideo, StandardizedRequetAudio, StanderdizedBlobFunction } from "../../types/requestype/basic"
+import type { StandardizedBlobLoadResponse as StandardizedBlobLoadResponse, StandardizedFunctionMap, StandardizedRequestBasic, StandardizedRequestBlobBasic, StandardizedRequestFile, StandardizedRequestLocation, StandardizedRequestText, StandardizedRequestVideo, StandardizedRequetAudio, StanderdizedBlobFunction } from "../../types/requestype/basic"
 
 export type LineWebhookRequest = {
     event: webhook.Event
@@ -19,9 +19,20 @@ export type LineStandardizedRequestLocation = StandardizedRequestLocation<Locati
 
 
 
-export type LineStandardizedBlobFunction = StanderdizedBlobFunction<Response>
+
 
 export type LineStandardizedRequestBlobCommon = StandardizedRequestBlobBasic<LineStandardizedPlatformCommon>
 export type LineStandardizedRequestAudio = StandardizedRequetAudio<AudioEventMessage & LineSourceMessage>
 export type LineStandardizedRequestVideo = StandardizedRequestVideo<VideoEventMessage & LineSourceMessage>
 export type LineStandardizedRequestFile = StandardizedRequestFile<FileEventMessage & LineSourceMessage>
+
+export type LineStandardizedBlobFunction = StanderdizedBlobFunction
+
+export type LineStandardizedBlobLoadResponse = StandardizedBlobLoadResponse
+export type LineStandardizedFunctionMap = StandardizedFunctionMap<LineStandardizedBlobFunction> & {
+    _lineBlob: {
+        client: messagingApi.MessagingApiBlobClient,
+        messageId: string
+    }
+    _waitLineBlobProcess: () => Promise<LineStandardizedBlobLoadResponse>
+}

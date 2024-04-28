@@ -43,3 +43,5 @@ class LineSwitcher extends Switcher {
 
     }
 }
+
+module.exports = { LineSwitcher }

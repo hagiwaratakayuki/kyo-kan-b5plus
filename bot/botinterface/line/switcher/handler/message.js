@@ -8,6 +8,7 @@ const { LineConnector } = require("../../connecter")
 const Handler = {
 
     message(switcher, request) {
+        request.event.source
 
     }
 }

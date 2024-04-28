@@ -13,26 +13,12 @@ const messageHandlers = require('./handlers')
 * */
 class LineConnector extends Basic {
     handlers = messageHandlers
-    /**
-     * 
-     * @param { import('../../../kyo-kan/state_controller').StateController} StateController 
-     * @param {lineClients} lineClients
-     * @param {string?} replyToken  
-     */
-    constructor(controller, lineClients, replyToken) {
-        super(controller)
-        /**
-         * @type {}
-         */
-        this._lineClients = lineClients
-        this._replyToken = replyToken
-    }
 
     /**
      * 
      * @param {import('../types/request').LineWebhookRequest} request 
     */
-    async run(request) {
+    async run(request, jsonData) {
 
         const replyToken = request.event
         const builderConfigMap = {}
@@ -60,12 +46,12 @@ class LineConnector extends Basic {
             const blob
         }
         const controller = switcher.buildController(builderConfigMap, isStart)
-        const replyToken = request.event.replyToken
+
 
         /**
          * @type {LineConnector}
          */
-        const connecter = new LineConnector(controller, request, replyToken)
+        const connecter = new LineConnector()
 
 
 
@@ -73,6 +59,7 @@ class LineConnector extends Basic {
         if (this.controller.isEnd()) {
             this.close()
         }
+        return messages
 
 
     }
