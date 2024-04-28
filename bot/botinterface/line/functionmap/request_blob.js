@@ -83,6 +83,7 @@ const functionMap = {
             res = null
             clear = null
             wait = null
+
         }
         async function wait() {
             limitCount--
@@ -102,19 +103,26 @@ const functionMap = {
                     isKeepWatching = false
                 }
             } catch (error) {
+                isKeepWatching = false
                 reason = error
 
             }
             if (limitCount === 0) {
-                if (response === true) {
+                if (isKeepWatching === true) {
                     reason = new TimeoutError()
                 }
             }
-            if (isKeepWatching === false) {
+            if (reason !== false) {
+                rej(reason)
+                clear()
+                return
+            }
+            else if (isKeepWatching === false) {
 
 
                 res(response)
                 clear()
+                return
 
 
 
