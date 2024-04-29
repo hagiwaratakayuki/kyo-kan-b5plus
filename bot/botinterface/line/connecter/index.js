@@ -16,23 +16,23 @@ class LineConnector extends Basic {
 
     /**
      * 
-     * @param {import('../types/request').LineWebhookRequest} request 
+     * @param {import('../types/request').LineWebhookRequest} request
+     * @param {*} jsonData
+     * @param {boolean} isStart
+     * @param {import('../../../kyo-kan/looploader/base_type').BuilderConfigMap} builderConfigMap
+     * @param {import('../../../kyo-kan/plugin_type').CommonOptions} options
+     * @param {*} functionMap       
     */
-    async run(request, jsonData) {
+    async run(request, jsonData, isStart, builderConfigMap, options, functionMap) {
 
-        const replyToken = request.event
-        const builderConfigMap = {}
-        const [key, userId] = getIdFromEvent(request.event)
-        const [isStart, loopScenario] = getLoopScenario(key)// todo
+        const replyToken = request.event.replyToken
+
+
+
+
 
         /**
-         * @type {import("../../types/request").LineStandardizedPlatformCommon}
-         */
-        const platform = {
-            userId: userId
-        }
-        /**
-         * @type {import("../../types/request").LineStandardizedRequestCommon | import("../../types/request").LineStandardizedRequestBlobCommon}
+         * @type {import('../types/request').LineStandardizedRequestCommon | import("../types/request").LineStandardizedRequestBlobCommon}
          */
         const standardizeRequest = {
             platform: request.event,

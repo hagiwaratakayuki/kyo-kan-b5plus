@@ -7,7 +7,6 @@ export type StandardizedRequestTypeLocation = "location"
 
 
 export type StandardizedRequestBasic<PlatformType = any, StandardizedRequestTypeT = string> = {
-    sourceId: string
     text?: string
     platform: PlatformType
     type: StandardizedRequestTypeT

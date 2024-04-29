@@ -7,8 +7,13 @@ const { LineConnector } = require("../../connecter")
  */
 const Handler = {
 
-    message(switcher, request) {
-        request.event.source
+    async message(request) {
+        const connecter = new LineConnector()
+
+        const targetId = getIdFromEvent(request.event)
+        const [isStart, [loopScenario, builderConfigMap]] = await Promise.all([getUseState(targetId, "isStart"), getLoopScenario(targetId, 'current')])
+
+        return await connecter.run(request, loopScenario, isStart, builderConfigMap)
 
     }
 }

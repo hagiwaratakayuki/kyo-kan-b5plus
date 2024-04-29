@@ -293,7 +293,11 @@ const Loader = class extends Brige {
         this.positionState = { isEnd: false, isSubLoopEnd: false };
         this._language = language
         this._commonOptions = commonOptions
-        this._functionMap = functionMap
+        this._functionMap = Object.assign({}, functionMap)
+
+    }
+    setFunctionMap(functionMap) {
+        Object.assign(this._functionMap, functionMap)
 
     }
     setStepIndex(stepIndex) {

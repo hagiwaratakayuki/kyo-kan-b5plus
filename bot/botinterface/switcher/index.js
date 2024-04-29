@@ -24,7 +24,7 @@ class Switcher {
      */
     async handleSwitch(event, ...args) {
         if (event in this.handlers) {
-            return await this.handlers[event].call(this.handlers, this, ...args)
+            return await this.handlers[event].call(this.handlers, ...args)
 
         }
         throw "Event " + event + ' does not exist in handler'

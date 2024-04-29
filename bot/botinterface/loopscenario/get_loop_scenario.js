@@ -1,9 +1,10 @@
 // todo typekeyとidに基づいてloospcenarioをロード
 
-function getLoopScenario(typekey, id) {
-    let isStart = true
+async function getLoopScenario(id, typekey) {
+
     let loopScinario = {}
-    return [isStart, loopScinario]
+    let bulderConfigMap = {}
+    return [loopScinario, bulderConfigMap]
 
 }
 

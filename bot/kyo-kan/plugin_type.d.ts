@@ -1,4 +1,4 @@
-import { State } from "./state_emitter";
+import type { State } from "./state_emitter";
 
 
 export type PlugIn<CallbackType = Function> = Partial<{
@@ -11,7 +11,7 @@ export type ExistComponents = {
     [k: string]: string
 }
 export type CommonOptions = {
-    existComponents?: ExistComponents
+    existUiComponents?: ExistComponents
     platform?: string
 
 
@@ -20,6 +20,7 @@ export type BackTarget = "in" | "latest"
 export type BaseOption = {
     namespace: string
 }
+
 export type Builder<OptionsType = BaseOption, CommonOptionsType = CommonOptions, PluginType = PlugIn> = (options: OptionsType, language?: string, functionMap?: { [k string:]: Function}) => PluginType
 
 export type StateResponse<ResponseType = any> = {

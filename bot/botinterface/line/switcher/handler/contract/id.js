@@ -18,7 +18,8 @@ function getIdFromEvent(event) {
 
 
     }
-    return [key, event?.source?.userId]
+
+    return [key, event?.source]
 
 
 }

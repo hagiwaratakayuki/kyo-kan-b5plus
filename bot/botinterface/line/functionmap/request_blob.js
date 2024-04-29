@@ -1,4 +1,5 @@
 
+const deepmerge = require("deepmerge");
 const path = require("path");
 const util = require('util');
 const NETWORK_ERROR = "Line:  Network Error"
@@ -9,27 +10,27 @@ const TIMEOUT = "Line; Blob Trasnscoding is Timeout"
 /**
  * @typedef {import("../types/request").LineStandardizedFunctionMap} FunctionMap
  * @typedef {import("../types/request").LineStandardizedBlobLoadResponse} Response
+ * @typedef {import("./common_types").LineFunctionMap}
+ *  
  * 
  * /
 /**
- * @type {FunctionMap} 
+ * @type {import("./common_types").LineFunctionMap & {
+  *   _waitLineBlobProcess: () => Promise<import("../types/request").LineStandardizedBlobLoadResponse>
+ * }} 
  */
-const functionMap = {
+const FunctionMap = {
 
 
-    _lineBlob: {
-        client: undefined,
-        messageId: undefined
 
-    },
-    /*
-     * 
-     */
+
+
     loadBlob: async function () {
+
         try {
 
 
-            const res = await _getContent(this._lineBlob.client, this._lineBlob.messageId)
+            const res = await _getContent(this._linePlatform.blobClient, this._linePlatform.messageId)
             if (res === "processing") {
                 return await this._waitLineBlobProcess()
             }
@@ -48,25 +49,19 @@ const functionMap = {
                     isError: true,
                     errorType: "timeout"
                 }
-
             }
             if (error instanceof NetworkError) {
                 return {
                     isError: true,
                     errorType: "network"
                 }
-
             }
-
         }
-
-
-
     },
 
     _waitLineBlobProcess: async function () {
         let limitCount = 30;
-        let lineBlobs = this._lineBlob
+        let linePlatform = this._linePlatform
         let res, rej;
         let proms = new Promise(function (_res, _rej) {
             res = _res
@@ -76,7 +71,7 @@ const functionMap = {
             clearInterval(t)
             t.unref();
             t = null;
-            lineBlobs = null;
+            linePlatform = null;
             limitCount = null;
 
             rej = null
@@ -98,8 +93,8 @@ const functionMap = {
             let reason = false
 
             try {
-                if ((await _checkTranscodeing(lineBlobs.client, lineBlobs.messageId)) === "succeeded") {
-                    response = await _getContent(lineBlobs.client, lineBlobs.messageId)
+                if ((await _checkTranscoding(linePlatform.blobClient, linePlatform.messageId)) === "succeeded") {
+                    response = await _getContent(linePlatform.blobClient, linePlatform.messageId)
                     isKeepWatching = false
                 }
             } catch (error) {
@@ -178,11 +173,11 @@ class TimeoutError extends BasicError {
 function errorLogging(error) {
 
     const tagMessage = '[' + path.relative(process.cwd(), __filename) + ']  ' + error.message
-    const mssgObj = { tagMessage }
+    const messageObj = { tagMessage }
     if (!error.message === false) {
-        mssgObj.response = error.response
+        messageObj.response = error.response
     }
-    console.error(util.inspect(mssgObj))
+    console.error(util.inspect(messageObj))
 
 }
 /**
@@ -220,7 +215,7 @@ async function _getContent(blobClient, messageId) {
  * @param {string} messageId
  * @returns {Promise<"processing" | "succeeded">} 
  */
-async function _checkTranscodeing(blobClient, messageId) {
+async function _checkTranscoding(blobClient, messageId) {
     const res = await blobClient.getMessageContentTranscodingByMessageIdWithHttpInfo(messageId)
     if (res.httpResponse.status >= 300) {
         throw new NetworkError(res)
@@ -239,3 +234,4 @@ async function _checkTranscodeing(blobClient, messageId) {
     return "processing"
 
 }
+module.exports = FunctionMap

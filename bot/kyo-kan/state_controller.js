@@ -90,6 +90,9 @@ class StateController extends JSONSerializer {
         if (resumeData) {
             const _resumeData = isFirst === true ? { loader: resumeData } : resumeData
             this.fromJSON(_resumeData);
+            if (isFirst === true) {
+                this.loader.resetPosition()
+            }
         }
 
         return this._emitter.run(request)

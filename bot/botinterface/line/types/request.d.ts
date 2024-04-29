@@ -7,32 +7,24 @@ export type LineWebhookRequest = {
     blobClient: messagingApi.MessagingApiBlobClient
 }
 
-export type LineSourceMessage = {
-    userId?: string
-}
 
-export type LineStandardizedPlatformCommon = EventMessage & LineSourceMessage
+
+export type LineStandardizedPlatformCommon = webhook.Event
 export type LineStandardizedRequestCommon = StandardizedRequestBasic<LineStandardizedPlatformCommon>
 
-export type LineStandardizedRequestText = StandardizedRequestText<TextEventMessage & LineSourceMessage>
-export type LineStandardizedRequestLocation = StandardizedRequestLocation<LocationEventMessage & LineSourceMessage>
+export type LineStandardizedRequestText = StandardizedRequestText<TextEventMessage>
+export type LineStandardizedRequestLocation = StandardizedRequestLocation<LocationEventMessage>
 
 
 
 
 
 export type LineStandardizedRequestBlobCommon = StandardizedRequestBlobBasic<LineStandardizedPlatformCommon>
-export type LineStandardizedRequestAudio = StandardizedRequetAudio<AudioEventMessage & LineSourceMessage>
-export type LineStandardizedRequestVideo = StandardizedRequestVideo<VideoEventMessage & LineSourceMessage>
-export type LineStandardizedRequestFile = StandardizedRequestFile<FileEventMessage & LineSourceMessage>
+export type LineStandardizedRequestAudio = StandardizedRequetAudio<AudioEventMessage>
+export type LineStandardizedRequestVideo = StandardizedRequestVideo<VideoEventMessage>
+export type LineStandardizedRequestFile = StandardizedRequestFile<FileEventMessage>
 
 export type LineStandardizedBlobFunction = StanderdizedBlobFunction
 
 export type LineStandardizedBlobLoadResponse = StandardizedBlobLoadResponse
-export type LineStandardizedFunctionMap = StandardizedFunctionMap<LineStandardizedBlobFunction> & {
-    _lineBlob: {
-        client: messagingApi.MessagingApiBlobClient,
-        messageId: string
-    }
-    _waitLineBlobProcess: () => Promise<LineStandardizedBlobLoadResponse>
-}
+export type LineStandardizedFunctionMap = StandardizedFunctionMap<LineStandardizedBlobFunction> 
