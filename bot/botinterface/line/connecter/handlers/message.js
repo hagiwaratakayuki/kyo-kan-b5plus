@@ -1,14 +1,15 @@
 /**
  * @typedef {import("../../../types/responsetypes/basic").ResponseTypeMessage} MessageType
  * 
- * @type {import("../../../types/responsetypes/utiltype").ConnectorHooks<MessageType>}
+ * @type {import("../../types/responsehandler").LineResponseMessageHandlerType}
  */
 const MessageHook = {
+    responseType: "mesage",
     /**
     *
-    * @param {import("../../../types/responsetypes/line").LineMessageStateResponse } stateResponse 
+    * @param { } stateResponse 
     */
-    message(stateResponse) {
+    exec: function (stateResponse) {
         /**
          * @type {import("@line/bot-sdk").TextMessage}
          */

@@ -17,3 +17,5 @@ function getFunctionMap(linePlatform) {
     return deepmerge.all(FunctionMapmList.concat[platformed])
 
 }
+
+module.exports = { getFunctionMap }

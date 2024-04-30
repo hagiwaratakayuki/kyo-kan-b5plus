@@ -9,7 +9,10 @@ const messageHandlers = require('./handlers')
 
 
 
-
+/**
+ * @typedef {{text:import('@line/bot-sdk').messagingApi.MessagingApiClient, blob:import('@line/bot-sdk').messagingApi.MessagingApiBlobClient}} lineClients
+* @typedef { import("../../types/responsetypes/basic").Message } message 
+* */
 class LineConnector extends Basic {
     handlers = messageHandlers
 
@@ -63,10 +66,7 @@ class LineConnector extends Basic {
         const controller = new StateController
 
 
-        /**
-         * @type {LineConnector}
-         */
-        const connecter = new LineConnector()
+
 
 
 

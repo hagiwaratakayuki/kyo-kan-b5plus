@@ -23,14 +23,14 @@ export type BaseOption = {
 
 export type Builder<OptionsType = BaseOption, CommonOptionsType = CommonOptions, PluginType = PlugIn> = (options: OptionsType, language?: string, functionMap?: { [k string:]: Function}) => PluginType
 
-export type StateResponse<ResponseType = any> = {
+export type StateResponse<ClientResponseType = any> = {
     state?: State
     subid?: number
     subkey?: string
     callback?: string //Funcname Use when state is wait. Default is "wait"
     subLoopInit?: any
     backTarget?: BackTarget
-    response?: ResponseType
+    clientResponse?: ClientResponseType
 
 
 }

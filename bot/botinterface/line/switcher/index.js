@@ -1,19 +1,15 @@
 
 
 const { Switcher } = require("../../switcher");
-/**
- * @typedef {import("../types/request").LineWebhookRequest} LineWebhookRequest
- */
-
+const { Handlers } = require("./handler")
 
 
 
 class LineSwitcher extends Switcher {
-
     constructor() {
-
-
+        this.handlerClasses = Handlers
     }
+
     /**
      * 
      * @param {import("@line/bot-sdk").WebhookRequestBody} request 
@@ -21,17 +17,19 @@ class LineSwitcher extends Switcher {
      * @param {import("@line/bot-sdk").messagingApi.MessagingApiBlobClient} blobClient  
      */
     async run(request, client, blobClient) {
+        const proms = []
         for (const event of request.events) {
             /**
-             * @type {LineWebhookRequest}
+             * @type {import("../types/request").LineWebhookRequest}
              */
             const _request = {
                 event,
                 client,
                 blobClient
             }
-            await super.run(_request)
+            proms.push(super.run(_request))
         }
+        return await Promise.all(proms)
 
     }
 

@@ -1,33 +1,22 @@
 import type { StateResponse } from "../../../kyo-kan/plugin_type";
-/*
-// todo move to workspace type
-export type BaseResponse<ResponseType> = {
-    title?: string
-    description?: string
-    responsType: ResponseType
-}
-*/
 
-export type BaseResponse<ResponseType> = {
-    responsType: ResponseType
-}
 export type BaseStateResponse<ResponseDifinition> = StateResponse<ResponseDifinition>
 
-export type ResponseTypeMessage = "message"
-export type MessageResponse<DataType = any> = BaseResponse<ResponseTypeMessage> & {
-    text: string
-    data: DataType
+export type StandardizedClientResponseCommon<ResponseTypeName = string> = {
+    responseType: ResponseTypeName
+    title: string
+    message: string
 }
-export type MessageStateResponse = StateResponse<MessageResponse>
+
+export type ResponseTypeMessage = "message"
+export type StandardizedMessageResponse = StandardizedClientResponseCommon<ResponseTypeMessage>
+export type StandardizedMessageStateResponse = StateResponse<StandardizedMessageResponse>
 
 
-export type ResponseTypeSelection = "selection"
-export type ResponseTypeYN = "YN"
+export type StandardizedResponseTypeSelection = "selection"
+export type StandardizedResponseTypeYN = "YN"
 
-
-
-
-export type SelectOptionBase<ValueType = string> = {
+export type StandardizedSelectOptionBase<ValueType = string> = {
     label: string
     value: ValueType
 
@@ -37,17 +26,20 @@ export type SelectOptionBase<ValueType = string> = {
 
 
 
-export type SelectionResponseBase<ResponseType, SelectOptionType = SelectOptionBase> = BaseResponse<ResponseType> & {
+export type StandardizedSelectionResponseBase<ResponseTypeName, SelectOptionType = StandardizedSelectOptionBase> = StandardizedClientResponseCommon<StandardizedClientResponseCommon> & {
 
     options: SelectOptionType[]
 
 }
-export type SelectionResponse<SelectOptionType = SelectOptionBase> = SelectionResponseBase<ResponseTypeSelection, SelectOptionType> & {
+
+export type StandardizedSelectionResponse<SelectOptionType = StandardizedSelectOptionBase> = StandardizedSelectionResponseBase<StandardizedResponseTypeSelection, SelectOptionType> & {
     isMultiple?: boolean
 }
-export type SelectionResponseYN<SelectOptionType = SelectOptionBase> = SelectionResponseBase<ResponseTypeYN, SelectOptionBase>
+export type StandardizedSelectionStateResponse<SelectOptionType = StandardizedSelectOptionBase> = StateResponse<StandardizedSelectionResponse<SelectOptionType>>
 
+export type StandardizedSelectionResponseYN<SelectOptionType = StandardizedSelectOptionBase> = StandardizedSelectionResponseBase<StandardizedResponseTypeYN, StandardizedSelectOptionBase>
 
+export type StandardizedSelectionStateResponseYN<SelectOptionType = StandardizedSelectOptionBase> = StateResponse<StandardizedSelectionResponse<SelectOptionType>>
 
 
 

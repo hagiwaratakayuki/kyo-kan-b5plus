@@ -1,27 +1,27 @@
 const { Loader } = require("../../kyo-kan/looploader/save_and_load")
 const { StateController } = require("../../kyo-kan/state_controller")
 
-
+// TODO change to class execute style
 class Basic {
+    handlers = {}
     constructor(controllerClass = StateController, loaderClass = Loader) {
         this._controllerClass = controllerClass;
         this._loaderClass = loaderClass
 
     }
     /**
-     * todo resumedataにある程度の型を付ける
-     * @template T
      * @param {any} request 
      * @param {any} resumeData
-     
-     * @param {T?} resultinit  
-     * @returns {Promise<T = Object>}
      */
-    async _run(request, resumeData, isStart = false, resultinit = null) {
+    async _run(request, resumeData, builderConfigMap, isStart, language = '', commonOptions = {}, functionMap = {}) {
+
+
+        const controller
+
         /**
          * @type {import("../types/responsetypes/basic").Messages}
          */
-        const messages = await this.controller.run(request, resumeData)
+        const messages = await controller.run(request, resumeData, isStart)
 
         const result = resultinit || {}
         for (const message of messages || []) {
@@ -36,9 +36,17 @@ class Basic {
      * @param {import("../types/responsetypes/basic").Message} message 
      */
     async _call(message, result) {
-        if (message?.responseType) {
-            result = (await this[message.responseType].call(this, message, result)) || result;
+
+        const handler = this.handlers[message.responseType]
+        if (!handler === true) {
+            throw "Response Type " + message.responseType + " does not exist"
         }
+        return await handler.exec(message, result);
+
+
+
+
+
         return result
     }
     /**
@@ -46,28 +54,21 @@ class Basic {
      * 
      * @param {boolean} isStart 
      */
-    buildController(builderConfigMap, isStart, language = '', commonOptions = {}, functionMap = {}, controllerClass = StateController, loaderClass = Loader) {
+    _buildController(loader) {
+
+        return new this._controllerClass(loader)
+
+
+    }
+    _buildLoader(builderConfigMap, isStart, language = '', commonOptions = {}, functionMap = {}) {
         /**
          * @type {import("../../kyo-kan/looploader/base_type").BasicLoader}
          */
-        const loader = new loaderClass(isStart, language, commonOptions, functionMap)
+        const loader = new this._loaderClass(isStart, language, commonOptions, functionMap)
         loader.buildersRegistration(builderConfigMap);
-
-        return new controllerClass(loader)
-
-
+        return loader
     }
-    buildAndRunController(builderConfigMap, isStart, jsonData, language = '', commonOptions = {}, functionMap = {}) {
 
-        /**
-         * @type {StateController}
-         */
-        const controller = this.buildController(builderConfigMap, isStart, language, commonOptions, functionMap)
-
-
-        return controller.run(request, jsonData, isStart)
-
-    }
 
 }
 module.exports = { Basic }

@@ -1,22 +1,24 @@
 /**
- * @typedef {import("../../../types/responsetypes/basic").ResponseTypeSelection} SelectionType
+ * @typedef {import("../../../types/responsetypes/basic").StandardizedResponseTypeSelection} SelectionType
  * 
- * @type {import("../../../types/responsetypes/utiltype").ConnectorHooks<SelectionType>}
+ * @type {import("../../types/responsehandler").LineResponseMessageHandlerType}
  */
 const SelectionHook = {
+    responseType: "selection",
     /**
      *
-     * @param {import("../../../types/responsetypes/line").LineSelectionStateResponse } pluginResponse 
+     * @param {import("../../../types/responsetypes/basic").StandardizedSelectionResponse } pluginResponse 
      */
-    selection(pluginResponse) {
+    exec: function (pluginResponse) {
         /**
          * @type {import("@line/bot-sdk").TemplateMessage}
          */
         const ret = {
             type: "template",
-            altText: pluginResponse.response.altText.slice(0, 400),
+            altText: pluginResponse.message.slice(0, 400),
             template: {
-                type: "buttons"
+                type: "buttons",
+
 
 
             }
@@ -37,10 +39,10 @@ const SelectionHook = {
         ret.template.text = text
         const actions = response.options.map(function (r) {
             /**
-             * @type {import("@line/bot-sdk").Action}
+             * @type {import("@line/bot-sdk").PostbackAction}
              */
             const ret = {
-                type: 'message',
+                type: 'postback',
                 label: r.label,
                 text: r.value
             }

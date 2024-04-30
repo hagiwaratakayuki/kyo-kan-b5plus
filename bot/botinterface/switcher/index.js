@@ -1,17 +1,9 @@
-const { Loader } = require("../../kyo-kan/looploader/save_and_load");
-const { StateController } = require("../../kyo-kan/state_controller");
+
 
 class Switcher {
-    /**
-     * 
-     * @param {[k: string]:Function} handlers 
-     * @param {*} loaderClass 
-     * @param {*} controllerClass 
-     */
-    constructor(handlers, loaderClass = Loader, controllerClass = StateController) {
-        this.handlers = handlers
-        this.controllerClass = controllerClass
-        this.loaderClass = loaderClass
+
+    constructor(handlers) {
+        this.handlerClasses = handlers
     }
     run(request) {
         const event = this.getEvent(request)
@@ -23,11 +15,19 @@ class Switcher {
      * @param {string} event 
      */
     async handleSwitch(event, ...args) {
-        if (event in this.handlers) {
-            return await this.handlers[event].call(this.handlers, ...args)
+        /**
+        * @type {import("../types/switcher/handler_class.js").SwitcherHandler}
+        */
+        const handler = this.getHandler(event, ...args)
+        return await handler.exec(...args) // TODO implement reswitch scenario
 
-        }
-        throw "Event " + event + ' does not exist in handler'
+
+
+
+    }
+    getHandler(event, ...args) {
+
+        return new this.handlerClasses[event](...args)
 
     }
     /**

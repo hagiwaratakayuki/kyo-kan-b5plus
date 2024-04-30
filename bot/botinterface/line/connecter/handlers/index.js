@@ -1,3 +1,7 @@
+const { BindHandler } = require('../../../connecter/handlerutil')
+
+
+
 const handlers = [
     require('./selection').SelectionHook,
     require('./YN').YNHook,
@@ -5,4 +9,4 @@ const handlers = [
 
 ]
 
-module.exports = Object({}, ...handlers)
+module.exports = BindHandler(handlers)

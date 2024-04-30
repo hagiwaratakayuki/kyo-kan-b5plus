@@ -1,14 +1,15 @@
 /**
- * @typedef {import("../../../types/responsetypes/basic").ResponseTypeYN} SelectionType
+ * @typedef {import("../../../types/responsetypes/basic").StandardizedResponseTypeYN} SelectionType
  * 
- * @type {import("../../../types/responsetypes/utiltype").ConnectorHooks<SelectionType>}
+ * @type {import("../../types/responsehandler").LineResponseMessageHandlerType}
  */
 const YNHook = {
+    responseType: "YN",
     /**
      *
      * @param {import("../../../types/responsetypes/line").LineSelectionStateResponse } pluginResponse 
      */
-    YN(pluginResponse) {
+    exec: function (pluginResponse) {
         /**
          * @type {import("@line/bot-sdk").TemplateMessage}
          */
