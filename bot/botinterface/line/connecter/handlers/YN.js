@@ -1,13 +1,9 @@
-/**
- * @typedef {import("../../../types/responsetypes/basic").StandardizedResponseTypeYN} SelectionType
- * 
- * @type {import("../../types/responsehandler").LineResponseMessageHandlerType}
- */
+
 const YNHook = {
     responseType: "YN",
     /**
      *
-     * @param {import("../../../types/responsetypes/line").LineSelectionStateResponse } pluginResponse 
+     * @param {import("../../../types/responsetypes/basic").StandardizedSelectionStateResponse} pluginResponse 
      */
     exec: function (pluginResponse) {
         /**
@@ -15,24 +11,19 @@ const YNHook = {
          */
         const ret = {
             type: "template",
-            altText: pluginResponse.response.altText.slice(0, 400),
+            altText: pluginResponse.clientResponse.message.slice(0, 400),
             template: {
                 type: "confirm"
 
 
             }
         }
-        /**
-         * @type {import("../../../types/responsetypes/line").LineSelectionResponseType}
-         */
-        const response = pluginResponse.response.responsType
-        let text = response.text
 
 
-        ret.template.text = text
+        ret.template.text = pluginResponse.clientResponse.title || pluginResponse.clientResponse.message
         const actions = response.options.map(function (r) {
             /**
-             * @type {import("@line/bot-sdk").Action}
+             * @type {import("@line/bot-sdk").MessageAction}
              */
             const ret = {
                 type: 'message',

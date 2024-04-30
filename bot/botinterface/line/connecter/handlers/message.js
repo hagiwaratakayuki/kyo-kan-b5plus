@@ -7,7 +7,7 @@ const MessageHook = {
     responseType: "mesage",
     /**
     *
-    * @param { } stateResponse 
+    * @param {import("../../../types/responsetypes/basic").StandardizedMessageStateResponse} stateResponse
     */
     exec: function (stateResponse) {
         /**
@@ -15,7 +15,7 @@ const MessageHook = {
          */
         const ret = {
             type: "text",
-            text: stateResponse.response.text
+            text: stateResponse.clientResponse.message
         }
         return ret
     }
