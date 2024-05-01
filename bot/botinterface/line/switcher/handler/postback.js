@@ -5,10 +5,10 @@ const { BasePattern } = require("./class_templates/base_pattern")
 
 
 
-class MessageHandler extends BasePattern {
+class PostbackHandler extends BasePattern {
     connectorClass = LineMessageConnector
 }
 
 
 
-module.exports = { MessageHandler } 
+module.exports = { PostbackHandler } 
