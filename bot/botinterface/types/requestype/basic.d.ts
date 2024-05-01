@@ -16,7 +16,12 @@ export type StandardizedRequestBasic<PlatformType = any, StandardizedRequestType
 export type StandardizedRequestText<PlatformType = any> = StandardizedRequestBasic<PlatformType, StandardizedRequestTypeText> & {
     text: string
 }
-export type StandardizedRequestLocation<PlatformType = any> = StandardizedRequestBasic<PlatformType, StandardizedRequestTypeLocation>
+export type StandardizedRequestLocation<PlatformType = any> = StandardizedRequestBasic<PlatformType, StandardizedRequestTypeLocation> & {
+    text?: string
+    adress?: string
+    latitude: number
+    longitude: number
+}
 
 export type StandardizedBlobLoadResponseErrorType = "fail" | "network" | "timeout"
 export type StandardizedBlobLoadResponse<PlatformDataType = any> = {
@@ -43,5 +48,7 @@ export type StandardizedRequestFile<PlatformType = any> = StandardizedRequestBlo
 export type StandardizedRequestImage<PlatformType = any> = StandardizedRequestBlobBasic<PlatformType, StandardizedRequestTypeImage>
 //  request must json seriararizable. for function map. see bot/kyo-kan/looploader/save_and_load.js
 export type StandardizedFunctionMap<BlobFunctionType = StanderdizedBlobFunction> = {
-    loadBlob: BlobFunctionType
+    loadBlob: {
+        exec: BlobFunctionType
+    }
 }

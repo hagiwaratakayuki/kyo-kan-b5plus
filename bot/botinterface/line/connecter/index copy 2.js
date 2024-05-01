@@ -44,18 +44,20 @@ class LineConnector extends Basic {
          */
         let standardizeRequest = {
             platform: request.event,
-            type: request.event.message.type,
+            type: message.type,
 
 
 
 
         }
+        standardizeRequest = Object.assign(this.parseEvent(request.event))
+
+        const controller = new StateController
 
 
 
 
-
-        const messages = await this._run(request, resumeData, builderConfigMap, isStart, '', options, _functionMap);
+        const messages = await this._run(request, resumeData, []);
         if (this.controller.isEnd()) {
             this.close()
         }
@@ -77,7 +79,41 @@ class LineConnector extends Basic {
         }
         return result
     }
+    /**
+     * 
+     * @param {import("@line/bot-sdk").WebhookEvent} lineEvent 
+     */
+    parseEvent(lineEvent) {
+        /**
+         * @type {import("@line/bot-sdk").EventMessage}
+         */
+        const message = lineEvent.message
+        if (message.type === "text") {
+            /**
+             * @type {import('../types/request').LineStandardizedRequestText}
+             */
+            const res = {
+                text: lineEvent.text
+            }
+            return res
+        }
+        if (message.type === "location") {
 
+            /**
+            * @type {import('../types/request').LineStandardizedRequestLocation}
+            */
+            const res = {
+                text: message.title,
+                latitude: message.latitude,
+                longitude: message.longitude,
+                adress: message.address
+            }
+            return res
+        }
+        return {}
+
+
+    }
 
 
 }

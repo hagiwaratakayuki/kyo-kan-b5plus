@@ -15,17 +15,24 @@ class Basic {
      */
     async _run(request, resumeData, builderConfigMap, isStart, language = '', commonOptions = {}, functionMap = {}) {
 
-
-        const controller
+        const loader = this._buildLoader(builderConfigMap, isStart, language, commonOptions, functionMap)
+        const controller = this._buildController(loader)
 
         /**
          * @type {import("../types/responsetypes/basic").Messages}
          */
         const messages = await controller.run(request, resumeData, isStart)
+        const result = await this._processMessages(messages)
 
-        const result = resultinit || {}
-        for (const message of messages || []) {
-            await this._call(message, result)
+
+        const isEnd = controller.isEnd()
+        controller.destroy()
+        return result, isEnd
+    }
+    async _processMessages(messages) {
+        const result = []
+        for (const message of messages) {
+            result.push((await this._call(message, result)))
 
 
         }

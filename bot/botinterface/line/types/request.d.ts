@@ -16,9 +16,6 @@ export type LineStandardizedRequestText = StandardizedRequestText<TextEventMessa
 export type LineStandardizedRequestLocation = StandardizedRequestLocation<LocationEventMessage>
 
 
-
-
-
 export type LineStandardizedRequestBlobCommon = StandardizedRequestBlobBasic<LineStandardizedPlatformCommon>
 export type LineStandardizedRequestAudio = StandardizedRequetAudio<AudioEventMessage>
 export type LineStandardizedRequestVideo = StandardizedRequestVideo<VideoEventMessage>
