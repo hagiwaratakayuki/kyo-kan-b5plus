@@ -24,20 +24,6 @@ export type StandardizedRequestLocation<PlatformType = any> = StandardizedReques
 }
 
 export type StandardizedBlobLoadResponseErrorType = "fail" | "network" | "timeout"
-export type StandardizedBlobLoadResponse<PlatformDataType = any> = {
-    isError?: boolean
-    errorType?: StandardizedBlobLoadResponseErrorType
-    contentType: string
-    body: BinaryData
-    platformData?: PlatformDataType
-
-
-}
-
-
-
-
-export type StanderdizedBlobFunction<PlatformDataType = any> = () => Promise<StandardizedBlobLoadResponse<PlatformDataType>>
 
 export type StandardizedRequestBlobBasic<PlatformType = any, StandardizedRequestTypeT = any> = StandardizedRequestBasic<PlatformType, StandardizedRequestTypeT> & {
     blob: BlobIdType
@@ -46,9 +32,3 @@ export type StandardizedRequetAudio<PlatformType = any> = StandardizedRequestBlo
 export type StandardizedRequestVideo<PlatformType = any> = StandardizedRequestBlobBasic<PlatformType, StandardizedRequestTypeVideo>
 export type StandardizedRequestFile<PlatformType = any> = StandardizedRequestBlobBasic<PlatformType, StandardizedRequestTypeFile>
 export type StandardizedRequestImage<PlatformType = any> = StandardizedRequestBlobBasic<PlatformType, StandardizedRequestTypeImage>
-//  request must json seriararizable. for function map. see bot/kyo-kan/looploader/save_and_load.js
-export type StandardizedFunctionMap<BlobFunctionType = StanderdizedBlobFunction> = {
-    loadBlob: {
-        exec: BlobFunctionType
-    }
-}

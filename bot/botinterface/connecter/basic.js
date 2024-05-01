@@ -19,7 +19,7 @@ class Basic {
         const controller = this._buildController(loader)
 
         /**
-         * @type {import("../types/responsetypes/basic").Messages}
+         * @type {import("../standized_protocol/responsetypes/basic").Messages}
          */
         const messages = await controller.run(request, resumeData, isStart)
         const result = await this._processMessages(messages)
@@ -40,7 +40,7 @@ class Basic {
     }
     /**
      * 
-     * @param {import("../types/responsetypes/basic").Message} message 
+     * @param {import("../standized_protocol/responsetypes/basic").Message} message 
      */
     async _call(message, ...args) {
 

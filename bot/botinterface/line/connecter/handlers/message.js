@@ -1,5 +1,5 @@
 /**
- * @typedef {import("../../../types/responsetypes/basic").ResponseTypeMessage} MessageType
+ * @typedef {import("../../../standized_protocol/responsetypes/basic").ResponseTypeMessage} MessageType
  * 
  * @type {import("../../types/responsehandler").LineResponseMessageHandlerType}
  */
@@ -7,7 +7,7 @@ const MessageHook = {
     responseType: "mesage",
     /**
     *
-    * @param {import("../../../types/responsetypes/basic").StandardizedMessageStateResponse} stateResponse
+    * @param {import("../../../standized_protocol/responsetypes/basic").StandardizedMessageStateResponse} stateResponse
     */
     exec: function (stateResponse) {
         /**

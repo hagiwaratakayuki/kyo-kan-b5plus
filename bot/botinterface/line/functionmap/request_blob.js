@@ -2,30 +2,30 @@
 const deepmerge = require("deepmerge");
 const path = require("path");
 const util = require('util');
+const { StandizedLoadBlob } = require("../../standized_protocol/function_map/blob_class");
 const NETWORK_ERROR = "Line:  Network Error"
 const TRANSCODING_FAILED = "Line: Blob Transcoding is Failed"
 const TIMEOUT = "Line; Blob Trasnscoding is Timeout"
 
 
-/**
- * @typedef {import("../types/request").LineStandardizedFunctionMap} FunctionMap
- * @typedef {import("../types/request").LineStandardizedBlobLoadResponse} Response
- * @typedef {import("./common_types").LineFunctionMap}
- *  
- * 
- * /
-/**
- * @type {import("./common_types").LineFunctionMap & {
-  *   _waitLineBlobProcess: () => Promise<import("../types/request").LineStandardizedBlobLoadResponse>
- * }} 
- */
-const FunctionMap = {
 
+class LineLoadBlob extends StandizedLoadBlob {
+    /**
+     * 
+     * @param {import("../types/function_map").LinePlatform} linePlatform 
+     */
+    constructor(linePlatform) {
+        /**
+         * @type {import("../types/function_map").LinePlatform}
+         */
+        this._linePlatform = linePlatform
 
-
-
-
-    loadBlob: async function () {
+    }
+    /**
+     * 
+     * @type {}
+     */
+    async exec() {
 
         try {
 
@@ -57,9 +57,8 @@ const FunctionMap = {
                 }
             }
         }
-    },
-
-    _waitLineBlobProcess: async function () {
+    }
+    _waitLineBlobProcess() {
         let limitCount = 30;
         let linePlatform = this._linePlatform
         let res, rej;
@@ -129,6 +128,7 @@ const FunctionMap = {
         return proms
     }
 }
+
 class BasicError extends Error {
 
     /**
@@ -234,4 +234,8 @@ async function _checkTranscoding(blobClient, messageId) {
     return "processing"
 
 }
-module.exports = FunctionMap
+/**
+ * @type {import("../../standized_protocol/function_map/basic").StandardizedLoadBlobKey}
+ */
+const name = "loadBlob"
+module.exports = { name, cls: LineLoadBlob }

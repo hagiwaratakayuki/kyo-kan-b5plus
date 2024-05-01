@@ -1,7 +1,7 @@
 
 /**
  * 
- * @param {Partial<import("../types/connector/handler").RespnseMessageHandlerType>[]} handlers 
+ * @param {Partial<import("../standized_protocol/connector/handler").RespnseMessageHandlerType>[]} handlers 
  */
 function BindHandler(handlers) {
     const ret = {}

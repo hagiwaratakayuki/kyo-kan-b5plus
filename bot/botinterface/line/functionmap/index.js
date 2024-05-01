@@ -6,15 +6,18 @@ const FunctionMapmList = [
 ]
 /**
  * 
- * @param {import("./common_types").LinePlatform} linePlatform
- * @returns {import("../../types/requestype/basic").StandardizedFunctionMap} 
+ * @param {import("../types/function_map").LinePlatform} linePlatform
+ * @returns {import("../../standized_protocol/requestype/basic").StandardizedFunctionMap} 
  */
 function getFunctionMap(linePlatform) {
-    /**
-     * @type {import("./common_types").LineFunctionMapPlatform}
-     */
-    const platformed = { _linePlatform: linePlatform }
-    return deepmerge.all(FunctionMapmList.concat[platformed])
+
+
+    return deepmerge.all(FunctionMapmList.map(function ({ name, cls }) {
+        const ret = []
+        ret[name] = new cls(linePlatform)
+        return ret
+
+    }))
 
 }
 

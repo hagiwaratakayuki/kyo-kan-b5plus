@@ -1,4 +1,4 @@
-const { SwitcherHandler } = require("../../../../types/switcher/handler_class");
+const { SwitcherHandler } = require("../../../../standized_protocol/switcher/handler_class");
 const { getLoopScenario } = require("../../../../loopscenario/get_loop_scenario");
 
 

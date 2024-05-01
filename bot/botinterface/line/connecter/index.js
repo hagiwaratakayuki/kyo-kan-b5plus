@@ -33,7 +33,7 @@ class LineBasicConnector extends Basic {
         this.client = request.client
 
         /**
-         * @type {import('../functionmap/common_types').LinePlatform}
+         * @type {import('../types/function_map').LinePlatform}
          */
         const _platform = {
             client: request.client,

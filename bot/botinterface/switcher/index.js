@@ -16,7 +16,7 @@ class Switcher {
      */
     async handleSwitch(event, ...args) {
         /**
-        * @type {import("../types/switcher/handler_class.js").SwitcherHandler}
+        * @type {import("../standized_protocol/switcher/handler_class.js").SwitcherHandler}
         */
         const handler = this.getHandler(event, ...args)
         return await handler.exec(...args) // TODO implement reswitch scenario

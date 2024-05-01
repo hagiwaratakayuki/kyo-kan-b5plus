@@ -3,7 +3,7 @@ const YNHook = {
     responseType: "YN",
     /**
      *
-     * @param {import("../../../types/responsetypes/basic").StandardizedSelectionStateResponse} pluginResponse 
+     * @param {import("../../../standized_protocol/responsetypes/basic").StandardizedSelectionStateResponse} pluginResponse 
      */
     exec: function (pluginResponse) {
         /**
