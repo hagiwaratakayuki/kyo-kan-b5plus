@@ -4,8 +4,8 @@
  *  
  * @typedef { import('../../../kyo-kan/plugin').StateResponse } StateResponse
  * 
- * @typedef import("../../../kyo-kan/looploader/base_type").BuilderConfig
- * @typedef { import("../../kyo-kan/looploader/save_and_load").Saver } Saver
+ * @typedef { import("../../../kyo-kan/looploader/base_type").BuilderCo fig} BuilderConfig
+ * @typedef { import("../../../kyo-kan/looploader/save_and_load.js").Saver } Saver
  * @typedef { { message: string } } MessageOption
  * @typedef { import("../../types/responsetypes/basic").Message } Message
  * @typedef { import("../../types/responsetypes/basic").CallbackMessage } CallbackMessage
@@ -22,7 +22,7 @@ function createrRegister(saver) {
 
 
     saver.builderRegistration(name, {
-        builder: createrBuilder
+        builder: builder
     })
 }
 
@@ -30,9 +30,9 @@ function createrRegister(saver) {
  * 
  * @param {any} options 
  */
-function createrBuilder(options) {
+function builder(options) {
     /**
-     * @type {import('../../../kyo-kan/plugin').PlugIn}
+     * @type {import('../kyo-kan/plugin').PlugIn}
      */
 
     const plugins = {
@@ -60,11 +60,14 @@ function createrBuilder(options) {
             return ret;
 
         },
+        _selection: function () {
+
+        },
         /**
          * 
          * @param {CreateRequest} request
          * @param {any} context
-         * @param {import('../../../kyo-kan/state_controller').StateController} controller
+         * @param {import('../kyo-kan/state_controller').StateController} controller
          * @returns {StateResponse}
          */
         select: function (request, context, controller) {

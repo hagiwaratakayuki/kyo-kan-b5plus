@@ -522,7 +522,7 @@ const Loader = class extends Brige {
      */
     buildStep(loopStep) {
         const builderConfig = this.builderConfigMap[loopStep.bID];
-        return builderConfig.builder(loopStep.o, this._language, this._functionMap)
+        return builderConfig.builder(loopStep.o, this._commonOptions, this._language, this._functionMap)
     }
     /**
     * 

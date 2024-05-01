@@ -21,7 +21,7 @@ export type BaseOption = {
     namespace: string
 }
 
-export type Builder<OptionsType = BaseOption, CommonOptionsType = CommonOptions, PluginType = PlugIn> = (options: OptionsType, language?: string, functionMap?: { [k string:]: Function}) => PluginType
+export type Builder<OptionsType = BaseOption, CommonOptionsType = CommonOptions, FunctionMapType = any, PluginType = PlugIn> = (options: OptionsType, CommonOptions: CommonOptionsType, language: string, functionMap: FunctionMapType) => PluginType
 
 export type StateResponse<ClientResponseType = any> = {
     state?: State

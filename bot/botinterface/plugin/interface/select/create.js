@@ -2,44 +2,20 @@
 
 /**
  *  
- * @typedef { import('../../../kyo-kan/plugin').StateResponse } StateResponse
- * 
- * @typedef { import("../../../kyo-kan/looploader/base_type.d.ts").BuilderCo fig} BuilderConfig
- * @typedef { import("../../../kyo-kan/looploader/save_and_load").Saver } Saver
- * @typedef { { message: string } } MessageOption
- * @typedef { import("../../types/responsetypes/basic").Message } Message
- * @typedef { import("../../types/responsetypes/basic").CallbackMessage } CallbackMessage
- * @typedef { import("../../create_request").CreateRequest <CallbackMessage> } CreateRequest
 
 * */
-const name = "example"
+const name = "select"
 
 /**
  * 
- * @param {Saver} saver 
+ * @type {import('../../../../kyo-kan/plugin_type').Builder<>} 
  */
-function createrRegister(saver) {
+function createrBuilder(options, commonOptions, language, functionMap) {
 
-
-    saver.builderRegistration(name, {
-        builder: builder
-    })
-}
-
-/**
- * 
- * @param {any} options 
- */
-function builder(options) {
-    /**
-     * @type {import('../kyo-kan/plugin').PlugIn}
-     */
-
-    const plugins = {
+    return {
         /**
-         * 
-         * @param {CreateRequest} request 
-         */
+         * @
+        */
         in: function (request, context, controller) {
             const pluginNames = controller.loader.getSubLoopDocuments('', ["title"]).map(function (r) {
                 return r.document.title
@@ -60,14 +36,11 @@ function builder(options) {
             return ret;
 
         },
-        _selection: function () {
-
-        },
         /**
          * 
          * @param {CreateRequest} request
          * @param {any} context
-         * @param {import('../kyo-kan/state_controller').StateController} controller
+         * @param {import('../../../../kyo-kan/state_controller').StateController} controller
          * @returns {StateResponse}
          */
         select: function (request, context, controller) {

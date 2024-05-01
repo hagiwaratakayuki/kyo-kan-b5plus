@@ -8,4 +8,4 @@ export type PluginCallbackProtocol<RequestType, ResponseType = any, RestParamete
 
 
 export type PlugInProtocol<RequestType, ResponseType = any, RestParameters = []> = PlugIn<PluginCallbackProtocol<RequestType, RestParameters>>
-export type PlugInBuilderProtocol<OptionsType = any, PluginType = PlugInProtocol<any>> = Builder<OptionsType, PluginType>
+export type PlugInBuilderProtocol<OptionsType = any, CommonOptionType = any, PluginType = PlugInProtocol<any>> = Builder<OptionsType, CommonOptionsType, PluginType>
