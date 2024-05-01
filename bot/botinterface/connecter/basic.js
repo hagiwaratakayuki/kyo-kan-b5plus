@@ -29,32 +29,32 @@ class Basic {
         controller.destroy()
         return result, isEnd
     }
-    async _processMessages(messages) {
-        const result = []
+    _processMessages(messages) {
+        const proms = []
         for (const message of messages) {
-            result.push((await this._call(message, result)))
+            proms.push(this._call(message))
 
 
         }
-        return result
+        return Promise.all(proms)
     }
     /**
      * 
      * @param {import("../types/responsetypes/basic").Message} message 
      */
-    async _call(message, result) {
+    async _call(message, ...args) {
 
         const handler = this.handlers[message.responseType]
         if (!handler === true) {
             throw "Response Type " + message.responseType + " does not exist"
         }
-        return await handler.exec(message, result);
+        return await handler.exec(message, ...args);
 
 
 
 
 
-        return result
+
     }
     /**
      * 

@@ -10,7 +10,7 @@ const messageHandlers = require('./handlers')
 
 
 
-class LineConnector extends Basic {
+class LineBasicConnector extends Basic {
     handlers = messageHandlers
 
     /**
@@ -29,6 +29,8 @@ class LineConnector extends Basic {
          * @type {import('@line/bot-sdk').EventMessage}
          */
         const message = request.event.message
+        this.replyToken = replyToken
+        this.client = request.client
 
         /**
          * @type {import('../functionmap/common_types').LinePlatform}
@@ -46,17 +48,15 @@ class LineConnector extends Basic {
             platform: request.event,
             type: request.event.message.type,
 
-
-
-
         }
+        standardizeRequest = Object.assign(standardizeRequest, this.parseEvent(request.event))
 
 
 
 
 
-        const messages = await this._run(request, resumeData, builderConfigMap, isStart, '', options, _functionMap);
-        if (this.controller.isEnd()) {
+        const [messages, isEnd] = await this._run(standardizeRequest, resumeData, builderConfigMap, isStart, '', options, _functionMap);
+        if (isEnd) {
             this.close()
         }
         return messages
@@ -66,20 +66,36 @@ class LineConnector extends Basic {
     close() {
 
     }
+    async _processMessages(messages) {
+        const lineMessages = await super._processMessages(messages)
+        await this.sendMessage(lineMessages)
+        return messages
+
+    }
     /**
      * 
-     * @param {import("../../types/responsetypes/basic").BaseStateResponse} message
-     * @param {any[]} result  
+     * @param {import('@line/bot-sdk').messagingApi.MessagingApiClient} client 
+     * @param {any[]} lineMessages
+     * 
+     *   
      */
-    async _call(message, result) {
-        if (message?.response?.responsType) {
-            result.push(await this.handlers[message.response.responsType](response))
+    sendMessage(lineMessages) {
+        /**
+         * @type {import('@line/bot-sdk').messagingApi.ReplyMessageRequest | import('@line/bot-sdk').messagingApi.PushMessageRequest}
+         *  */
+        const messageRequest = { messages: lineMessages }
+        const replyToken = this.replyToken
+        if (!replyToken === true) {
+
+            return client.pushMessage(messageRequest)
         }
-        return result
+        messageRequest.replyToken = replyToken
+        return client.replyMessage(messageRequest)
+
     }
 
 
 
 }
 
-module.exports = { LineConnector };
+module.exports = { LineBasicConnector };
