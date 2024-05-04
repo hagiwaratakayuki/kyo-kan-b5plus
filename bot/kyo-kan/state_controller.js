@@ -61,10 +61,10 @@ class StateController extends JSONSerializer {
         this._context = new contextClass(this._history)
 
         /**
-         * @type {string}
+         * @type {Array<string | false>}
          */
 
-        this._callback = undefined
+        this._callbacks = []
 
 
 
@@ -134,7 +134,7 @@ class StateController extends JSONSerializer {
         /**
          * @type {StateResponse}
          */
-        const response = await this._call(this._callback || "wait", now, request)
+        const response = await this._call(this._callbacks.pop() || "wait", now, request)
         responses.push(response);
 
         const _responses = await this._checkState(request, response);
@@ -302,7 +302,7 @@ class StateController extends JSONSerializer {
     }
     async returnFromSub(request, response, isAutoForward = true) {
 
-        return this._context.returnFromSub(request, response, isAutoForward = true);
+        return this._context.returnFromSub(request, response, isAutoForward = isAutoForward);
 
 
 
@@ -333,9 +333,9 @@ class StateController extends JSONSerializer {
         * @type {string[]}
         */
         const _hookEvents = hookEvents.concat(['returnFromSub'])
-        const isCallbackExist = !this._callback === false
-        if (isCallbackExist === true) {
-            _hookEvents.push(this._callback)
+        const callback = this._callbacks.pop()
+        if (callback !== false) {
+            _hookEvents.push(callback)
 
 
         }
@@ -376,6 +376,10 @@ class StateController extends JSONSerializer {
 
 
 
+    }
+    async callAs(bulderid, options, functionName, request) {
+        const plugins = this.loader.buildTarget(bulderid, options)
+        return await plugins[functionName].call(plugins, request, this._context, this, ...args)
     }
     continue(request, response, isAutoForward = true) {
         const stepIndex = this.loader.getRelativePosition("now", "start")
@@ -443,7 +447,10 @@ class StateController extends JSONSerializer {
          * @type {StateResponse}
          */
         const response = (await plugins[funcname].call(plugins, request, this._context, this, ...args)) || {}
-        this._callback = response.callback;
+        if (callState === "wait" || callState === "forwardToSub") {
+            this._callbacks.push(response.callback || false)
+        }
+        this._callbacks = response.callback;
         if (this.isDebug === true || callState === "in" || callState === "wait") {
             /**
              * @type {HistoryRecord}

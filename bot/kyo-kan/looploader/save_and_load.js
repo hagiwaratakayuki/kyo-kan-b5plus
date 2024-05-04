@@ -521,6 +521,12 @@ class Loader extends Brige {
         const builderConfig = this.builderConfigMap[loopStep.bID];
         return builderConfig.builder(loopStep.o, this._commonOptions, this._language, this._functionMap)
     }
+    buildTarget(builderId, options) {
+        const builderConfig = this.builderConfigMap[builderId];
+        return builderConfig.builder(options, this._commonOptions, this._language, this._functionMap)
+
+    }
+
     /**
      * 
      * @param {string[]?} names 
