@@ -17,12 +17,12 @@ class LineBasicConnector extends Basic {
      * 
      * @param {import('../types/request').LineWebhookRequest} request
      * @param {*} jsonData
-     * @param {boolean} isStart
+     * @param {boolean} isFirst
      * @param {import('../../../kyo-kan/looploader/base_type').BuilderConfigMap} builderConfigMap
      * @param {import('../../../kyo-kan/plugin_type').CommonOptions} options
      * @param {*} functionMap       
     */
-    async run(request, jsonData, isStart, builderConfigMap, options = {}, functionMap = {}) {
+    async run(request, jsonData, isFirst, builderConfigMap, options = {}, functionMap = {}) {
 
         const replyToken = request.event.replyToken;
         /**
@@ -55,7 +55,7 @@ class LineBasicConnector extends Basic {
 
 
 
-        const [messages, isEnd] = await this._run(standardizeRequest, resumeData, builderConfigMap, isStart, '', options, _functionMap);
+        const [messages, isEnd] = await this._run(standardizeRequest, jsonData, builderConfigMap, isFirst, '', options, _functionMap);
         if (isEnd) {
             this.close()
         }

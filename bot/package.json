@@ -21,13 +21,14 @@
     "deepmerge": "^4.3.1",
     "express": "^4.19.2",
     "handlebars": "^4.7.8",
-    "node-jose": "^2.2.0"
+    "node-jose": "^2.2.0",
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
     "mocha": "^10.4.0",
     "nodemon": "^3.1.0",
-    "typescript-json-schema": "^0.63.0",
-    "sinon": "^17.0.1"
+    "sinon": "^17.0.1",
+    "typescript-json-schema": "^0.63.0"
   },
   "engines": {
     "node": "20"

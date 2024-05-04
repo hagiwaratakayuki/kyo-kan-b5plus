@@ -271,15 +271,12 @@ class Saver extends Brige {
 
 
 
-/**
- *  @implements {import('./base_type.d.ts').BasicLoader }
- * 
- */
-const Loader = class extends Brige {
+
+class Loader extends Brige {
     /**
      * 
      * @param {boolean} isFirst 
-     * @param {string} language
+     * @param {string} i18n
      * @param {import('../plugin_type').CommonOptions} commonOptions  
      * @param {any} functionMap
      * @returns 
@@ -334,7 +331,7 @@ const Loader = class extends Brige {
         /**
          * @type {Array<keyof Loader>}
          */
-        const filters = ['_cache', '_cacheKey', '_isFirst', '_i18n', '_language'];
+        const filters = ['_cache', '_cacheKey', '_isFirst', '_i18n', '_i18n'];
         return super._toJSON(filters);
     }
     /**
@@ -525,14 +522,25 @@ const Loader = class extends Brige {
         return builderConfig.builder(loopStep.o, this._commonOptions, this._language, this._functionMap)
     }
     /**
+     * 
+     * @param {string[]?} names 
+     */
+    getBuilderDocuments(names) {
+        const _names = names || this.builderConfigMap
+    }
+
+
+    /**
     * 
    
-    * @param {string} language 
+ 
     * @param {DocumentPropertis?} filter
     * @param {string} [subLoopKey=''] 
     * @returns {SubLoopDocumentList}  
     */
-    getSubLoopDocuments(language, filter = ["description", "title"], subLoopKey = '') {
+    getSubLoopDocuments(filter = ["description", "title"], subLoopKey = '') {
+
+
         // @ts-ignore
         const subLoopsCount = this._getLoopStep().s[subLoopKey].stp.length
         /**
@@ -549,28 +557,28 @@ const Loader = class extends Brige {
     /**
      * 
      * @param {any} subid 
-     * @param {string} language 
      * @param {DocumentPropertis?} filter
      * @param {string} [subLoopKey=''] 
      * @returns {Document}  
      */
-    getSubLoopDocument(subid, language, filter = ["description", "title"], subLoopKey = '') {
-        return this.getDocument(subid, language, filter, this.loopStepPath.concat([subid]), this.loopStepKeyPath.concat([subLoopKey]))
+    getSubLoopDocument(subid, filter = ["description", "title"], subLoopKey = '') {
+        return this.getDocument(subid, filter, this.loopStepPath.concat([subid]), this.loopStepKeyPath.concat([subLoopKey]))
     }
     /**
-     * @param {string} language
      * @param {string[]} [filter=[]]  
      * @param {number[]?} loopStepPath 
      * @param {string[]?} loopStepKeyPath 
      * @returns {Document}
      */
-    getDocument(language, filter = ["description", "title"], loopStepPath, loopStepKeyPath) {
+    getDocument(filter = ["description", "title"], loopStepPath, loopStepKeyPath) {
         const { builderID, options } = this._getLoopStep(loopStepPath, loopStepKeyPath);
-        return this._getDocument(language, filter, builderID, options)
+        return this._getDocument(filter, builderID, options)
     }
-    _getDocument(language, filter = ["description", "title"], builderID, options) {
+    _getDocument(filter = ["description", "title"], builderID, options) {
 
-
+        /**
+         * @type {Document}
+         */
         const document = {}
         const { documentLoader } = this.builderConfigMap[builderID]
 
@@ -579,7 +587,7 @@ const Loader = class extends Brige {
 
         }
         for (const property of filter) {
-            document[property] = documentLoader[property].call(language, options)
+            document[property] = documentLoader[property].call(this._language, options)
         }
         return document;
 

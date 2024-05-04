@@ -1,9 +1,9 @@
 import { Basic } from "../../bot2bot/connecter/basic";
-import { Builder, PlugIn } from "../plugin_type";
+import { Builder } from "../plugin_type";
 
 
 
-export type i18nFunc<T = string> = (language: string, options: any) => T
+export type i18nFunc<T = string> = (lnaguage: string, options: any) => T
 
 export type Schema = any // json schema
 export type ShareValues = string[] // json path for Schema
@@ -13,15 +13,9 @@ export type ShareValuesMap = {
     loop: ShareValues
 }
 
-export type SelfAndUse = {
-    self: string
-    use?: string
-
-}
-
 export type DocumentLoader {
-    title: i18nFunc
-    description: i18nFunc
+    title: i18nFunc<string>
+    description: i18nFunc<string>
     schema?: Schema
     shareValuesMap?: ShareValuesMap
 
@@ -70,32 +64,3 @@ export type SubLoopDocumentList = { subid: any, document: Document }[]
 
 export type RelativeLoop = "now" | "super" | "top";
 export type RelativeLoopMovement = number | "end" | "start"
-export interface BasicLoader {
-
-
-    positionState: PositionState
-    resetPosition(): void
-    getStepIndex(): LoopStepIndex
-    setStepIndex(loopStepIndex: LoopStepIndex): void
-    forward(): PlugIn
-    back(): PlugIn
-    backAll(): PlugIn
-    isIndexEqual(indexA: LoopStepIndex, indexB: LoopStepIndex): boolean
-
-    forwardToSub(subid?: number, subkey?: string): PlugIn
-    getNow(): PlugIn
-    buildStep(loopStep: LoopStep): PlugIn
-    getStartStep(): PlugIn[]
-    getSubLoopDocuments(language: string, filter?: DocumentPropertis): SubLoopDocumentList
-    getSubLoopDocument(subid: any, language: string, filter?: DocumentPropertis): Document
-    isTopLoop(): boolean
-    getSubKey(): any
-    getSubId(): any
-    getRelativePosition(loop: RelativeLoop, move: RelativeLoopMovement): any
-
-
-
-
-}
-
-

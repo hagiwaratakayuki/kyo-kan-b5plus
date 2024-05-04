@@ -1,6 +1,7 @@
+import { Builder } from "../../../kyo-kan/plugin_type"
 import type { PlugInBuilderProtocol, PlugInProtocol } from "../../../kyo-kan/protocol"
-import { StandizedLoadBlob } from "../function_map/blob_class"
-StandardizedFunctionMa
+import type { StandardizedFunctionMap } from "../function_map/basic"
 
 
-export type StandardizedPlugInBuilderProtocol = PlugInBuilderProtocol
+
+export type StandardizedPlugInBuilderProtocol<OptionsType = any, CommonOptionsType = any, FuntionMapType = StandardizedFunctionMap> = Builder<OptionsType, CommonOptionsType, FunctionMap, PlugInProtocol> 

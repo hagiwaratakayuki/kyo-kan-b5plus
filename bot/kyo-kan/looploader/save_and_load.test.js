@@ -3,13 +3,13 @@ const { Saver, Loader } = require('./save_and_load')
 /**
  * @template O
  * @template I
- * @typedef {{option:O, language:string, i18n:I}} mockRequest<O, I>
+ * @typedef {{option:O, i18n:string, i18n:I}} mockRequest<O, I>
  */
 
 describe('Save and Load', function () {
 
     it('Basic Flow', function () {
-        let mockArg = { options: null, language: null, i18n: null }
+        let mockArg = { options: null, i18n: null, i18n: null }
         /**
          * 
          * @type {import('../plugin').Builder}
@@ -17,7 +17,7 @@ describe('Save and Load', function () {
         function mockBulder(options, language, i18n) {
             return {
                 in: function () {
-                    return { options, language, i18n }
+                    return { options, language, language }
                 }
             }
         }

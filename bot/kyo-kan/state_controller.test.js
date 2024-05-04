@@ -23,7 +23,7 @@ describe('Executer', function () {
         let callBackName;
         let inCount = 0;
         /**
-         * @type {{[k in import('./state_emitter').State]:{options: any, language: any, i18n:any}}}
+         * @type {{[k in import('./state_emitter').State]:{options: any, i18n: any, i18n:any}}}
          */
         let pluginArgs = {};
         /**
@@ -54,7 +54,7 @@ describe('Executer', function () {
          * 
          */
         function mockBulder(options, language, i18n) {
-            mockBulderArgs = { options, language, i18n };
+            mockBulderArgs = { options, language, language };
             const isWait = options.isWait
             const callback = options.callback
 
@@ -69,7 +69,7 @@ describe('Executer', function () {
                         ret.state = "wait"
                         ret.callback = callback
                     }
-                    pluginArgs['in'] = { options, language, i18n }
+                    pluginArgs['in'] = { options, language, language }
                     inCount++
                     return ret;
 
@@ -77,24 +77,24 @@ describe('Executer', function () {
                 },
                 forwardOut: function (...args) {
                     outArgs = args;
-                    pluginArgs['out'] = { options, language, i18n }
+                    pluginArgs['out'] = { options, language, language }
                     return { mode: "forwardOut" };
                 },
                 wait: function (...args) {
                     callBackName = "wait"
-                    pluginArgs['wait'] = { options, language, i18n }
+                    pluginArgs['wait'] = { options, language, language }
                     return waitfunc(args)
 
                 },
                 waitTest: function (...args) {
                     callBackName = "waitTest"
-                    pluginArgs['wait'] = { options, language, i18n }
+                    pluginArgs['wait'] = { options, language, language }
                     return waitfunc(args)
 
                 },
                 returnFromSub: function (...args) {
                     isReturnFromSubCalled = true
-                    pluginArgs['returnFromSub'] = { options, language, i18n }
+                    pluginArgs['returnFromSub'] = { options, language, language }
                     return { mode: "returnFromSub" }
                 }
 
@@ -187,7 +187,7 @@ describe('Executer', function () {
         let callBackName;
         let inCount = 0;
         /**
-         * @type {{[k in import('./state_emitter').State]:{options: any, language: any, i18n:any}}}
+         * @type {{[k in import('./state_emitter').State]:{options: any, i18n: any, i18n:any}}}
          */
         let pluginArgs = {};
         /**
@@ -222,7 +222,7 @@ describe('Executer', function () {
          * @type {PluginBuilderProtocol}
          */
         function mockTestBulder(options, language, i18n) {
-            mockBulderArgs = { options, language, i18n };
+            mockBulderArgs = { options, language, language };
 
 
             return {
@@ -250,12 +250,12 @@ describe('Executer', function () {
                 },
                 forwardOut: function (...args) {
                     outArgs = args;
-                    pluginArgs['out'] = { options, language, i18n }
+                    pluginArgs['out'] = { options, language, language }
                     return { mode: "forwardOut" };
                 },
                 returnFromSub: function (...args) {
                     isReturnFromSubCalled = true
-                    pluginArgs['returnFromSub'] = { options, language, i18n }
+                    pluginArgs['returnFromSub'] = { options, language, language }
 
                     return { mode: "returnFromSub" }
                 }

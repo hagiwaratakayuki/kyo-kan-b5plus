@@ -7,31 +7,40 @@
 const name = "select"
 
 /**
- * @param {import('../../../standized_protocol/plugin/create').StandardizedCreateFunctionMap} functionMap 
- *  
+ * @param {{id:any}} options 
+ * @param {import('../../../standized_protocol/function_map/basic').StandardizedFunctionMap} functionMap 
  */
 function createrBuilder(options, commonOptions, language, functionMap) {
 
     const ret = {
+        'functionMap': functionMap,
+        'options': options,
         /**
          * @type {import('../../../../kyo-kan/protocol').PluginCallbackProtocol}
         */
         in: function (request, context, stateController) {
 
-
+            const id = options.id
+            const messageKey = options.messageKey || "message"
+            const titleKey = options.titleKey || "title"
             const pluginNames = stateController.loader.getSubLoopDocuments('', ["title"]).map(function (r) {
-                return r.document.title
+                return { lavel: r.document.title.use, value: r.subid }
 
             })
             /**
-             * @type {Sta}
-             */
+             * @type {import('../../../standized_protocol/responsetypes/basic').StandardizedSelectionStateResponse}
+             * */
             const ret = {
-                state: "keep",
+                state: "wait",
                 callback: "select",
-                responseType: "selection",
-                text: "select one",
-                selectOptions: pluginNames
+                clientResponse: {
+                    message: this.functionMap.i18n(language, id, messageKey),
+                    title: this.functionMap.i18n(language, id, t)
+
+                }
+
+
+
 
 
             };

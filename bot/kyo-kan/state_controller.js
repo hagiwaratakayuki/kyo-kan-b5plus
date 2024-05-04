@@ -23,7 +23,7 @@ const stateKeys = ["start", "in", "wait", "forwardOut", "forwardToSub", "returnF
 
 class StateController extends JSONSerializer {
     /**
-     * @typedef {import('./looploader/base_type').BasicLoader} BasicLoader
+     * @typedef {import('./looploader/save_and_load').Loader} BasicLoader 
      * @param {BasicLoader} loader 
      * @param {Function} contextClass  
      * @param {Function} emitterClass

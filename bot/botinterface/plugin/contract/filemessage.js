@@ -10,9 +10,9 @@ function GenerateReader(namespace, directory = defaultDirectory) {
 /**
  * @this {{namespace:string}}
  * @param {string} name 
- * @param {string} i18n 
+ * @param {string} language 
  */
-function contract(name, i18n = 'ja') {
+function contract(name, language = 'ja') {
     const filename = path.join(this.namespace, name + '.' + i18n)
     return fs.readFile(filename, { encoding: 'utf-8' })
 }
