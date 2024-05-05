@@ -9,6 +9,8 @@ const { getSubLoopType, getSubLoopTypeId } = require('./loop_type');
  * @typedef {import('./base_type').Document} Document
  * @typedef {import('./base_type').SubLoopDocumentList} SubLoopDocumentList
  * @typedef {import('./base_type').LoopStep } LoopStep
+ * @typedef {import('./base_type').LoopState<LoopStep>} LoopState
+ * 
  * @typedef {Pick<LoopStep, 's'> | LoopStep} RouteStep
  * @typedef { [number[], string[]] } LoopStepPathPaire
 */
@@ -49,13 +51,30 @@ class Brige extends JSONSerializer {
     _getInitialRoot() {
         return {
             s: {
-                '': {
-                    t: '0',
-                    stp: []
-
-                }
+                '': this._getInitialSubLoop()
             }
         };
+    }
+    /**
+     * @returns {LoopStep}
+     */
+    _getInitialSubLoop() {
+        return {
+            t: '0',
+            stp: []
+
+        }
+    }
+    /**
+     * 
+     * @returns {LoopStep}
+     */
+    _getInitialLoopStep(builderID, options) {
+        return {
+            o: options,
+            bID: builderID,
+            filt: []
+        }
     }
 
     resetPosition() {
@@ -218,11 +237,22 @@ class Saver extends Brige {
          * @type {RouteStep}
          */
 
-        const step = { bID: builderID, o: _options, s: {} }
+        const step = this._getInitialLoopStep(builderID, _options)
         superLoop.s[this.loopStepKeyPath[this.loopStepKeyPath.length - 1]].stp.push(step)
 
 
 
+    }
+    addStepFilter(builderID, options) {
+        const _options = this._mergeOptions(builderID, options);
+        /**
+         * @type {LoopStep}
+         */
+        const loopStep = this._getLoopStep()
+        loopStep.filt.push({
+            o: _options,
+            bID: builderID
+        })
     }
     _mergeOptions(builderID, options) {
         const { options: basicOptions, mergeFunction = this._defaultMerge } = this.builderConfigMap[builderID]
@@ -496,7 +526,7 @@ class Loader extends Brige {
      */
     getNow(isIgnoreCache = false) {
         const loopStep = this._getLoopStep();
-        if (this._cacheKey === loopStep) {
+        if (!isIgnoreCache && this._cacheKey === loopStep) {
             return this._cache
 
         }
@@ -519,7 +549,16 @@ class Loader extends Brige {
      */
     buildStep(loopStep) {
         const builderConfig = this.builderConfigMap[loopStep.bID];
-        return builderConfig.builder(loopStep.o, this._commonOptions, this._language, this._functionMap)
+        const plugIns = builderConfig.builder(loopStep.o, this._commonOptions, this._language, this._functionMap)
+        const filters = []
+        for (const filterConfig of loopStep.filt) {
+            const _filterBuilderConfig = this.builderConfigMap[filterConfig.bID]
+            const filterPlugins = _filterBuilderConfig.builder(filterConfig.o, this._commonOptions, this._language, this._functionMap)
+            filters.push(filterPlugins)
+        }
+        return plugIns, filters
+
+
     }
     buildTarget(builderId, options) {
         const builderConfig = this.builderConfigMap[builderId];

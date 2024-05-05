@@ -36,15 +36,21 @@ export type BuilderConfig = {
 
 export type BuilderConfigMap = { [builderID: string]: BuilderConfig }
 export type SubLoopType = "selection" | "loop"
+
+
 export type LoopState<T> = {
     t: string
     stp: T[]
 
+
 }
-export type LoopStep = {
+export type StepConfig = {
     bID: string
     o: any
+}
+export type LoopStep = StepConfig & {
     s: Record<string, LoopState<LoopStep>>
+    filt: StepConfig[]
 
 }
 
