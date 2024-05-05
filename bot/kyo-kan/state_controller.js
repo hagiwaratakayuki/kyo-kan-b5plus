@@ -425,11 +425,11 @@ class StateController extends JSONSerializer {
     /**
      * 
      * @param {State | string} funcname
-     * @param {PlugIns} plugins 
+     * @param {[PlugIns, any[]]} plugins 
      * @param {boolean} [isIgnoreNotExist=false] 
      * @param {*} args  
      */
-    async _call(funcname, plugins, request, isIgnoreNotExist = false, args = []) {
+    async _call(funcname, now, request, isIgnoreNotExist = false, args = []) {
         if (isIgnoreNotExist === true && funcname in plugins === false) {
             return
         }
@@ -442,15 +442,15 @@ class StateController extends JSONSerializer {
             context = merge({}, this._context.toJSON())
         }
 
-
+        const [plugins, filters] = now
+        const intercepter = new Intercepter(plugins, filters, funcname, request, this._context, this, ...args)
         /**
          * @type {StateResponse}
          */
-        const response = (await plugins[funcname].call(plugins, request, this._context, this, ...args)) || {}
+        const response = (await intercepter.exec()) || {}
         if (callState === "wait" || callState === "forwardToSub") {
             this._callbacks.push(response.callback || false)
         }
-        this._callbacks = response.callback;
         if (this.isDebug === true || callState === "in" || callState === "wait") {
             /**
              * @type {HistoryRecord}
@@ -476,3 +476,45 @@ class StateController extends JSONSerializer {
 }
 
 module.exports = { StateController };
+/**
+ * 
+ * @param {*} plugins 
+ * @param {Array} filters 
+ * @param {*} args 
+ */
+class Intercepter {
+    constructor(plugins, filters, funcname, ...args) {
+
+        this.index = 0;
+        this.lenFilters = filters.length
+        this.plugins = plugins
+        this.callback = funcname
+        this.args = args
+        this._next = this._next.bind(this)
+    }
+    async _next() {
+
+        while (this.index < this.lenFilters) {
+            const now = this.plugins[index]
+            this.index += 1;
+            if (callback in now) {
+                return await now[callback].call(this._next, ...this.args)
+            }
+        }
+
+        return await plugins[callback].call(...this.args)
+    }
+    async exec() {
+        const ret = await this._next()
+        this._next = null;
+        return ret;
+    }
+
+
+}
+
+
+
+
+
+
