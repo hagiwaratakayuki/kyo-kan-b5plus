@@ -58,9 +58,9 @@ class Brige extends JSONSerializer {
     /**
      * @returns {LoopStep}
      */
-    _getInitialSubLoop() {
+    _getInitialSubLoop(subLoopType = "loop") {
         return {
-            t: '0',
+            t: getSubLoopTypeId(subLoopType),
             stp: []
 
         }
@@ -73,7 +73,8 @@ class Brige extends JSONSerializer {
         return {
             o: options,
             bID: builderID,
-            filt: []
+            filt: [],
+            s: {}
         }
     }
 
@@ -273,10 +274,7 @@ class Saver extends Brige {
     startSubLoop(subLoopType, subLoopKey = '') {
         const step = this._getLoopStep()
         if (subLoopKey in step.s === false) {
-            step.s[subLoopKey] = {
-                t: getSubLoopTypeId(subLoopType || "loop"),
-                stp: []
-            }
+            step.s[subLoopKey] = this._getInitialSubLoop(subLoopType)
         }
 
         this.loopStepPath.push(-1)
@@ -556,7 +554,7 @@ class Loader extends Brige {
             const filterPlugins = _filterBuilderConfig.builder(filterConfig.o, this._commonOptions, this._language, this._functionMap)
             filters.push(filterPlugins)
         }
-        return plugIns, filters
+        return [plugIns, filters]
 
 
     }

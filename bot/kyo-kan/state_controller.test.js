@@ -173,6 +173,7 @@ describe('Executer', function () {
         let mockRequest = { isForwardToSub: true, subid: 1 }
 
         res = await controlller.run(mockRequest);
+
         assert(pluginArgs['in'].options.selectoption, 1)
         assert(res[0].state, 'returnFromSub');
         assert(res[1].state, 'forwardOut');

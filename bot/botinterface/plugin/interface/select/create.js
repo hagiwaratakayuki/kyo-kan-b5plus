@@ -7,6 +7,7 @@
 const name = "select"
 
 /**
+ * 
  * @param {import('../../../standized_protocol/plugin/create').StandardizedCreateFunctionMap} functionMap 
  *  
  */

@@ -341,7 +341,7 @@ class StateController extends JSONSerializer {
         }
 
         for (const hookEvent of _hookEvents) {
-            const hookResponse = await this._call(hookEvent, request, now, stateKeys.indexOf(hookEvent) !== -1)
+            const hookResponse = await this._call(hookEvent, now, request, stateKeys.indexOf(hookEvent) !== -1)
             if (!hookResponse === false) {
                 responses.push(hookResponse)
                 if (!hookResponse.state === false) {
@@ -430,6 +430,7 @@ class StateController extends JSONSerializer {
      * @param {*} args  
      */
     async _call(funcname, now, request, isIgnoreNotExist = false, args = []) {
+        const [plugins, filters] = now
         if (isIgnoreNotExist === true && funcname in plugins === false) {
             return
         }
@@ -442,7 +443,7 @@ class StateController extends JSONSerializer {
             context = merge({}, this._context.toJSON())
         }
 
-        const [plugins, filters] = now
+
         const intercepter = new Intercepter(plugins, filters, funcname, request, this._context, this, ...args)
         /**
          * @type {StateResponse}
@@ -488,7 +489,7 @@ class Intercepter {
         this.index = 0;
         this.lenFilters = filters.length
         this.plugins = plugins
-        this.callback = funcname
+        this.funcname = funcname
         this.args = args
         this._next = this._next.bind(this)
     }
@@ -497,12 +498,12 @@ class Intercepter {
         while (this.index < this.lenFilters) {
             const now = this.plugins[index]
             this.index += 1;
-            if (callback in now) {
-                return await now[callback].call(this._next, ...this.args)
+            if (this.funcname in now) {
+                return await now[this.funcname].call(now, this._next, ...this.args)
             }
         }
 
-        return await plugins[callback].call(...this.args)
+        return await this.plugins[this.funcname].call(this.plugins, ...this.args)
     }
     async exec() {
         const ret = await this._next()

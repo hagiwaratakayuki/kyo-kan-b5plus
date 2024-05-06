@@ -9,10 +9,11 @@ const subLoopTypes = ["loop", "selection"]
 
 /**
  * 
- * @param {SubLoopType} subloopType 
+ * @param {SubLoopType?} subloopType 
  */
 function getSubLoopTypeId(subloopType) {
-    return String(subLoopTypes.indexOf(subloopType))
+    const _subLoopType = subloopType || "loop"
+    return String(subLoopTypes.indexOf(_subLoopType))
 
 }
 
