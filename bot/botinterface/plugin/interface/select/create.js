@@ -14,16 +14,18 @@ const name = "select"
 function createrBuilder(options, commonOptions, language, functionMap) {
 
     const ret = {
+        options,
+        commonOptions,
+        language,
+        functionMap,
+
         /**
          * @type {import('../../../../kyo-kan/protocol').PluginCallbackProtocol}
         */
         in: function (request, context, stateController) {
 
 
-            const pluginNames = stateController.loader.getSubLoopDocuments('', ["title"]).map(function (r) {
-                return r.document.title
 
-            })
             /**
              * @type {Sta}
              */

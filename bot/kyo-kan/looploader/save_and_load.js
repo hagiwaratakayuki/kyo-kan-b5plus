@@ -96,6 +96,7 @@ class Brige extends JSONSerializer {
         this.loopStepKeyPath = [].concat(loopStepKeyPath)
 
     }
+
     /**
     * 
     * @param {BuilderConfigMap} builderConfigMap 
@@ -203,12 +204,25 @@ class Brige extends JSONSerializer {
         const superLoopStep = this._getSuperLoopStep(_loopStepPath.slice(0, -1), _loopStepKeyPath.slice(0, -1))
         return superLoopStep.s[_loopStepKeyPath[_loopStepKeyPath.length - 1]]
     }
+    /**
+     * 
+     * @param {LoopStep[]} loopSteps 
+     */
+    insertLoop(loopSteps, loopStepPath, loopStepKeyPath) {
+        const _loopStepPath = loopStepPath || this.loopStepPath
+        const _loopStepKeyPath = loopStepKeyPath || this.loopStepKeyPath
+        const superLoopStep = this._getSuperLoopStep(_loopStepPath.slice(0, -1), _loopStepKeyPath.slice(0, -1))
+        superLoopStep.s[_loopStepKeyPath[_loopStepKeyPath.length - 1]].stp.splice(_loopStepKeyPath[_loopStepPath.length - 1], 0, ...loopSteps)
+
+    }
 
 
 
 
 
 }
+
+
 class Saver extends Brige {
     /**
      * 
@@ -359,7 +373,7 @@ class Loader extends Brige {
         /**
          * @type {Array<keyof Loader>}
          */
-        const filters = ['_cache', '_cacheKey', '_isFirst', '_i18n', '_i18n'];
+        const filters = ['_cache', '_cacheKey', '_isFirst', '_language'];
         return super._toJSON(filters);
     }
     /**
@@ -520,7 +534,7 @@ class Loader extends Brige {
     }
     /**
      * @param {boolean} isIgnoreCache 
-     * @returns {import('../plugin_type').PlugIn}
+     * @returns {[import('../plugin_type').PlugIn,import('../plugin_type').PlugIn ]}
      */
     getNow(isIgnoreCache = false) {
         const loopStep = this._getLoopStep();
@@ -543,7 +557,8 @@ class Loader extends Brige {
     }
     /**
      * 
-     * @param {import('./base_type').LoopStep} loopStep 
+     * @param {import('./base_type').LoopStep} loopStep
+     * @returns {any} 
      */
     buildStep(loopStep) {
         const builderConfig = this.builderConfigMap[loopStep.bID];

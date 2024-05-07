@@ -29,8 +29,8 @@ function FilterGenerater(filterConfigures) {
 /**
  * @this {{isCatchAll?:false | Function, filters:Object<string, Function>}}
  */
-function builder(commonOptions, options, functionMap) {
-    const core = { commonOptions, options, functionMap }
+function builder(options, commonOptions, language, functionMap) {
+    const core = { commonOptions, options, language, functionMap }
     const handler = {
         has(target, key) {
             if (this.isCatchAll !== false) {
@@ -58,6 +58,6 @@ function builder(commonOptions, options, functionMap) {
 
 
 
-    const proxy1 = new Proxy(mons
+
 
 }
