@@ -1,6 +1,6 @@
 import type { webhook, AudioEventMessage, EventMessage, FileEventMessage, LocationEventMessage, TextEventMessage, VideoEventMessage, messagingApi } from "@line/bot-sdk"
-import type { StandardizedBlobLoadResponse as StandardizedBlobLoadResponse, StandardizedRequestBasic, StandardizedRequestBlobBasic, StandardizedRequestFile, StandardizedRequestLocation, StandardizedRequestText, StandardizedRequestVideo, StandardizedRequetAudio } from "../../standized_protocol/requestype/basic"
-import type { StandardizedFunctionMap, StanderdizedBlobFunction } from "../../standized_protocol/function_map/basic"
+import type { StandardizedBlobLoadResponse as StandardizedBlobLoadResponse, StandardizedRequestBasic, StandardizedRequestBlobBasic, StandardizedRequestFile, StandardizedRequestLocation, StandardizedRequestText, StandardizedRequestVideo, StandardizedRequetAudio } from "../../../botinterface/standized_protocol/requestype/basic"
+import type { StandardizedFunctionMap, StanderdizedBlobFunction } from "../../../botinterface/standized_protocol/function_map/basic"
 
 export type LineWebhookRequest = {
     event: webhook.Event

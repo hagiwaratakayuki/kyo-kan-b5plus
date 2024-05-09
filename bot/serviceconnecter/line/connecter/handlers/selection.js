@@ -6,7 +6,7 @@ const SelectionHook = {
     responseType: "selection",
     /**
      *
-     * @param {import("../../../standized_protocol/responsetypes/basic").StandardizedSelectionStateResponse} pluginResponse 
+     * @param {import("../../../../botinterface/standized_protocol/responsetypes/basic").StandardizedSelectionStateResponse} pluginResponse 
      */
     exec: function (pluginResponse) {
 

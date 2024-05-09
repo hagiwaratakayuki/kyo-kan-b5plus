@@ -7,7 +7,7 @@ const MessageHook = {
     responseType: "mesage",
     /**
     *
-    * @param {import("../../../standized_protocol/responsetypes/basic").StandardizedMessageStateResponse} stateResponse
+    * @param {import("../../../../botinterface/standized_protocol/responsetypes/basic").StandardizedMessageStateResponse} stateResponse
     */
     exec: function (stateResponse) {
         /**

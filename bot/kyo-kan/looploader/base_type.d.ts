@@ -3,7 +3,7 @@ import { Builder } from "../plugin_type";
 
 
 
-export type i18nFunc<T = string> = (lnaguage: string, options: any) => T
+export type i18nFunc<T = string> = (key: string, lnaguage: string, options: any) => T
 
 export type Schema = any // json schema
 export type ShareValues = string[] // json path for Schema

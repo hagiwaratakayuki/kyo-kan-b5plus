@@ -1,10 +1,5 @@
 
 
-/**
- *  
-
-* */
-const name = "select"
 
 /**
  * 
@@ -27,14 +22,16 @@ function createrBuilder(options, commonOptions, language, functionMap) {
 
 
             /**
-             * @type {Sta}
+             * @type {import('../../../standized_protocol/responsetypes/basic').StandardizedSelectionStateResponse}
              */
             const ret = {
-                state: "keep",
+                state: "wait",
                 callback: "select",
-                responseType: "selection",
-                text: "select one",
-                selectOptions: pluginNames
+                clientResponse: {
+                    title: functionMap.i18n("title", language, this.options),
+                    message: functionMap.i18n("message", language, this.options)
+
+                }
 
 
             };
