@@ -318,18 +318,19 @@ class Loader extends Brige {
     /**
      * 
      * @param {boolean} isFirst 
-     * @param {string} i18n
+     * @param {string} i18nFunc
      * @param {import('../plugin_type').CommonOptions} commonOptions  
      * @param {any} functionMap
      * @returns 
      */
-    constructor(isFirst = false, language = '', commonOptions = {}, functionMap = {}) {
+    constructor(isFirst = false, language = '', i18nFunc = null, commonOptions = {}, functionMap = {}) {
         super();
         this._isFirst = isFirst
-        /**
-         * @type {import('./base_type').PositionState}
-         */
-        this.positionState = { isEnd: false, isSubLoopEnd: false };
+        this._i18n = i18nFunc ||
+            /**
+             * @type {import('./base_type').PositionState}
+             */
+            this.positionState = { isEnd: false, isSubLoopEnd: false };
         this._language = language
         this._commonOptions = commonOptions
         this._functionMap = Object.assign({}, functionMap)

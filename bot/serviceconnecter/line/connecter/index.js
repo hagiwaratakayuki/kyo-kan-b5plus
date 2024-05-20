@@ -1,7 +1,7 @@
 
 
-const { StateController } = require('../../../kyo-kan/state_controller');
-const { Basic } = require('../../connecter/basic');
+
+const { Basic } = require('../../../botinterface/connecter/basic');
 const { getFunctionMap } = require('../functionmap');
 
 const messageHandlers = require('./handlers')
@@ -40,7 +40,7 @@ class LineBasicConnector extends Basic {
             blobClient: request.blobClient,
             messageId: message.id
         }
-        const _functionMap = Object.assign({}, getFunctionMap(_platform), options)
+        const _functionMap = Object.assign({}, getFunctionMap(_platform), functionMap)
         /**
          * @type {import('../types/request').LineStandardizedRequestCommon}
          */

@@ -1,7 +1,7 @@
 import { PlugIn } from "../plugin_type";
-import { Loader: BasicLoader } from "./save_and_load"
+import type { Loader: BasicLoader } from "./save_and_load"
 
-export BasicLoader
+export type BasicLoader
 
 
 
