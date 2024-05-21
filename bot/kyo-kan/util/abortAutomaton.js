@@ -9,3 +9,4 @@ function abortAutomaton(functions, ...argments) {
     }
 
 }
+module.exports = { abortAutomaton }
