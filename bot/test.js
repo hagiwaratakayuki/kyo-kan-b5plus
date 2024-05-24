@@ -1,21 +1,7 @@
-
-async function test() {
-    const prom = new Promise(function (res, rej) {
-        setTimeout(function () {
-            rej('hoge')
+const { exec } = require('child_process')
 
 
+exec('echo テスト', function (...args) {
 
-        })
-
-
-
-    })
-    try {
-        await prom
-    } catch (error) {
-        console.log(error)
-    }
-
-}
-test()
+    console.dir(args)
+})

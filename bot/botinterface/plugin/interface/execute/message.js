@@ -1,6 +1,6 @@
 
 
-const { name } = require('../message');
+const { name } = require('../../message');
 
 /**
  *  
@@ -11,7 +11,7 @@ const { name } = require('../message');
  * @typedef {{message:string}} MessageOption
  * @typedef {import("../../types/responsetypes/basic").Message} Message
  * @typedef {import("../../types/responsetypes/basic").CallbackMessage} CallbackMessage 
- * @typedef {import("../../create_request").CreateRequest<CallbackMessage} CreateRequest
+ * @typedef {import("../../../create_request").CreateRequest<CallbackMessage} CreateRequest
          
  */
 
@@ -22,7 +22,7 @@ const questionText = "please input message: "
  */
 function createrRegister(saver) {
     /**
-     * @type {import("../../../kyo-kan/looploader/base_type").BuilderConfig}
+     * @type {import("../../../../kyo-kan/looploader/base_type").BuilderConfig}
      */
     const config = {
         builder: createrBuilder,

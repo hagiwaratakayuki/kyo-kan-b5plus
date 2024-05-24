@@ -12,4 +12,4 @@ const { i18noptions } = require('./options')
 
 }*/
 
-module.exports = { '18nfunction': i18noptions }
+module.exports = { i18nfunction: i18noptions }

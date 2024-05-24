@@ -4,7 +4,7 @@ import { StandardizedFunctionMap } from "../function_map/basic";
 import { StandardizedPlugInBuilderProtocol } from "./basic";
 export type StandardizedCreateFunctionMap = StandardizedFunctionMap & {
     saver: Saver
-    pluginList: Fuction
+    getPluginList: Fuction
 
 }
 export type StandizedCreatPlungInBuilderProtocol<CommonOptionsType = Common> = StandardizedPlugInBuilderProtocol<>

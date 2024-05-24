@@ -25,12 +25,12 @@ class Context extends JSONSerializer {
          * @type {Array<keyof Context>} 
          * 
          */
-        const filter = ['data', 'loopData', 'history', 'subKey'];
+        const filter = ['history', 'data'];
         return this._toJSON(filter);
     }
     fromJSON(jsonData) {
         super.fromJSON(jsonData);
-        this.data = this.da
+        this.data = this._datas[this._datas.length - 1]
     }
 
     /**

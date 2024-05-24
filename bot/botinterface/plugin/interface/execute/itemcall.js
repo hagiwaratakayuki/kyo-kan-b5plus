@@ -4,12 +4,12 @@
  *  
  * @typedef { import('../../../kyo-kan/plugin').StateResponse } StateResponse
  * 
- * @typedef { import("../../../kyo-kan/looploader/base_type").BuilderCo fig} BuilderConfig
- * @typedef { import("../../../kyo-kan/looploader/save_and_load.js").Saver } Saver
+ * @typedef { import("../../../../kyo-kan/looploader/base_type.js").BuilderCo fig} BuilderConfig
+ * @typedef { import("../../../../kyo-kan/looploader/save_and_load.js").Saver } Saver
  * @typedef { { message: string } } MessageOption
  * @typedef { import("../../types/responsetypes/basic").Message } Message
  * @typedef { import("../../types/responsetypes/basic").CallbackMessage } CallbackMessage
- * @typedef { import("../../create_request").CreateRequest <CallbackMessage> } CreateRequest
+ * @typedef { import("../../../create_request.js").CreateRequest <CallbackMessage> } CreateRequest
 
 * */
 const name = "example"

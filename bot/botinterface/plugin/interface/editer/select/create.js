@@ -1,35 +1,63 @@
 
 
+const name = "select.create"
 
 /**
  * 
- * @param {import('../../../standized_protocol/plugin/create').StandardizedCreateFunctionMap} functionMap 
+ * @param {import('../../../../standized_protocol/plugin/create').StandardizedCreateFunctionMap} functionMap 
  *  
  */
 function createrBuilder(options, commonOptions, language, functionMap) {
 
-    const ret = {
+    const plugins = {
         options,
         commonOptions,
         language,
         functionMap,
 
         /**
-         * @type {import('../../../../kyo-kan/protocol').PluginCallbackProtocol}
+         * @type {import('../../../../../kyo-kan/protocol').PluginCallbackProtocol}
         */
         in: function (request, context, stateController) {
+            return this._selectOrCancel()
+
+        },
+
+
+        _selectOrCancel: function () {
 
 
 
             /**
-             * @type {import('../../../standized_protocol/responsetypes/basic').StandardizedSelectionStateResponse}
+             * @type {import('../../../../standized_protocol/responsetypes/basic').StandardizedSelectionStateResponse}
              */
             const ret = {
                 state: "wait",
                 callback: "select",
                 clientResponse: {
                     title: functionMap.i18n("title", language, this.options),
-                    message: functionMap.i18n("message", language, this.options)
+                    message: functionMap.i18n("message", language, this.options),
+                    options: [
+                        {
+                            label: functionMap.i18n("plugin.select", language, this.options),
+                            value: "plugin"
+                        },
+                        {
+                            label: functionMap.i18n("scenario.select", language, this.options),
+                            value: "scenario"
+
+                        },
+                        {
+                            label: functionMap.i18n("cancel", language, this.options),
+                            value: "cancel"
+
+                        },
+                        {
+                            label: functionMap.i18n("cancel", language, this.options),
+                            value: "save"
+
+                        },
+                    ]
 
                 }
 
@@ -38,31 +66,35 @@ function createrBuilder(options, commonOptions, language, functionMap) {
             return ret;
 
         },
+
         /**
-         * 
-         * @param {CreateRequest} request
-         * @param {any} context
-         * @param {import('../../../../kyo-kan/state_controller').StateController} controller
-         * @returns {StateResponse}
-         */
-        select: function (request, context, controller) {
+         * @param {import('../../../../standized_protocol/requestype/basic').StandardizedRequestText} request
+        */
+        select: function (request, context, stateController) {
 
 
+            switch (request.text) {
+                case "plugin":
 
-            if (request.input.selection === -1) {
-                return;
+                    break;
+
+                case "scenario":
+
+
+                default:
+                    break;
             }
-            /**
-             * @type {StateResponse}
-             */
-            const response = {
-                state: "forwardToSub",
-                subid: index
-            }
-            return response
+
+
+
+
+
+
 
 
         },
+        _add
+
         /**
          * 
          * @param {CreateRequest} request 

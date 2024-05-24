@@ -326,11 +326,11 @@ class Loader extends Brige {
     constructor(isFirst = false, language = '', i18nFunc = null, commonOptions = {}, functionMap = {}) {
         super();
         this._isFirst = isFirst
-        this._i18n = i18nFunc ||
-            /**
-             * @type {import('./base_type').PositionState}
-             */
-            this.positionState = { isEnd: false, isSubLoopEnd: false };
+        this._language = language
+        /**
+         * @type {import('./base_type').PositionState}
+         */
+        this.positionState = { isEnd: false, isSubLoopEnd: false };
         this._language = language
         this._commonOptions = commonOptions
         this._functionMap = Object.assign({}, functionMap)
