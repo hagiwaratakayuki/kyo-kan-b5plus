@@ -41,23 +41,13 @@ export type StandardizedSelectionResponseYN<SelectOptionType = StandardizedSelec
 
 export type StandardizedSelectionStateResponseYN<SelectOptionType = StandardizedSelectOptionBase> = StateResponse<StandardizedSelectionResponse<SelectOptionType>>
 
-
-
-// old 
-
-export type responseType = "message" | "YN" | "selection" | "question"
-
-export type Message<T = responseType> = {
-    text?: string
-    responseType?: T
-    selectOptions?: any[]
-
+export type StandardizedScenarioSwitchCientResponse<ScenarioInitType = any> = {
+    scenarioId: any,
+    scenarioInit?: ScenarioInitType,
+    reset?: boolean
 }
-export type Messages<T = responseType> = Message<T>[];
 
-export type CallbackMessage = {
-    YN?: boolean
-    answer?: string
-    selection?: any
+export type StandardizedScenarioSwitchResponse<ScenarioInitType = any> = StateResponse<StandardizedScenarioSwitchCientResponse<ScenarioInitType>>
 
-}
+
+

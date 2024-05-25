@@ -18,9 +18,6 @@ class Basic {
         const loader = this._buildLoader(builderConfigMap, isStart, language, i18n, commonOptions, functionMap)
         const controller = this._buildController(loader)
 
-        /**
-         * @type {import("../standized_protocol/responsetypes/basic").Messages}
-         */
         const messages = await controller.run(request, resumeData, isStart)
         const result = await this._processMessages(messages)
 
