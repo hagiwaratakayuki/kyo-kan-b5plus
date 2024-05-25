@@ -93,7 +93,9 @@ function createrBuilder(options, commonOptions, language, functionMap) {
 
 
         },
-        _add
+        _add: function () {
+
+        },
 
         /**
          * 
