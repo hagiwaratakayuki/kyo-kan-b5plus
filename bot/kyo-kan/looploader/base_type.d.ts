@@ -49,9 +49,9 @@ export type StepConfig = {
     o: any
 }
 export type LoopStep = StepConfig & {
-    s: any
-    filt: any
-    p: any
+    s: { [k: string]: number }
+    filt: StepConfig[]
+
 
 }
 
@@ -65,7 +65,7 @@ export type PositionState {
     isEnd: boolean
     isSubLoopEnd: boolean
 }
-export type LoopStepIndex = any
+
 
 export type DocumentPropertis = Array<keyof Document>
 export type SubLoopDocumentList = { subid: any, document: Document }[]
@@ -73,4 +73,4 @@ export type SubLoopDocumentList = { subid: any, document: Document }[]
 
 export type RelativeLoop = "now" | "super" | "top";
 export type RelativeLoopMovement = number | "end" | "start"
-export type LoopStepIndex = [scenarioId: number, step: number]
+export type LoopStepIndex = [loopScenarioId: number, step: number]

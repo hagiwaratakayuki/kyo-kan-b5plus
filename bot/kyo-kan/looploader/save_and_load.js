@@ -119,10 +119,10 @@ class Brige extends JSONSerializer {
     }
     /**
      * 
-     * @param {LoopStepIndex} loopStepIndex 
+     * @param {LoopStepIndex?} loopStepIndex 
      */
 
-    _getLoopStep(loopStepIndex) {
+    _getLoopStep(loopStepIndex = []) {
 
         const [loopScenarioId = this._loopScenarioId, step = this._step] = loopStepIndex || []
         return this._loopScenarios[loopScenarioId][step]
@@ -287,15 +287,21 @@ class Loader extends Brige {
         Object.assign(this._functionMap, functionMap)
 
     }
-    setStepIndex(stepIndex) {
-        super.setStepIndex(stepIndex)
-        const loopState = this._getLoopState();
-        const step = this.loopStepPath[this.loopStepPath.length - 1];
+    /**
+     * 
+     * @param {LoopStepIndex} loopStepIndex 
+     */
+    setStepIndex(loopStepIndex) {
+        super.setStepIndex(loopStepIndex)
+        const [loopScenarioId, step] = loopStepIndex
 
-        if (loopState.stp.length - 1 === step) {
+        if (this._loopScenarios[loopScenarioId].length - 1) {
 
             this.positionState.isEnd = this.isTopLoop();
             this.positionState.isSubLoopEnd = true
+        }
+        else if (getSubLoopType(this._subLoopTypeMap[loopStepIndex]) === 'selection') {
+            this.positionState = { isEnd: false, isSubLoopEnd: true }
         }
         else {
             this.positionState = { isEnd: false, isSubLoopEnd: false }
@@ -303,7 +309,7 @@ class Loader extends Brige {
 
     }
     isTopLoop() {
-        return this.loopStepPath.length === 1
+        return this._loopScenarioId === 0
     }
     fromJSON(jsonData) {
 
@@ -431,23 +437,15 @@ class Loader extends Brige {
      */
     forwardToSub(subid, subkey = '') {
         const nowLoop = this._getLoopStep()
-
-        const subLoopState = nowLoop.s[subkey]
-        const subLoopType = getSubLoopType(subLoopState.t)
-
-        if (!subid) {
-            this.loopStepPath.push(0) // go to fix position
-        }
-        else {
-            this.loopStepPath.push(subid);
-
-        }
+        const subLoopId = nowLoop.s[subkey]
+        c
+        const isSubLoopTypeSelection = getSubLoopType(this._subLoopTypeMap[subLoopId]) === "selection"
+        this._loopScenarioPath.push(this.getStepIndex())
+        const step = isSubLoopTypeSelection ? subid : 0
+        this.setStepIndex([subLoopId, step])
 
 
 
-        this.loopStepKeyPath.push(subkey)
-        this.positionState.isEnd = false;
-        this.positionState.isSubLoopEnd = subLoopType === "selection" || subLoopState.stp.length === 1;
 
         return this.getNow()
 

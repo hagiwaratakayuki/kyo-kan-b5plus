@@ -1,8 +1,14 @@
 
-const { exec } = require('child_process')
+class Test {
+    constructor() {
+        this.a = 1
+        this.b = 2
+    }
+    hoge(fuga = []) {
+        const [a = this.a, b = this.b] = fuga
+        console.log(a)
+        console.log(b)
+    }
+}
 
-
-exec('echo テスト', function (...args) {
-
-    console.dir(args)
-})
+new Test().hoge()
