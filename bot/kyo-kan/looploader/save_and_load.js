@@ -9,15 +9,15 @@ const { getSubLoopType, getSubLoopTypeId } = require('./loop_type');
  * @typedef {import('./base_type').Document} Document
  * @typedef {import('./base_type').SubLoopDocumentList} SubLoopDocumentList
  * @typedef {import('./base_type').LoopStep } LoopStep
+ * @typedef {import('./base_type').LoopScenario } LoopScenario
  * @typedef {import('./base_type').LoopState<LoopStep>} LoopState
- * 
- * @typedef {Pick<LoopStep, 's'> | LoopStep} RouteStep
+ * @typedef {import('./base_type').LoopStepIndex} LoopStepIndex
  * @typedef { [number[], string[]] } LoopStepPathPaire
 */
 
 
 
-const PATH_DElIMITER = '/';
+
 
 class Brige extends JSONSerializer {
 
@@ -26,35 +26,36 @@ class Brige extends JSONSerializer {
         /**
          * @type {import('./base_type').BuilderConfig[]}
          */
-        this._startConfigures = []
+        this._startConfigures = [[]]
 
         /**
          * @type {BuilderConfigMap}
          */
         this.builderConfigMap = {};
+        /**
+         * @type {LoopScenario[]}
+         */
+        this._loopScenarios = []
+
+        this._nameToId = {}
+
+        this._loopTypes = {}
+        this._subLoopTypeMap = { 0: getSubLoopTypeId('loop') }
+
+
         this.resetPosition();
 
 
-        /**
-         * @type {RouteStep}
-         */
-        this._rootLoop = this._getInitialRoot()
+
+
+
+
 
 
 
 
     }
-    /**
-     * 
-     * @returns {RouteStep}
-     */
-    _getInitialRoot() {
-        return {
-            s: {
-                '': this._getInitialSubLoop()
-            }
-        };
-    }
+
     /**
      * @returns {LoopStep}
      */
@@ -79,23 +80,15 @@ class Brige extends JSONSerializer {
     }
 
     resetPosition() {
-        /**
-        * @type {number[]}
-        */
-        this.loopStepPath = [-1];
-        /**
-         * @type {string[]}
-         */
-        this.loopStepKeyPath = ['']
-    }
-    getStepIndex() {
-        return [[].concat(this.loopStepPath), [].concat(this.loopStepKeyPath)]
-    }
-    setStepIndex([loopStepPath, loopStepKeyPath]) {
-        this.loopStepPath = [].concat(loopStepPath)
-        this.loopStepKeyPath = [].concat(loopStepKeyPath)
+
+        this.setStepIndex([0, -1])
+
+
 
     }
+
+
+
 
     /**
     * 
@@ -111,95 +104,45 @@ class Brige extends JSONSerializer {
     builderRegistration(builderID, builderConfig) {
         this.builderConfigMap[builderID] = builderConfig
     }
+    getStepIndex() {
+        return [this._loopScenarioId, this._step]
+    }
     /**
      * 
-     * @param {LoopStepPathPaire[]}paths  
-    */
-    getStepTree(paths) {
-        const leafs = []
-        for (const [loopStepPath, loopStepKeyPath] of paths) {
-            const depth = loopStepPath.length
-            let index = 0;
-            const pathArray = []
-            while (index < depth) {
-                pathArray.push(loopStepKeyPath[index])
-                pathArray.push(loopStepPath)
-            }
-
-            leafs.push({ loopStepKeyPath, loopStepPath, depth, })
-
-
-        }
-
-        leafs.sort(function (a, b) {
-            return a.depth - b.depth
-        })
-        const root = this._getInitialRoot();
-        const minDepth = leafs[0].depth
-        for (const { loopStepPath, loopStepKeyPath, depth } of leafs) {
-            if (depth != minDepth) {
-                break
-            }
-            const stepLeaf = this._traverseStepTree(loopStepPath, loopStepKeyPath)
-            root.s[loopStepKeyPath[depth - 1]].stp[loopStepPath[depth - 1]] = merge({}, stepLeaf)
-
-        }
-        return root
-
-    }
-    _toJSON(filters = []) {
-        return super._toJSON(["builderConfigMap"].concat(filters));
-    }
-
-    /**
-     * 
-     * @param {number[]?} loopStepPath
-     * @param {string[]?} loopStepKeyPath
+     * @param {LoopStepIndex} param0 
      */
-    _getLoopStep(loopStepPath, loopStepKeyPath) {
-        const _loopStepPath = loopStepPath || this.loopStepPath
-        const _loopStepKeyPath = loopStepKeyPath || this.loopStepKeyPath
-        return this._traverseStepTree(_loopStepPath, _loopStepKeyPath)
+    setStepIndex([loopScenarioId, step]) {
 
-    }
-    /** 
-    * @param { number[]} loopStepPath
-    * @param { string[]} loopStepKeyPath
-    */
-    _traverseStepTree(loopStepPath, loopStepKeyPath) {
+        this._loopScenarioId = loopScenarioId
+        this._step = step
 
-        const limit = loopStepPath.length
-        let index = 0;
-        /**
-         * @type {RouteStep}
-         */
-        let result = this._rootLoop;
-        while (index < limit) {
-            result = result.s[loopStepKeyPath[index]].stp[loopStepPath[index]]
-            index++;
-
-        }
-
-
-        return result;
     }
     /**
-    * 
-    * @param {number[]?} loopStepPath
-    * @param {string[]?} loopStepKeyPath
-    */
-    _getSuperLoopStep(loopStepPath, loopStepKeyPath) {
-        const _loopStepPath = loopStepPath || this.loopStepPath
+     * 
+     * @param {LoopStepIndex} loopStepIndex 
+     */
+
+    _getLoopStep(loopStepIndex) {
+
+        const [loopScenarioId = this._loopScenarioId, step = this._step] = loopStepIndex || []
+        return this._loopScenarios[loopScenarioId][step]
+    }
+
+
+    _getSuperLoopStep(loopScenarioId, step) {
+
+        const _loopScenarioId = loopScenarioId || this._loopScenarioId
         const _loopStepKeyPath = loopStepKeyPath || this.loopStepKeyPath
         return this._getLoopStep(_loopStepPath.slice(0, -1), _loopStepKeyPath.slice(0, -1))
     }
+
     /**
     * 
-    * @param {number[]?} loopStepPath
-    * @param {string[]?} loopStepKeyPath
+    * @param {number[]?} loopStepId
+    * @param {string[]?} loopScenarioId
     */
-    _getLoopState(loopStepPath, loopStepKeyPath) {
-        const _loopStepPath = loopStepPath || this.loopStepPath
+    _getLoopState(loopStepId, loopScenarioId) {
+        const _loopStepPath = loopStepId || this.loopStepPath
         const _loopStepKeyPath = loopStepKeyPath || this.loopStepKeyPath
         const superLoopStep = this._getSuperLoopStep(_loopStepPath.slice(0, -1), _loopStepKeyPath.slice(0, -1))
         return superLoopStep.s[_loopStepKeyPath[_loopStepKeyPath.length - 1]]
@@ -246,14 +189,10 @@ class Saver extends Brige {
 
         let _options = this._mergeOptions(builderID, options);
 
-        const superLoop = this._getSuperLoopStep();
-
-        /**
-         * @type {RouteStep}
-         */
 
         const step = this._getInitialLoopStep(builderID, _options)
-        superLoop.s[this.loopStepKeyPath[this.loopStepKeyPath.length - 1]].stp.push(step)
+        this._loopScenario.push(step)
+        this._step += 1
 
 
 
@@ -335,6 +274,14 @@ class Loader extends Brige {
         this._commonOptions = commonOptions
         this._functionMap = Object.assign({}, functionMap)
 
+
+    }
+    resetPosition() {
+        super.resetPosition()
+        /**
+      * @type {LoopStepIndex[]}
+      */
+        this._loopScenarioPath = []
     }
     setFunctionMap(functionMap) {
         Object.assign(this._functionMap, functionMap)
@@ -378,28 +325,11 @@ class Loader extends Brige {
         return super._toJSON(filters);
     }
     /**
-     * @typedef {[number[], string[]]} LoopStepIndex
      * @param {LoopStepIndex} indexA 
      * @param {LoopStepIndex} indexB 
      */
     isIndexEqual(indexA, indexB) {
-        const [loopStepPathA, loopStepKeyPathA] = indexA
-        const [loopStepPathB, loopStepKeyPathB] = indexB
-        if (loopStepKeyPathA.length !== loopStepKeyPathB.length) {
-            return false
-
-        }
-
-        let index = loopStepPathA.length - 1;
-        while (index > 0) {
-            if (loopStepPathA[index] !== loopStepPathB[index] || loopStepKeyPathA[index] !== loopStepKeyPathB[index]) {
-                return false;
-
-            }
-            index--;
-
-        }
-        return true;
+        return indexA[0] === indexB[0] && indexA[1] === indexB[1]
 
     }
     forward() {
@@ -416,44 +346,34 @@ class Loader extends Brige {
          */
         let isSubLoopEnd = false;
 
-        const superLoop = this._getSuperLoopStep()
+
+
 
 
 
 
         if (this.positionState.isSubLoopEnd === false) {
-            const tailIndex = this.loopStepPath.length - 1;
-            const step = this.loopStepPath[tailIndex] + 1;
-
-            this.loopStepPath[tailIndex] = step
-            if (this.loopStepPath.length !== 1) {
-
-                const subLoopState = superLoop.s[this.loopStepKeyPath[this.loopStepKeyPath.length - 1]]
-                const subLoopStepType = getSubLoopType(subLoopState.t)
-
-                if (subLoopStepType === 'loop') {
-
-
-
-                    isSubLoopEnd = subLoopState.stp.length - 1 === step;
-
-
-                }
-
-
-
+            this._step += 1
+            const subLoopType = getSubLoopType(this._subLoopTypeMap[this._loopScenarioId])
+            if (subLoopType === 'selection') {
+                isSubLoopEnd = true
+            }
+            if (subLoopType === 'loop') {
+                isSubLoopEnd = this._step === this._loopScenario
             }
 
 
         }
-        else if (this.loopStepPath.length !== 1) {
-            this.loopStepPath.pop()
-            this.loopStepKeyPath.pop()
+        else if (this._loopScenarioId != 0) {
+
+
+            const loopStepIndex = this._loopScenarioPath.pop()
+            this.setStepIndex(loopStepIndex)
+
         }
-        if (this.loopStepPath.length === 1) {
+        if (isSubLoopEnd == true && this._loopScenarioId === 0) {
 
-            isEnd = this.loopStepPath[0] === this._rootLoop.s[''].stp.length - 1;
-
+            isEnd = true
         }
 
         this.positionState = { isEnd, isSubLoopEnd }
@@ -465,43 +385,43 @@ class Loader extends Brige {
      * @param {number | "end" | "start"} [move=-1]  
      */
     getRelativePosition(loop = "now", move = -1) {
-        let [loopStepPath, loopStepKeyPath] = this.getStepIndex()
+        let [loopScenarioId, step] = this.getStepIndex()
         if (loop === "top") {
-            loopStepPath = loopStepPath.slice(0, 1);
-            loopStepKeyPath = loopStepKeyPath.slice(0, 1);
+            loopScenarioId = loopScenarioId.slice(0, 1);
+            step = step.slice(0, 1);
 
 
         }
         else if (loop === "super") {
-            loopStepPath = loopStepPath.slice(0, -1);
-            loopStepKeyPath = loopStepKeyPath.slice(0, -1);
+            loopScenarioId = loopScenarioId.slice(0, -1);
+            step = step.slice(0, -1);
 
         }
 
         if (move === "end") {
-            const loopState = this._getLoopState(loopStepPath, loopStepKeyPath);
-            loopStepPath[loopStepPath.length - 1] = loopState.stp.length - 1
+            const loopState = this._getLoopState(loopScenarioId, step);
+            loopScenarioId[loopScenarioId.length - 1] = loopState.stp.length - 1
 
 
 
 
         }
         if (move === "start") {
-            loopStepPath[loopStepPath.length - 1] = 0
+            loopScenarioId[loopScenarioId.length - 1] = 0
 
         }
         if (loop === "now") {
-            const tailIndex = loopStepPath.length - 1
-            const loopState = this._getLoopState(loopStepPath, loopStepKeyPath)
-            const targetStep = loopStepPath[tailIndex] + move
-            if (superLoopStep.s[loopStepKeyPath[tailIndex]].stp.length - 1 < targetStep || targetStep < 0) {
+            const tailIndex = loopScenarioId.length - 1
+            const loopState = this._getLoopState(loopScenarioId, step)
+            const targetStep = loopScenarioId[tailIndex] + move
+            if (superLoopStep.s[step[tailIndex]].stp.length - 1 < targetStep || targetStep < 0) {
                 throw "can not move"
             }
 
 
-            loopStepPath[tailIndex] = targetStep;
+            loopScenarioId[tailIndex] = targetStep;
         }
-        return [loopStepPath, loopStepKeyPath];
+        return [loopScenarioId, step];
 
     }
     /**

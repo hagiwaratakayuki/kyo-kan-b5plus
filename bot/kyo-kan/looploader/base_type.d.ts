@@ -49,10 +49,13 @@ export type StepConfig = {
     o: any
 }
 export type LoopStep = StepConfig & {
-    s: Record<string, LoopState<LoopStep>>
-    filt: StepConfig[]
+    s: any
+    filt: any
+    p: any
 
 }
+
+export type LoopScenario = LoopStep[]
 
 
 
@@ -70,3 +73,4 @@ export type SubLoopDocumentList = { subid: any, document: Document }[]
 
 export type RelativeLoop = "now" | "super" | "top";
 export type RelativeLoopMovement = number | "end" | "start"
+export type LoopStepIndex = [scenarioId: number, step: number]
