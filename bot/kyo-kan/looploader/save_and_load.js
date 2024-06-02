@@ -55,7 +55,14 @@ class Brige extends JSONSerializer {
 
 
     }
+    getLoopScenario(loopScenarioId) {
+        return this._loopScenarios[loopScenarioId]
+    }
+    getLoopScenarioByName(loopScenarioName) {
+        const loopScenarioId = this._nameToId[loopScenarioName]
+        return this.getLoopScenario(loopScenarioId)
 
+    }
     /**
      * @returns {LoopStep}
      */
@@ -125,7 +132,7 @@ class Brige extends JSONSerializer {
     _getLoopStep(loopStepIndex = []) {
 
         const [loopScenarioId = this._loopScenarioId, step = this._step] = loopStepIndex || []
-        return this._loopScenarios[loopScenarioId][step]
+        return this.getLoopScenario(loopScenarioId)[step]
     }
 
 
@@ -262,7 +269,7 @@ class Loader extends Brige {
      * @param {any} functionMap
      * @returns 
      */
-    constructor(isFirst = false, language = '', i18nFunc = null, commonOptions = {}, functionMap = {}) {
+    constructor(isFirst = false, language = '', commonOptions = {}, functionMap = {}) {
         super();
         this._isFirst = isFirst
         this._language = language
@@ -275,6 +282,8 @@ class Loader extends Brige {
         this._functionMap = Object.assign({}, functionMap)
 
 
+
+
     }
     resetPosition() {
         super.resetPosition()
@@ -282,6 +291,7 @@ class Loader extends Brige {
       * @type {LoopStepIndex[]}
       */
         this._loopScenarioPath = []
+        this._subKeyPath = []
     }
     setFunctionMap(functionMap) {
         Object.assign(this._functionMap, functionMap)
@@ -295,7 +305,7 @@ class Loader extends Brige {
         super.setStepIndex(loopStepIndex)
         const [loopScenarioId, step] = loopStepIndex
 
-        if (this._loopScenarios[loopScenarioId].length - 1) {
+        if (this.getLoopScenario(loopScenarioId).length - 1 === step) {
 
             this.positionState.isEnd = this.isTopLoop();
             this.positionState.isSubLoopEnd = true
@@ -438,7 +448,7 @@ class Loader extends Brige {
     forwardToSub(subid, subkey = '') {
         const nowLoop = this._getLoopStep()
         const subLoopId = nowLoop.s[subkey]
-        c
+
         const isSubLoopTypeSelection = getSubLoopType(this._subLoopTypeMap[subLoopId]) === "selection"
         this._loopScenarioPath.push(this.getStepIndex())
         const step = isSubLoopTypeSelection ? subid : 0
@@ -517,15 +527,15 @@ class Loader extends Brige {
     */
     getSubLoopDocuments(filter = ["description", "title"], subLoopKey = '') {
 
+        const subLoopId = this._getLoopStep().s[subLoopKey]
 
-        // @ts-ignore
-        const subLoopsCount = this._getLoopStep().s[subLoopKey].stp.length
+        const subLoopsCount = this.getLoopScenario(subLoopId).length
         /**
          * @type {SubLoopDocumentList}
          */
         const documentList = [];
         for (let subid = 0; subid < subLoopsCount; subid++) {
-            const document = this.getSubLoopDocument(subid, language, filter, subLoopKey);
+            const document = this.getDocument(filter, [subLoopId, subid]);
             documentList.push({ subid, document });
         }
         return documentList;
@@ -539,20 +549,16 @@ class Loader extends Brige {
      * @returns {Document}  
      */
     getSubLoopDocument(subid, filter = ["description", "title"], subLoopKey = '') {
-        return this.getDocument(subid, filter, this.loopStepPath.concat([subid]), this.loopStepKeyPath.concat([subLoopKey]))
+        const loopScenarioId = this.getLoopScenario(this._getLoopStep().s[subLoopKey])
+        return this.getDocument(subid, filter, loopScenarioId, [loopScenarioId, subid])
     }
     /**
      * @param {string[]} [filter=[]]  
-     * @param {number[]?} loopStepPath 
-     * @param {string[]?} loopStepKeyPath 
+     * @param {LoopStepIndex?} loopStepIndex 
      * @returns {Document}
      */
-    getDocument(filter = ["description", "title"], loopStepPath, loopStepKeyPath) {
-        const { builderID, options } = this._getLoopStep(loopStepPath, loopStepKeyPath);
-        return this._getDocument(filter, builderID, options)
-    }
-    _getDocument(filter = ["description", "title"], builderID, options) {
-
+    getDocument(filter = ["description", "title"], loopStepIndex = []) {
+        const { builderID, options } = this._getLoopStep(loopStepIndex);
         /**
          * @type {Document}
          */
@@ -573,10 +579,10 @@ class Loader extends Brige {
 
     }
     getSubKey() {
-        return this.loopStepKeyPath[this.loopStepKeyPath - 1]
+        return this._subKeyPath[this._subKeyPath.length - 1]
     }
     getSubId() {
-        return this.loopStepPath[this.loopStepPath.length - 1]
+        return this._step
     }
 
 
