@@ -63,31 +63,13 @@ class Brige extends JSONSerializer {
         return this.getLoopScenario(loopScenarioId)
 
     }
-    /**
-     * @returns {LoopStep}
-     */
-    _getInitialSubLoop(subLoopType = "loop") {
-        return {
-            t: getSubLoopTypeId(subLoopType),
-            stp: []
 
-        }
-    }
-    /**
-     * 
-     * @returns {LoopStep}
-     */
-    _getInitialLoopStep(builderID, options) {
-        return {
-            o: options,
-            bID: builderID,
-            filt: [],
-            s: {}
-        }
-    }
 
     resetPosition() {
-
+        /**
+         * @type {LoopStepIndex[]}
+        */
+        this._loopStepIndexPath = []
         this.setStepIndex([0, -1])
 
 
@@ -190,13 +172,13 @@ class Saver extends Brige {
      *  
      */
     addLoopStep(builderID, options) {
-        this.loopStepPath[this.loopStepPath.length - 1] += 1;
+
 
         let _options = this._mergeOptions(builderID, options);
 
 
         const step = this._getInitialLoopStep(builderID, _options)
-        this._loopScenario.push(step)
+        this.getLoopScenario().push(step)
         this._step += 1
 
 
@@ -228,28 +210,87 @@ class Saver extends Brige {
      * 
      * @param {import('./base_type').SubLoopType} subLoopType
      * @param {string} [subLoopKey = '']
+     * @param {string?} [loopScenarioName=null] 
      */
-    startSubLoop(subLoopType, subLoopKey = '') {
-        const step = this._getLoopStep()
-        if (subLoopKey in step.s === false) {
-            step.s[subLoopKey] = this._getInitialSubLoop(subLoopType)
-        }
+    startSubLoop(subLoopType, subLoopKey = '', loopScenarioName = null) {
+        const loopStep = this._getLoopStep()
+        let subLoopId, step
+        if (subLoopKey in loopStep.s === false) {
+            this._getOrInitializeLoopScenario(loopScenarioName, subLoopType)
+            subLoopId = this._loopScenarios.length - 1
 
-        this.loopStepPath.push(-1)
-        this.loopStepKeyPath.push(subLoopKey)
+            loopStep.s[subLoopKey] = subLoopId
+            step = -1
+
+        }
+        else {
+            subLoopId = loopStep.s[subLoopKey]
+            step = this.getLoopScenario(subLoopId).length - 1
+
+        }
+        this._loopStepIndexPath.push(this.getStepIndex())
+        this.setStepIndex([subLoopId, step])
+
+
+
+
 
     }
 
     endSubLoop() {
-        this.loopStepPath.pop()
-        this.loopStepKeyPath.pop()
+        this.setStepIndex(this._loopStepIndexPath.pop())
     }
 
     _defaultMerge(basicOptions, options) {
         return merge(basicOptions, options)
 
     }
+    /**
+    * @returns {LoopScenario}
+    */
+    _getOrInitializeLoopScenario(loopScenarioIdOrName = null, subLoopType = "loop") {
+        const idOrNameType = typeof loopScenarioIdOrName
+        if (idOrNameType === 'string') {
+            if (loopScenarioIdOrName in this._nameToId) {
+                return this.getLoopScenario(this._nameToId[loopScenarioIdOrName])
 
+            }
+            else {
+                const loopScenarioId = this._loopScenarios.length
+                const loopScenario = []
+                this._loopScenarios.push(loopScenario)
+                this._nameToId[loopScenarioIdOrName] = loopScenarioId
+                this._subLoopTypeMap[loopScenarioId] = getSubLoopTypeId(subLoopType)
+                return loopScenario
+
+            }
+
+        }
+        if (idOrNameType === 'number') {
+            return this.getLoopScenario(loopScenarioIdOrName)
+        }
+        const loopScenarioId = this._loopScenarios.length
+        const loopScenario = []
+        this._loopScenarios.push(loopScenario)
+
+        this._subLoopTypeMap[loopScenarioId] = getSubLoopTypeId(subLoopType)
+        return loopScenario
+
+
+
+    }
+    /**
+     * 
+     * @returns {LoopStep}
+     */
+    _getInitialLoopStep(builderID, options) {
+        return {
+            o: options,
+            bID: builderID,
+            filt: [],
+            s: {}
+        }
+    }
 
 
 
@@ -285,10 +326,7 @@ class Loader extends Brige {
     }
     resetPosition() {
         super.resetPosition()
-        /**
-      * @type {LoopStepIndex[]}
-      */
-        this._loopScenarioPath = []
+
         this._subKeyPath = []
     }
     setFunctionMap(functionMap) {
@@ -381,7 +419,7 @@ class Loader extends Brige {
         else if (this._loopScenarioId != 0) {
 
 
-            const loopStepIndex = this._loopScenarioPath.pop()
+            const loopStepIndex = this._loopStepIndexPath.pop()
             this.setStepIndex(loopStepIndex)
             this._subKeyPath.pop()
 
@@ -400,43 +438,47 @@ class Loader extends Brige {
      * @param {number | "end" | "start"} [move=-1]  
      */
     getRelativePosition(loop = "now", move = -1) {
-        const loopScenarioPath = this._loopScenarioPath.concat([this.getStepIndex()])
-        let loopStepIndex
+        const loopScenarioPath = this._loopStepIndexPath
+        let loopStepIndex, step
         if (loop === "top") {
-            loopStepIndex = loopScenarioPath[0];
+            loopStepIndex = loopScenarioPath[0] || this.getStepIndex();
+            step = loopStepIndex[1]
 
 
 
         }
         else if (loop === "super") {
-            loopStepIndex = loopScenarioPath[loopScenarioPath.length - 2].concat([]);
+            loopStepIndex = loopScenarioPath[loopScenarioPath.length - 1];
+            step = loopStepIndex[1]
 
 
         }
 
         if (move === "end") {
-            loopStepIndex = loopScenarioPath[loopScenarioPath.length - 1].concat([])
-            loopStepIndex[1] = this.getLoopScenario(loopStepIndex[0]).length - 1
+            loopStepIndex = this.getStepIndex()
+            step = this.getLoopScenario(loopStepIndex[0]).length - 1
 
 
 
 
         }
         if (move === "start") {
-            loopStepIndex = loopScenarioPath[loopScenarioPath.length - 1].concat([])
-            loopStepIndex[1] = 0
+            loopStepIndex = this.getStepIndex()
+            step = 0
 
         }
         if (loop === "now") {
-            loopStepIndex = loopScenarioPath[loopScenarioPath.length - 1].concat([])
-            const targetStep = loopStepIndex[1] + move
-            if (this.getLoopScenario(loopStepIndex[0]).length - 1 < targetStep || targetStep < 0) {
+            loopStepIndex = this.getStepIndex()
+            step = loopStepIndex[1] + move
+            if (this.getLoopScenario(loopStepIndex[0]).length - 1 < step || step < 0) {
                 throw "can not move"
             }
 
 
-            loopStepIndex[1] = targetStep;
+
         }
+        const ret = loopStepIndex.concat([])
+        ret[1] = step
         return loopStepIndex;
 
     }
@@ -450,7 +492,7 @@ class Loader extends Brige {
         const subLoopId = nowLoop.s[subkey]
 
         const isSubLoopTypeSelection = getSubLoopType(this._subLoopTypeMap[subLoopId]) === "selection"
-        this._loopScenarioPath.push(this.getStepIndex())
+        this._loopStepIndexPath.push(this.getStepIndex())
         const step = isSubLoopTypeSelection ? subid : 0
         this.setStepIndex([subLoopId, step])
         this._subKeyPath.push(subkey)
