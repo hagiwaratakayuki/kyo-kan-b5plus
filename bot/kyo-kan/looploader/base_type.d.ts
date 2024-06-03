@@ -73,4 +73,4 @@ export type SubLoopDocumentList = { subid: any, document: Document }[]
 
 export type RelativeLoop = "now" | "super" | "top";
 export type RelativeLoopMovement = number | "end" | "start"
-export type LoopStepIndex = [loopScenarioId: number, step: number]
+export type LoopStepIndex = [loopScenarioId: number, step: number = -1]

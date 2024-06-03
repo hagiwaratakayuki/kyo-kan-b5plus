@@ -264,7 +264,7 @@ class StateController extends JSONSerializer {
 
     async back(request, response) {
         const stepIndex = this.loader.getRelativePosition("now", -1)
-        this.loader.setStepIndex(stepIndex)
+        this.loader.setLoopStepIndex(stepIndex)
         const responses = await this._callHookFunction("back", request, response, false)
         if (this._emitter.getState() === "back") {
             /**
@@ -286,7 +286,7 @@ class StateController extends JSONSerializer {
                 this._history.back();
                 this._context = context;
                 this._emitter.setState(state)
-                this.loader.setStepIndex(loopStepIndex)
+                this.loader.setLoopStepIndex(loopStepIndex)
                 const _response = await this._emitter.run(_request)
                 responses.push(_response)
 
@@ -310,7 +310,7 @@ class StateController extends JSONSerializer {
     async break(request, response, isAutoForward = true) {
         const stepIndex = this.loader.getRelativePosition("super")
         this._context.subid = this.loader.getSubId()
-        this.loader.setStepIndex(stepIndex)
+        this.loader.setLoopStepIndex(stepIndex)
         return this._subLoopFinishProcess(request, response, isAutoForward, ['break'])
 
     }
@@ -383,7 +383,7 @@ class StateController extends JSONSerializer {
     }
     continue(request, response, isAutoForward = true) {
         const stepIndex = this.loader.getRelativePosition("now", "start")
-        this.loader.setStepIndex(stepIndex)
+        this.loader.setLoopStepIndex(stepIndex)
         return this._callHookFunction("continue", request, response, isAutoForward)
 
     }
@@ -456,7 +456,7 @@ class StateController extends JSONSerializer {
             /**
              * @type {HistoryRecord}
              */
-            const record = { request, response, context, loopStepIndex: this.loader.getStepIndex(), state: callState }
+            const record = { request, response, context, loopStepIndex: this.loader.getLoopStepIndex(), state: callState }
             this._history.push(record)
 
         }
