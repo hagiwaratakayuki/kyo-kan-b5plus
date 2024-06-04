@@ -152,7 +152,7 @@ describe('Executer', function () {
 
 
         let controlller = new StateController(loader);
-        let res = await controlller.run({}, { loader: jsonData });
+        let res = await controlller.run({}, jsonData, true);
 
 
         jsonData = controlller.toJSON()
@@ -326,7 +326,7 @@ describe('Executer', function () {
 
 
         let controlller = new StateController(loader);
-        let res = await controlller.run({}, { loader: jsonData });
+        let res = await controlller.run({}, jsonData, true);
         console.log(res)
         res = await controlller.run({})
         console.log(res)

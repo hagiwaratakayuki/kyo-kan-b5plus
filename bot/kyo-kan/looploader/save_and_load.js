@@ -26,7 +26,9 @@ class BaseConstraction extends JSONSerializer {
         /**
          * @type {import('./base_type').BuilderConfig[]}
          */
-        this._startConfigures = [[]]
+        this._startConfigures = []
+
+        this._loopScenarioId = 0
 
         /**
          * @type {BuilderConfigMap}
@@ -35,7 +37,7 @@ class BaseConstraction extends JSONSerializer {
         /**
          * @type {LoopScenario[]}
          */
-        this._loopScenarios = []
+        this._loopScenarios = [[]]
 
         this._nameToId = {}
 
@@ -56,7 +58,7 @@ class BaseConstraction extends JSONSerializer {
 
     }
     getLoopScenario(loopScenarioId) {
-        return this._loopScenarios[loopScenarioId]
+        return this._loopScenarios[loopScenarioId || this._loopScenarioId]
     }
     getLoopScenarioByName(loopScenarioName) {
         const loopScenarioId = this._nameToId[loopScenarioName]
@@ -71,6 +73,7 @@ class BaseConstraction extends JSONSerializer {
         */
         this._loopStepIndexPath = []
         this.setLoopStepIndex([0, -1])
+
 
 
 
@@ -344,22 +347,33 @@ class Loader extends BaseConstraction {
         super();
         this._isFirst = isFirst
         this._language = language
-        /**
-         * @type {import('./base_type').PositionState}
-         */
-        this.positionState = { isEnd: false, isSubLoopEnd: false };
+
         this._language = language
         this._commonOptions = commonOptions
         this._functionMap = Object.assign({}, functionMap)
+        this._subKeyPath = []
+        this._subKey = null
+        this._subStepId = null
+        this._positionStates = []
+
+
 
 
 
 
     }
     resetPosition() {
-        super.resetPosition()
+        /**
+        * @type {import('./base_type').PositionState}
+        */
+        this.positionState = { isEnd: false, isSubLoopEnd: false };
 
-        this._subKeyPath = []
+        super.resetPosition()
+        this._positionStates = []
+
+
+
+
     }
     setFunctionMap(functionMap) {
         Object.assign(this._functionMap, functionMap)
@@ -373,10 +387,9 @@ class Loader extends BaseConstraction {
         super.setLoopStepIndex(loopStepIndex)
         const [loopScenarioId, step] = loopStepIndex
 
-        if (this.getLoopScenario(loopScenarioId).length - 1 === step) {
+        if (this.getLoopScenario(loopScenarioId).length - 1 === step && step != -1) {
 
-            this.positionState.isEnd = this.isTopLoop();
-            this.positionState.isSubLoopEnd = true
+            this.positionState = { isEnd: this.isTopLoop(), isSubLoopEnd: true }
         }
         else if (getSubLoopType(this._subLoopTypeMap[loopStepIndex]) === 'selection') {
             this.positionState = { isEnd: false, isSubLoopEnd: true }
@@ -392,14 +405,11 @@ class Loader extends BaseConstraction {
     fromJSON(jsonData) {
 
         super.fromJSON(jsonData);
+
         if (this._isFirst === true) {
             this.resetPosition();
         }
 
-    }
-    resetPosition() {
-        super.resetPosition();
-        this.positionState = { isEnd: false, isSubLoopEnd: false }
     }
     toJSON() {
         /**
@@ -443,17 +453,22 @@ class Loader extends BaseConstraction {
                 isSubLoopEnd = true
             }
             if (subLoopType === 'loop') {
-                isSubLoopEnd = this._step === this._loopScenario
+                isSubLoopEnd = this._step === this.getLoopScenario().length - 1
             }
 
 
         }
-        else if (this._loopScenarioId != 0) {
+        else if (this._loopScenarioId !== 0) {
 
 
-            const loopStepIndex = this._loopStepIndexPath.pop()
-            this.setLoopStepIndex(loopStepIndex)
-            this._subKeyPath.pop()
+            this._returnFromScenario()
+            const [subKey, subId] = this._subKeyPath.pop()
+            this._subKey = subKey
+            this._subId = subId
+            const positionState = this._positionStates.pop()
+            isEnd = positionState.isEnd
+            isSubLoopEnd = positionState.isSubLoopEnd
+
 
         }
         if (isSubLoopEnd == true && this._loopScenarioId === 0) {
@@ -464,70 +479,24 @@ class Loader extends BaseConstraction {
         this.positionState = { isEnd, isSubLoopEnd }
         return this.getNow();
     }
+
     /**
      * 
-     * @param {"now" |  "super"  | "top"} [loop=now]
-     * @param {number | "end" | "start"} [move=-1]  
+     * @param {number?} subId
+     * @param {string?} subKey
      */
-    getRelativePosition(loop = "now", move = -1) {
-        const loopScenarioPath = this._loopStepIndexPath
-        let loopStepIndex, step
-        if (loop === "top") {
-            loopStepIndex = loopScenarioPath[0] || this.getLoopStepIndex();
-            step = loopStepIndex[1]
-
-
-
-        }
-        else if (loop === "super") {
-            loopStepIndex = loopScenarioPath[loopScenarioPath.length - 1];
-            step = loopStepIndex[1]
-
-
-        }
-
-        if (move === "end") {
-            loopStepIndex = this.getLoopStepIndex()
-            step = this.getLoopScenario(loopStepIndex[0]).length - 1
-
-
-
-
-        }
-        if (move === "start") {
-            loopStepIndex = this.getLoopStepIndex()
-            step = 0
-
-        }
-        if (loop === "now") {
-            loopStepIndex = this.getLoopStepIndex()
-            step = loopStepIndex[1] + move
-            if (this.getLoopScenario(loopStepIndex[0]).length - 1 < step || step < 0) {
-                throw "can not move"
-            }
-
-
-
-        }
-        const ret = loopStepIndex.concat([])
-        ret[1] = step
-        return loopStepIndex;
-
-    }
-    /**
-     * 
-     * @param {number?} subid
-     * @param {string?} subkey
-     */
-    forwardToSub(subid, subkey = '') {
+    forwardToSub(subId, subKey = '') {
         const nowLoop = this._getLoopStep()
-        const subLoopId = nowLoop.s[subkey]
+        const subLoopId = nowLoop.s[subKey]
 
         const isSubLoopTypeSelection = getSubLoopType(this._subLoopTypeMap[subLoopId]) === "selection"
-        this._loopStepIndexPath.push(this.getLoopStepIndex())
-        const step = isSubLoopTypeSelection ? subid : 0
-        this.setLoopStepIndex([subLoopId, step])
-        this._subKeyPath.push(subkey)
+        const step = isSubLoopTypeSelection ? subId : 0
+        this._forwardToScenario([subLoopId, step])
+        this._positionStates.push(this.positionState)
+        this.positionState = { isEnd: false, isSubLoopEnd: isSubLoopTypeSelection }
+
+        this._subKeyPath.push([subKey, subId])
+
 
 
 
@@ -541,15 +510,15 @@ class Loader extends BaseConstraction {
      * @returns {[import('../plugin_type').PlugIn,import('../plugin_type').PlugIn ]}
      */
     getNow(isIgnoreCache = false) {
-        const loopStep = this._getLoopStep();
-        if (!isIgnoreCache && this._cacheKey === loopStep) {
+        const loopStepIndex = this.getLoopStepIndex();
+        if (isIgnoreCache === false && !!this._cacheKey === true && this._cacheKey[0] === loopStepIndex[0] && this._cacheKey[1] === loopStepIndex[1]) {
             return this._cache
 
         }
 
-        //@ts-ignore
+        const loopStep = this._getLoopStep()
         this._cache = this.buildStep(loopStep);
-        this._cacheKey = loopStep;
+        this._cacheKey = loopStepIndex;
         return this._cache;
     }
     getStartStep() {
@@ -653,6 +622,57 @@ class Loader extends BaseConstraction {
 
 
     }
+    /**
+     * 
+     * @param {"now" |  "super"  | "top"} [loop=now]
+     * @param {number | "end" | "start"} [move=-1]  
+     */
+    getRelativePosition(loop = "now", move = -1) {
+        const loopScenarioPath = this._loopStepIndexPath
+        let loopStepIndex, step
+        if (loop === "top") {
+            loopStepIndex = loopScenarioPath[0] || this.getLoopStepIndex();
+            step = loopStepIndex[1]
+
+
+
+        }
+        else if (loop === "super") {
+            loopStepIndex = loopScenarioPath[loopScenarioPath.length - 1];
+            step = loopStepIndex[1]
+
+
+        }
+
+        if (move === "end") {
+            loopStepIndex = this.getLoopStepIndex()
+            step = this.getLoopScenario(loopStepIndex[0]).length - 1
+
+
+
+
+        }
+        if (move === "start") {
+            loopStepIndex = this.getLoopStepIndex()
+            step = 0
+
+        }
+        if (loop === "now") {
+            loopStepIndex = this.getLoopStepIndex()
+            step = loopStepIndex[1] + move
+            if (this.getLoopScenario(loopStepIndex[0]).length - 1 < step || step < 0) {
+                throw "can not move"
+            }
+
+
+
+        }
+        const ret = loopStepIndex.concat([])
+        ret[1] = step
+        return loopStepIndex;
+
+    }
+
     getSubKey() {
         return this._subKeyPath[this._subKeyPath.length - 1]
     }

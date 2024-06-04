@@ -13,7 +13,12 @@ class JSONSerializer {
         const filterIndex = Object.fromEntries(filters.map(function (k) {
             return [k, true];
         }))
+
         for (const key in this) {
+
+
+
+
             if (isExecuteFilter === true && key in filterIndex) {
                 continue;
             }
@@ -53,6 +58,7 @@ class JSONSerializer {
                 this[key].fromJSON(data);
             }
             else {
+
                 this[key] = data;
             }
 
