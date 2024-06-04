@@ -201,6 +201,31 @@ class Saver extends BaseConstraction {
 
 
     }
+    startLoopFilter(name) {
+
+        /**
+         * @type {LoopStep}
+         */
+        const loopStep = this._getLoopStep()
+        const { loopScenarioId, loopScenario } = this._getOrInitializeLoopScenario(name || loopStep.filt, false)
+
+        const filts = loopStep.filts || []
+        if (!name) {
+            loopStep.filt = loopScenarioId
+
+        }
+        else if (filts.indexOf(loopScenarioId) === -1) {
+            filts.push(loopScenarioId)
+            loopStep.filts = filts
+
+        }
+        this._forwardToScenario([loopScenarioId, loopScenario.length - 1])
+
+
+    }
+    endLoopScenario() {
+        this._returnFromScenario()
+    }
     addStepFilter(builderID, options) {
         const _options = this._mergeOptions(builderID, options);
         /**
@@ -231,20 +256,20 @@ class Saver extends BaseConstraction {
      */
     startSubLoop(subLoopType, subLoopKey = '', loopScenarioName = null) {
         const loopStep = this._getLoopStep()
-        let loopScnarioId, step = -1
+        let loopScenarioId, step = -1
         if (subLoopKey in loopStep.s === false) {
-            loopScnarioId = this._getOrInitializeLoopScenario(loopScenarioName, subLoopType).loopScenarioId
+            loopScenarioId = this._getOrInitializeLoopScenario(loopScenarioName, subLoopType).loopScenarioId
 
-            loopStep.s[subLoopKey] = loopScnarioId
+            loopStep.s[subLoopKey] = loopScenarioId
 
 
         }
         else {
-            loopScnarioId = loopStep.s[subLoopKey]
-            step = this.getLoopScenario(loopScnarioId).length - 1
+            loopScenarioId = loopStep.s[subLoopKey]
+            step = this.getLoopScenario(loopScenarioId).length - 1
 
         }
-        this._forwardToScenario([loopScnarioId, step])
+        this._forwardToScenario([loopScenarioId, step])
 
 
 
@@ -279,6 +304,8 @@ class Saver extends BaseConstraction {
 
     }
     /**
+     * @param {string | number | null} [loopScenarioIdOrName=null]
+     * @param {string | false} [subLoopType="loop"]   
     * @returns {{loopScenario:LoopScenario, loopScenarioId:number}}
     */
     _getOrInitializeLoopScenario(loopScenarioIdOrName = null, subLoopType = "loop") {
@@ -307,8 +334,10 @@ class Saver extends BaseConstraction {
         const loopScenarioId = this._loopScenarios.length
         const loopScenario = []
         this._loopScenarios.push(loopScenario)
+        if (subLoopType !== false) {
+            this._subLoopTypeMap[loopScenarioId] = getSubLoopTypeId(subLoopType)
+        }
 
-        this._subLoopTypeMap[loopScenarioId] = getSubLoopTypeId(subLoopType)
         return { loopScenario, loopScenarioId }
 
 
@@ -322,7 +351,7 @@ class Saver extends BaseConstraction {
         return {
             o: options,
             bID: builderID,
-            filt: [],
+
             s: {}
         }
     }
@@ -537,7 +566,16 @@ class Loader extends BaseConstraction {
         const builderConfig = this.builderConfigMap[loopStep.bID];
         const plugIns = builderConfig.builder(loopStep.o, this._commonOptions, this._language, this._functionMap)
         const filters = []
-        for (const filterConfig of loopStep.filt) {
+
+        const my = this
+        const filtConfigs = (loopStep.filts || []).reduce(function (prev, now) {
+            return prev.concat(my._loopScenarios[now])
+        })
+        if (!!loopStep.filt) {
+            filtConfigs.push(this._loopScenarios[loopStep.filt])
+        }
+
+        for (const filterConfig of filtConfigs) {
             const _filterBuilderConfig = this.builderConfigMap[filterConfig.bID]
             const filterPlugins = _filterBuilderConfig.builder(filterConfig.o, this._commonOptions, this._language, this._functionMap)
             filters.push(filterPlugins)
