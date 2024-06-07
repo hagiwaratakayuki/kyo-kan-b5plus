@@ -450,7 +450,8 @@ class StateController extends JSONSerializer {
          */
         const response = await plugins[funcname].call(plugins, request, this._context, this, ...args)
         if (callState === "wait" || callState === "forwardToSub") {
-            this._callbacks.push(response.callback || false)
+            const callback = "callback" in response ? response.callback : false
+            this._callbacks.push(callback)
         }
         if (this.isDebug === true || callState === "in" || callState === "wait") {
             /**
