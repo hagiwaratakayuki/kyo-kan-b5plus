@@ -201,42 +201,7 @@ class Saver extends BaseConstraction {
 
 
     }
-    startLoopFilter(name) {
 
-        /**
-         * @type {LoopStep}
-         */
-        const loopStep = this._getLoopStep()
-        const { loopScenarioId, loopScenario } = this._getOrInitializeLoopScenario(name || loopStep.filt, false)
-
-        const filts = loopStep.filts || []
-        if (!name) {
-            loopStep.filt = loopScenarioId
-
-        }
-        else if (filts.indexOf(loopScenarioId) === -1) {
-            filts.push(loopScenarioId)
-            loopStep.filts = filts
-
-        }
-        this._forwardToScenario([loopScenarioId, loopScenario.length - 1])
-
-
-    }
-    endLoopScenario() {
-        this._returnFromScenario()
-    }
-    addStepFilter(builderID, options) {
-        const _options = this._mergeOptions(builderID, options);
-        /**
-         * @type {LoopStep}
-         */
-        const loopStep = this._getLoopStep()
-        loopStep.filt.push({
-            o: _options,
-            bID: builderID
-        })
-    }
     _mergeOptions(builderID, options) {
         const { options: basicOptions, mergeFunction = this._defaultMerge } = this.builderConfigMap[builderID]
         let _options

@@ -1,7 +1,7 @@
 const { Loader } = require("../../kyo-kan/looploader/save_and_load")
 const { StateController } = require("../../kyo-kan/state_controller")
 
-// TODO change to class execute style
+
 class Basic {
     handlers = {}
     constructor(controllerClass = StateController, loaderClass = Loader) {

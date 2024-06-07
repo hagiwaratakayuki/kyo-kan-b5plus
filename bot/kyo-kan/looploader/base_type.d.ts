@@ -44,20 +44,13 @@ export type LoopState<T> = {
 
 
 }
-export type PluginConfig = {
+export type LoopStep = {
     bID: string
     o: any
-}
-export type LoopStep = PluginConfig & {
     s: { [k: string]: number }
-    filts?: number[]
-    filt?: number
-
-
-
 }
 
-export type LoopScenario = Array<LoopStep | PluginConfig>
+export type LoopScenario = Array<LoopStep>
 
 
 

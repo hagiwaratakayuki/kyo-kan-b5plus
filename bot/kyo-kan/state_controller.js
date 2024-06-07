@@ -444,11 +444,11 @@ class StateController extends JSONSerializer {
         }
 
 
-        const intercepter = new Intercepter(plugins, filters, funcname, request, this._context, this, ...args)
+
         /**
          * @type {StateResponse}
          */
-        const response = (await intercepter.exec()) || {}
+        const response = await plugins[funcname].call(plugins, request, this._context, this, ...args)
         if (callState === "wait" || callState === "forwardToSub") {
             this._callbacks.push(response.callback || false)
         }
@@ -491,7 +491,7 @@ class Intercepter {
         this.plugins = plugins
         this.funcname = funcname
         this.args = args
-        this._next = this._next.bind(this)
+
     }
     async _next() {
 

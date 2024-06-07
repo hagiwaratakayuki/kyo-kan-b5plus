@@ -2,20 +2,26 @@ const { Saver } = require("../looploader/save_and_load");
 
 /**
  * 
- * @param {import("./configure_type").Configure} configure
+ * @param {import("./configure_type").LoopScenarioConfigure} loopScenarioConfigure
  * @param {import("../looploader/base_type").BuilderConfigMap} builderConfigureMap  
  * @param {string} [namespace=''] 
  * @param {any} saverClass 
  */
-function SaveAndLoadConfig(configure, builderConfigureMap, namespace = '', namespaceKey, delimiter = ':', saverClass = Saver) {
+function SaveAndLoadConfig(loopScenarioConfigure, builderConfigureMap, namespace = '', namespaceKey, delimiter = ':', saverClass = Saver) {
     /**
      * @type {Saver}
      */
     const saver = new saverClass()
     let _builderConfigureMap = !namespace === true ? builderConfigureMap : NameSpaceRegistrater(namespace, builderConfigureMap, namespaceKey, delimiter)
     saver.buildersRegistration(_builderConfigureMap)
-    for (const configureNode of configure) {
-        _registartion(configureNode, saver)
+    for (const [name, loopScenario] of Object.entries(loopScenarioConfigure.LoopScenarios)) {
+        saver.startNamedLoopScenario(name, loopScenario.type)
+        _registartion(loopScenarioConfigure, saver)
+        saver.endNamedScenario()
+
+    }
+    for (const loopStep of loopScenarioConfigure.RootScenario) {
+        _registartion(loopStep, saver)
     }
     return saver
 
@@ -24,7 +30,7 @@ function SaveAndLoadConfig(configure, builderConfigureMap, namespace = '', names
 
 /**
  * 
- * @param {import("./configure_type").ConfigureNode} configureNode 
+ * @param {import("./configure_type").LoopStep} configureNode 
  * @param {Saver} saver 
  */
 function _registartion(configureNode, saver) {
@@ -38,6 +44,24 @@ function _registartion(configureNode, saver) {
 
             saver.endSubLoop()
         }
+    }
+    if (!configureNode.namedFilters) {
+        for (const name of configureNode.namedFilters) {
+            saver.startNamedFilter(name)
+            saver.endNamedFilter()
+        }
+
+
+
+    }
+    if (!configureNode.filter === false) {
+        saver.startStepFilter()
+        for (const filterStep of configureNode.filter) {
+            saver.addStepFilter(filterStep.builder, filterStep.options)
+        }
+        saver.endStepFilter()
+
+
     }
 
 
