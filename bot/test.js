@@ -10,5 +10,11 @@ class Test {
         console.log(b)
     }
 }
+class Test2 extends Test {
 
-new Test().hoge()
+}
+
+function Hoge() { }
+console.log(Object.getPrototypeOf(Test2))
+console.log(Object.getPrototypeOf(Test))
+console.log(Object.getPrototypeOf(Hoge))

@@ -7,6 +7,7 @@ export type PlugIn<CallbackType = Function> = Partial<{
     in: CallbackType
 }
 
+
 export type ExistComponents = {
     [k: string]: string
 }

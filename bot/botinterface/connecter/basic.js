@@ -13,7 +13,7 @@ class Basic {
      * @param {any} request 
      * @param {any} resumeData
      */
-    async _run(request, resumeData, builderConfigMap, isStart, language = '', i18n = null, commonOptions = {}, functionMap = {}) {
+    async _run(request, resumeData, builderConfigMap, isStart, language = '', commonOptions = {}, functionMap = {}) {
 
         const loader = this._buildLoader(builderConfigMap, isStart, language, i18n, commonOptions, functionMap)
         const controller = this._buildController(loader)
@@ -64,7 +64,7 @@ class Basic {
 
 
     }
-    _buildLoader(builderConfigMap, isStart, language = '', i18n, commonOptions = {}, functionMap = {}) {
+    _buildLoader(builderConfigMap, isStart, language = '', commonOptions = {}, functionMap = {}) {
         /**
          * @type {import("../../kyo-kan/looploader/base_type").BasicLoader}
          */

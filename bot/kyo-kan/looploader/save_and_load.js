@@ -12,7 +12,7 @@ const { getSubLoopType, getSubLoopTypeId } = require('./loop_type');
  * @typedef {import('./base_type').LoopScenario } LoopScenario
  * @typedef {import('./base_type').LoopState<LoopStep>} LoopState
  * @typedef {import('./base_type').LoopStepIndex} LoopStepIndex
- * @typedef { [number[], string[]] } LoopStepPathPaire
+ * 
 */
 
 
@@ -532,19 +532,7 @@ class Loader extends BaseConstraction {
         const plugIns = builderConfig.builder(loopStep.o, this._commonOptions, this._language, this._functionMap)
         const filters = []
 
-        const my = this
-        const filtConfigs = (loopStep.filts || []).reduce(function (prev, now) {
-            return prev.concat(my._loopScenarios[now])
-        })
-        if (!!loopStep.filt) {
-            filtConfigs.push(this._loopScenarios[loopStep.filt])
-        }
 
-        for (const filterConfig of filtConfigs) {
-            const _filterBuilderConfig = this.builderConfigMap[filterConfig.bID]
-            const filterPlugins = _filterBuilderConfig.builder(filterConfig.o, this._commonOptions, this._language, this._functionMap)
-            filters.push(filterPlugins)
-        }
         return [plugIns, filters]
 
 

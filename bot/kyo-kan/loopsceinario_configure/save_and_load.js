@@ -28,6 +28,7 @@ function SaveAndLoadConfig(loopScenarioConfigure, builderConfigureMap, namespace
 }
 
 
+
 /**
  * 
  * @param {import("./configure_type").LoopStep} configureNode 
@@ -45,24 +46,7 @@ function _registartion(configureNode, saver) {
             saver.endSubLoop()
         }
     }
-    if (!configureNode.namedFilters) {
-        for (const name of configureNode.namedFilters) {
-            saver.startNamedFilter(name)
-            saver.endNamedFilter()
-        }
 
-
-
-    }
-    if (!configureNode.filter === false) {
-        saver.startStepFilter()
-        for (const filterStep of configureNode.filter) {
-            saver.addStepFilter(filterStep.builder, filterStep.options)
-        }
-        saver.endStepFilter()
-
-
-    }
 
 
 }

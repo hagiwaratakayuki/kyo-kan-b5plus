@@ -222,6 +222,7 @@ class StateController extends JSONSerializer {
         let responses = []
         let _subLoopInit = response.subLoopInit || {}
         this._context.callback = response.callback;
+
         const hookResponses = await this._callHookFunction("forwardToSub", request, response, false);
         for (const hookResponse of hookResponses) {
             if (!!hookResponse.subLoopInit === true) {
