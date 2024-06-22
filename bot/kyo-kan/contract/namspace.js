@@ -19,4 +19,4 @@ function NameSpaceContract(namespace, name, delimiter) {
     return namespace + delimiter + name
 }
 
-module.exports(NameSpaceRegistrater, NameSpaceContract)
+module.exports = { NameSpaceRegistrater, NameSpaceContract }

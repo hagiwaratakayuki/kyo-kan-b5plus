@@ -1,3 +1,4 @@
+const { NameSpaceRegistrater } = require("../contract/namspace");
 const { Saver } = require("../looploader/save_and_load");
 
 /**

@@ -2,17 +2,30 @@
  * @typedef {import("../../../kyo-kan/context").Context} Context
  */
 
+
+const RENDERER_KEY = "renderer"
+const EXEC_KEY = "exec"
 //Kyo-Kan MVC
 
 
 
 class StepControllerClass {
+    /**
+     * @template T
+     * @param {*} options 
+     * @param {*} commonOptions 
+     * @param {*} language 
+     * @param {T} functionMap 
+     */
     constructor(options, commonOptions, language, functionMap) {
 
 
         this.options = options
         this.commonOptions = commonOptions,
             this.language = language
+        /**
+         * @type {T}
+         */
         this.functionMap = functionMap
     }
 
@@ -51,10 +64,17 @@ class StepControllerClass {
         }
 
     }
+    /**
+     * @returns { import("../../../kyo-kan/plugin_type").StateResponse }
+     */
+
+    exec(request, context, stateController) {
+
+    }
 }
 
 
-module.exports = { StepControllerClass }
+module.exports = { StepControllerClass, EXEC_KEY, RENDERER_KEY }
 
 
 

@@ -1,4 +1,5 @@
 export type StandardizedRequestTypeText = "text"
+export type StandardizedRequestTypeSelect = "select"
 export type StandardizedRequestTypeVideo = "video"
 export type StandardizedRequestTypeAudio = "audio"
 export type StandardizedRequestTypeFile = "file"
@@ -15,6 +16,9 @@ export type StandardizedRequestBasic<PlatformType = any, StandardizedRequestType
 
 export type StandardizedRequestText<PlatformType = any> = StandardizedRequestBasic<PlatformType, StandardizedRequestTypeText> & {
     text: string
+}
+export type StandardizedRequestSelect<PlatformType = any> = StandardizedRequestBasic<PlatformType, StandardizedRequestTypeSelect> & {
+    select: string
 }
 export type StandardizedRequestLocation<PlatformType = any> = StandardizedRequestBasic<PlatformType, StandardizedRequestTypeLocation> & {
     text?: string

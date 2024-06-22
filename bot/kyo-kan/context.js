@@ -1,4 +1,5 @@
 
+const deepmerge = require('deepmerge');
 const { JSONSerializer } = require('./json_serializer')
 
 class Context extends JSONSerializer {
@@ -73,6 +74,11 @@ class Context extends JSONSerializer {
     }
     setLoopData(data) {
         this._loopDatas[this._loopDatas.length - 1] = data
+    }
+    updateLoopData(data) {
+        this._loopDatas[this._loopDatas.length - 1] = deepmerge(this._loopDatas[this._loopDatas.length - 1], data)
+
+
     }
     getSubLoopData() {
         return this._subLoopData
