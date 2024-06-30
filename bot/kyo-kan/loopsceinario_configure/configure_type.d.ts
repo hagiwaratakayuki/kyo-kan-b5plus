@@ -1,34 +1,34 @@
-import { SubLoopType } from "../looploader/base_type"
+import { BuilderConfig, SubLoopType } from "../looploader/base_type"
 
 export type PluginConfig<OptionsType = any> = {
-    builder: string
+    builder: string | BuilderConfig
     options: OptionsType
 
 }
 
-export type LoopStep<OptionsType = any> = PluginConfig<OptionsType> & {
+
+export type LoopStepConfigure<OptionsType = any> = PluginConfig<OptionsType> & {
 
     subLoops?: {
         [k: string]: {
             type: SubLoopType,
-            loopSteps: LoopStep<any>[]
+            loopSteps: LoopStepConfigure<any>[]
         } | string
     }
-    filter: PluginConfig[]
-    namedFilters: string[]
+
 
 }
 
-export type loopScenario<> = {
+export type loopScenario = {
     type: string
-    loopSteps: LoopStep[]
+    loopSteps: LoopStepConfigure[]
 
 
 }
 
 
 export type LoopScenarioConfigure = {
-    RootScenario: LoopStep[]
+    RootScenario: LoopStepConfigure[]
     LoopScenarios?: {
         [name: string]: loopScenario
 

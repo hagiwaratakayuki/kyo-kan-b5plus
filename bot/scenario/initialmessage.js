@@ -1,8 +1,12 @@
 const deepmerge = require("deepmerge");
 
-const { Context } = require("../../../kyo-kan/context");
-const { StepControllerClass, EXEC_KEY, RENDERER_KEY } = require("../botinterface/plugin/scenario/step_controller");
 
+const { StepControllerClass, MVCUtil } = require("../botinterface/plugin/scenario/step_controller");
+const { ClassConstructBuilder } = require("../botinterface/plugin/utility/classconstructbuilder");
+
+/**
+ * @typedef {Import("../kyo-kan/context").Context} Context
+ */
 
 /**
  * @typedef {"develop" | "search" | "execute" | "edit"} FunctionName
@@ -39,7 +43,7 @@ class InitialMessage extends StepControllerClass {
      * @param {import("../../standized_protocol/function_map/basic").StandardizedFunctionMap} funcMap 
      */
     constructor(options, commonOptions, language, funcMap) {
-        super(deepmerge(defaultOptions, options), commonOptions, language, funcMap)
+        super(deepmerge(defaultOptions || {}, options || {}), commonOptions, language, funcMap)
     }
     /**
      * 
@@ -62,44 +66,13 @@ class InitialMessage extends StepControllerClass {
     }
 
 }
-const name = "initialMessage"
-/**
- * @type {import("../kyo-kan/looploader/base_type").BuilderConfig}
- */
-const buildr = {
-    builder: function (options, commonOptions, language, funcMap) {
-        return new InitialMessage(options, commonOptions, language, funcMap)
-    }
-}
-/**
- * @type {import("../kyo-kan/loopsceinario_configure/configure_type").LoopStep}
- */
-const scenario = {
-    builder: name,
-    subLoops: {
 
-    }
-}
+const scenario = MVCUtil(ClassConstructBuilder(InitialMessage), [
+    { builder: "select.view" }
+], [
+    { builder: "select.parse" }
+])
 
 
 
-
-scenario.subLoops[RENDERER_KEY] = {
-    type: "loop",
-    loopSteps: [
-        {
-            builder: "select.view"
-        }
-    ]
-}
-
-scenario.subLoops[EXEC_KEY] = {
-    type: "loop",
-    loopSteps: [
-        {
-            builder: "select.parse"
-        }
-    ]
-}
-
-module.exports = { name, buildr, scenario }
+module.exports = { scenario }

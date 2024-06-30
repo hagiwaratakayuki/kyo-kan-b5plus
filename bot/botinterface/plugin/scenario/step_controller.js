@@ -2,6 +2,8 @@
  * @typedef {import("../../../kyo-kan/context").Context} Context
  */
 
+const { ClassConstructBuilder } = require("../utility/classconstructbuilder")
+
 
 const RENDERER_KEY = "renderer"
 const EXEC_KEY = "exec"
@@ -37,7 +39,7 @@ class StepControllerClass {
 
         return {
             state: "forwardToSub",
-            subkey: "render",
+            subkey: RENDERER_KEY,
             callback: "afterRender"
         }
 
@@ -60,6 +62,7 @@ class StepControllerClass {
     acceptRequest(request, context, stateController) {
         return {
             state: "forwardToSub",
+            subkey: EXEC_KEY,
             callback: "exec"
         }
 
@@ -72,9 +75,34 @@ class StepControllerClass {
 
     }
 }
+/**
+ * @typedef {import("../../../kyo-kan/loopsceinario_configure/configure_type").LoopStepConfigure} LoopStepConfigure
+ * @typedef {LoopStepConfigure[]} LoopStepConfigures
+ * @param {*} builder
+ * @param {LoopStepConfigures} renderers 
+ * @param {LoopStepConfigures} execs
+ * @returns {LoopStepConfigure}
+ */
+function MVCUtil(builder, renderers, execs, options) {
+    /**
+     * @type {LoopStepConfigure}
+     */
+    const ret = {
+        builder,
+        options,
+        subLoops: {
+
+        }
+    }
+
+    ret.subLoops[RENDERER_KEY] = { type: "loop", loopSteps: renderers }
+    ret.subLoops[EXEC_KEY] = { type: "loop", loopSteps: execs }
+    return ret
 
 
-module.exports = { StepControllerClass, EXEC_KEY, RENDERER_KEY }
+}
+
+module.exports = { StepControllerClass, EXEC_KEY, RENDERER_KEY, MVCUtil }
 
 
 

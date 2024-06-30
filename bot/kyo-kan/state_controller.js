@@ -164,6 +164,7 @@ class StateController extends JSONSerializer {
     async forwardOut(request, response) {
         let responses = []
         const now = this.loader.getNow();
+
         if (now.forwardOut) {
             const _response = await this._call('forwardOut', now, request, response);
             responses.push(_response);
@@ -182,7 +183,8 @@ class StateController extends JSONSerializer {
 
 
 
-        while (this.loader.positionState.isSubLoopEnd === true && this._emitter.getState() === 'forwardOut' && this.loader.isTopLoop() === false) {
+
+        while (this.loader.isLoopEnd() === true && this._emitter.getState() === 'forwardOut' && this.loader.isTopLoop() === false) {
             this.loader.forward()
             let _responses = await this._emitter.emit("returnFromSub", request, response, false);
             responses = responses.concat(_responses);

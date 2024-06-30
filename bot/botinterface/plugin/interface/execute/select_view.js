@@ -13,17 +13,17 @@ const name = "SelectView"
  */
 function selectViewBuilder(options, commonOptions, language, functionMap) {
 
-    const ret = {
+    const plugins = {
         'functionMap': functionMap,
-        'options': options,
+        'options': options || {},
         /**
          * @type {import('../../../../kyo-kan/protocol').PluginCallbackProtocol}
         */
         in: function (request, context, stateController) {
 
-            const messageKey = options.messageKey || "message"
-            const titleKey = options.titleKey || "title"
-            const optionsKey = options.optionsKey || 'options'
+            const messageKey = this.options.messageKey || "message"
+            const titleKey = this.options.titleKey || "title"
+            const optionsKey = this.options.optionsKey || 'options'
             const loopData = context.getLoopData()
             /**
              * @type {import('../../../standized_protocol/responsetypes/basic').StandardizedSelectionStateResponse}

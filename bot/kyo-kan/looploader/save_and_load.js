@@ -58,7 +58,8 @@ class BaseConstraction extends JSONSerializer {
 
     }
     getLoopScenario(loopScenarioId) {
-        return this._loopScenarios[loopScenarioId || this._loopScenarioId]
+        const _loopScenarioId = typeof loopScenarioId === "undefined" ? this._loopScenarioId : loopScenarioId
+        return this._loopScenarios[_loopScenarioId]
     }
     getLoopScenarioByName(loopScenarioName) {
         const loopScenarioId = this._nameToId[loopScenarioName]
@@ -111,6 +112,13 @@ class BaseConstraction extends JSONSerializer {
 
         this._loopScenarioId = loopScenarioId
         this._step = step
+        const isSubLoopEnd = this._step >= this.getLoopScenario(loopScenarioId).length - 1
+        const isEnd = isSubLoopEnd && loopScenarioId === 0
+
+
+
+
+
 
     }
     /**
@@ -332,7 +340,6 @@ class Loader extends BaseConstraction {
     /**
      * 
      * @param {boolean} isFirst 
-     * @param {string} i18nFunc
      * @param {import('../plugin_type').CommonOptions} commonOptions  
      * @param {any} functionMap
      * @returns 
@@ -369,6 +376,9 @@ class Loader extends BaseConstraction {
 
 
     }
+    isLoopEnd() {
+        return this._step >= this.getLoopScenario().length - 1 || getSubLoopType(this._subLoopTypeMap[this._loopScenarioId]) === "selection"
+    }
     setFunctionMap(functionMap) {
         Object.assign(this._functionMap, functionMap)
 
@@ -379,9 +389,9 @@ class Loader extends BaseConstraction {
      */
     setLoopStepIndex(loopStepIndex) {
         super.setLoopStepIndex(loopStepIndex)
-        const [loopScenarioId, step] = loopStepIndex
+        const [loopScenarioId, step = -1] = loopStepIndex
 
-        if (this.getLoopScenario(loopScenarioId).length - 1 === step && step != -1) {
+        if (this.getLoopScenario(loopScenarioId).length - 1 <= step && step != -1) {
 
             this.positionState = { isEnd: this.isTopLoop(), isSubLoopEnd: true }
         }
@@ -440,14 +450,14 @@ class Loader extends BaseConstraction {
 
 
 
-        if (this.positionState.isSubLoopEnd === false) {
+        if (this.isLoopEnd() === false) {
             this._step += 1
             const subLoopType = getSubLoopType(this._subLoopTypeMap[this._loopScenarioId])
             if (subLoopType === 'selection') {
                 isSubLoopEnd = true
             }
             if (subLoopType === 'loop') {
-                isSubLoopEnd = this._step === this.getLoopScenario().length - 1
+                isSubLoopEnd = this._step >= this.getLoopScenario().length - 1
             }
 
 
