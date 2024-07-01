@@ -8,7 +8,7 @@ describe('Executer', function () {
         const loader = new Loader(true, 'ja', {}, { i18n: function () { return "" } })
         loader.fromJSON(config)
         const controller = new StateController(loader)
-        await controller.run({})
+        console.log((await controller.run({})))
 
     })
 })

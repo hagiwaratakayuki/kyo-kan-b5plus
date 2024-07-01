@@ -225,6 +225,11 @@ class StateController extends JSONSerializer {
         let _subLoopInit = response.subLoopInit || {}
         this._context.callback = response.callback;
 
+        this._callbacks.push("callback" in response ? response.callback : false)
+
+
+
+
         const hookResponses = await this._callHookFunction("forwardToSub", request, response, false);
         for (const hookResponse of hookResponses) {
             if (!!hookResponse.subLoopInit === true) {
@@ -305,8 +310,9 @@ class StateController extends JSONSerializer {
     }
     async returnFromSub(request, response, isAutoForward = true) {
 
-        return this._context.returnFromSub(request, response, isAutoForward = isAutoForward);
+        this._context.returnFromSub(request, response, isAutoForward = isAutoForward);
 
+        return this._subLoopFinishProcess(request, isAutoForward)
 
 
     }
@@ -351,7 +357,7 @@ class StateController extends JSONSerializer {
 
                     this._emitter.setState(hookResponse.state)
                     if (hookResponse.state === 'wait') {
-                        return hookResponses
+                        return responses
                     }
                     const hookResponses = await this._emitter.run(request, response, isAutoForward)
                     responses = responses.concat(hookResponses)
