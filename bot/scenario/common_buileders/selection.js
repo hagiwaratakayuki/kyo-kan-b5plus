@@ -1,4 +1,4 @@
-const { selectViewBuilder, selectParserBuilder } = require("../../botinterface/plugin/interface/execute/select_view");
+const { selectViewBuilder, selectParserBuilder } = require("../../botinterface/plugin/interface/select/view/execute");
 
 const SELECT_VIEW = "select.view"
 const SELECT_PARSE = "select.parse"

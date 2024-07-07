@@ -8,7 +8,7 @@ const name = "select"
 
 /**
  * @param {{id:any}} options 
- * @param {import('../../../standized_protocol/function_map/basic').StandardizedFunctionMap} functionMap 
+ * @param {import('../../../../standized_protocol/function_map/basic').StandardizedFunctionMap} functionMap 
  */
 function createrBuilder(options, commonOptions, language, functionMap) {
 
@@ -16,19 +16,15 @@ function createrBuilder(options, commonOptions, language, functionMap) {
         'functionMap': functionMap,
         'options': options,
         /**
-         * @type {import('../../../../kyo-kan/protocol').PluginCallbackProtocol}
+         * @type {import('../../../../../kyo-kan/protocol').PluginCallbackProtocol}
         */
         in: function (request, context, stateController) {
 
             const id = options.id
             const messageKey = options.messageKey || "message"
-            const titleKey = options.titleKey || "title"
-            const pluginNames = stateController.loader.getSubLoopDocuments('', ["title"]).map(function (r) {
-                return { lavel: r.document.title.use, value: r.subid }
 
-            })
             /**
-             * @type {import('../../../standized_protocol/responsetypes/basic').StandardizedSelectionStateResponse}
+             * @type {import('../../../../standized_protocol/responsetypes/basic').StandardizedSelectionStateResponse}
              * */
             const ret = {
                 state: "wait",
@@ -51,7 +47,7 @@ function createrBuilder(options, commonOptions, language, functionMap) {
          * 
          * @param {CreateRequest} request
          * @param {any} context
-         * @param {import('../../../../kyo-kan/state_controller').StateController} controller
+         * @param {import('../../../../../kyo-kan/state_controller').StateController} controller
          * @returns {StateResponse}
          */
         select: function (request, context, controller) {

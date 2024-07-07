@@ -1,4 +1,4 @@
-const { Context } = require('../../../../kyo-kan/context')
+const { Context } = require('../../../../../kyo-kan/context')
 
 
 /**
@@ -9,7 +9,7 @@ const name = "SelectView"
 
 /**
  * @param {{id:any}} options 
- * @param {import('../../../standized_protocol/function_map/basic').StandardizedFunctionMap} functionMap 
+ * @param {import('../../../../standized_protocol/function_map/basic').StandardizedFunctionMap} functionMap 
  */
 function selectViewBuilder(options, commonOptions, language, functionMap) {
 
@@ -17,7 +17,7 @@ function selectViewBuilder(options, commonOptions, language, functionMap) {
         'functionMap': functionMap,
         'options': options || {},
         /**
-         * @type {import('../../../../kyo-kan/protocol').PluginCallbackProtocol}
+         * @type {import('../../../../../kyo-kan/protocol').PluginCallbackProtocol}
         */
         in: function (request, context, stateController) {
 
@@ -26,7 +26,7 @@ function selectViewBuilder(options, commonOptions, language, functionMap) {
             const optionsKey = this.options.optionsKey || 'options'
             const loopData = context.getLoopData()
             /**
-             * @type {import('../../../standized_protocol/responsetypes/basic').StandardizedSelectionStateResponse}
+             * @type {import('../../../../standized_protocol/responsetypes/basic').StandardizedSelectionStateResponse}
              * */
             const ret = {
                 clientResponse: {
@@ -52,7 +52,7 @@ function selectViewBuilder(options, commonOptions, language, functionMap) {
 }
 /**
  * @param {{id:any}} options 
- * @param {import('../../../standized_protocol/function_map/basic').StandardizedFunctionMap} functionMap 
+ * @param {import('../../../../standized_protocol/function_map/basic').StandardizedFunctionMap} functionMap 
  */
 function selectParserBuilder(options, commonOptions, language, functionMap) {
 
@@ -62,9 +62,9 @@ function selectParserBuilder(options, commonOptions, language, functionMap) {
 
         /**
          * 
-         * @param {import('../../../standized_protocol/requestype/basic').StandardizedRequestSelect} request
-         * @param {import( '../../../../kyo-kan/context').Context } context
-         * @param {import('../../../../kyo-kan/state_controller').StateController} controller
+         * @param {import('../../../../standized_protocol/requestype/basic').StandardizedRequestSelect} request
+         * @param {import( '../../../../../kyo-kan/context').Context } context
+         * @param {import('../../../../../kyo-kan/state_controller').StateController} controller
          * @returns {StateResponse}
          */
         in: function (request, context, controller) {
@@ -76,6 +76,7 @@ function selectParserBuilder(options, commonOptions, language, functionMap) {
             }
 
             context.setLoopData({ selection: request.select })
+
 
 
 

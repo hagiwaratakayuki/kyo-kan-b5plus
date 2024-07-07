@@ -8,7 +8,18 @@ describe('Executer', function () {
         const loader = new Loader(true, 'ja', {}, { i18n: function () { return "" } })
         loader.fromJSON(config)
         const controller = new StateController(loader)
+
         console.log((await controller.run({})))
+
+        /**
+         * @type {import('../botinterface/standized_protocol/requestype/basic').StandardizedRequestSelect}
+         */
+        const seconndRequest = {
+            type: "select",
+            select: 0
+
+
+        }
 
     })
 })
