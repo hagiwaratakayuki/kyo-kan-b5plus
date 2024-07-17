@@ -1,7 +1,7 @@
 const deepmerge = require("deepmerge");
 
 
-const { StepControllerClass, MVCUtil } = require("../botinterface/plugin/scenario/step_controller");
+const { StepControllerClass, VPEUtil: MVCUtil } = require("../botinterface/plugin/pattern/view_parse_exec");
 const { ClassConstructBuilder } = require("../botinterface/plugin/utility/classconstructbuilder");
 
 /**

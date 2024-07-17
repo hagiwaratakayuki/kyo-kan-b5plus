@@ -7,11 +7,11 @@ const { ClassConstructBuilder } = require("../utility/classconstructbuilder")
 
 const RENDERER_KEY = "renderer"
 const EXEC_KEY = "exec"
-//Kyo-Kan MVC
 
 
 
-class StepControllerClass {
+
+class ViewParseExecTemplate {
     /**
      * @template T
      * @param {*} options 
@@ -76,6 +76,7 @@ class StepControllerClass {
     }
 }
 /**
+ * View Parse Exec Pattern
  * @typedef {import("../../../kyo-kan/loopsceinario_configure/configure_type").LoopStepConfigure} LoopStepConfigure
  * @typedef {LoopStepConfigure[]} LoopStepConfigures
  * @param {*} builder
@@ -83,7 +84,7 @@ class StepControllerClass {
  * @param {LoopStepConfigures} execs
  * @returns {LoopStepConfigure}
  */
-function MVCUtil(builder, renderers, execs, options) {
+function VPEUtil(builder, renderers, execs, options) {
     /**
      * @type {LoopStepConfigure}
      */
@@ -102,7 +103,7 @@ function MVCUtil(builder, renderers, execs, options) {
 
 }
 
-module.exports = { StepControllerClass, EXEC_KEY, RENDERER_KEY, MVCUtil }
+module.exports = { StepControllerClass: ViewParseExecTemplate, EXEC_KEY, RENDERER_KEY, VPEUtil }
 
 
 

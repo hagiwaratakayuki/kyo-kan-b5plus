@@ -1,7 +1,7 @@
 const deepmerge = require("deepmerge");
 
 
-const { StepControllerClass, MVCUtil } = require("../../../scenario/step_controller");
+const { StepControllerClass, VPEUtil: VPEUtil } = require("../../../pattern/view_parse_exec");
 const { ClassConstructBuilder } = require("../../../utility/classconstructbuilder");
 const { Context } = require("../../../../../kyo-kan/context");
 
@@ -61,11 +61,11 @@ const DEFAULTEXECUTERS = [
     { builder: "select.parse" }
 ]
 
-const MVCSelectGenarater = function (functions, functionsKey = "functions", cls = FunctionSelect, renderers = DEFAULTEXECUTERS, execs = DEFAULTEXECUTERS) {
-    const ret = MVCUtil(ClassConstructBuilder(cls), renderers, execs)
+const VPESelectGenarater = function (functions, functionsKey = "functions", cls = FunctionSelect, renderers = DEFAULTEXECUTERS, execs = DEFAULTEXECUTERS) {
+    const ret = VPEUtil(ClassConstructBuilder(cls), renderers, execs)
     ret.subLoops[functionsKey] = functions
     return ret
 }
 
 
-module.exports = { MVCSelectGenarater, FunctionSelect }
+module.exports = { VPESelectGenarater, FunctionSelect }
