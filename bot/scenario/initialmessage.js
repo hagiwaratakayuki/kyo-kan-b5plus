@@ -19,7 +19,7 @@ const functionNames = ["develop", "edit", "execute", "search"]
 
 const defaultOptions = {
     i18n: {
-        jp: {
+        ja: {
             message: "やりたいことを選んでください",
             select: {
                 develop: "ボットを作る",
@@ -54,10 +54,11 @@ class InitialMessage extends StepControllerClass {
     in(request, context, stateController) {
 
         const response = super.in(request, context, stateController)
-        const subLoopInit = { message: this.functionMap.i18n('message', this.language) }
-        subLoopInit.select = {}
+        const i18nFunc = this.functionMap.i18n('options');
+        const subLoopInit = { message: i18nFunc('message', this.language, this.options) }
+        subLoopInit.options = {}
         for (const key of Object.keys(functionNames)) {
-            subLoopInit.select[key] = this.functionMap.i18n('select.' + key, this.language, this.options)
+            subLoopInit.options[key] = i18nFunc('select.' + key, this.language, this.options)
 
         }
         response.subLoopInit = subLoopInit
