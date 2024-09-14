@@ -1,7 +1,7 @@
 const deepmerge = require("deepmerge");
 
 
-const { StepControllerClass, VPEUtil: VPEUtil } = require("../../../pattern/view_parse_exec");
+const { StepControllerClass, VPEUtil } = require("../../../pattern/view_parse_exec");
 const { ClassConstructBuilder } = require("../../../utility/classconstructbuilder");
 const { Context } = require("../../../../../kyo-kan/context");
 

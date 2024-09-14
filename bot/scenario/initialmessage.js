@@ -1,8 +1,8 @@
 const deepmerge = require("deepmerge");
 
 
-const { StepControllerClass, VPEUtil: MVCUtil } = require("../botinterface/plugin/pattern/view_parse_exec");
-const { ClassConstructBuilder } = require("../botinterface/plugin/utility/classconstructbuilder");
+const { ViewParseExecTemplate, VPEUtil } = require("../botinterface/plugin/pattern/view_parse_exec");
+const { SELECT_VIEW, SELECT_PARSE } = require("./common_buileders/selection");
 
 /**
  * @typedef {Import("../kyo-kan/context").Context} Context
@@ -34,7 +34,7 @@ const defaultOptions = {
     }
 }
 
-class InitialMessage extends StepControllerClass {
+class InitialMessage extends ViewParseExecTemplate {
     /**
      * 
      * @param {*} options 
@@ -68,10 +68,10 @@ class InitialMessage extends StepControllerClass {
 
 }
 
-const scenario = MVCUtil(ClassConstructBuilder(InitialMessage), [
-    { builder: "select.view" }
+const scenario = VPEUtil(InitialMessage, [
+    { builder: SELECT_VIEW }
 ], [
-    { builder: "select.parse" }
+    { builder: SELECT_PARSE }
 ])
 
 

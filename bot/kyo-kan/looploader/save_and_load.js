@@ -535,11 +535,18 @@ class Loader extends BaseConstraction {
     /**
      * 
      * @param {import('./base_type').LoopStep} loopStep
-     * @returns {any} 
+     * 
      */
     buildStep(loopStep) {
         const builderConfig = this.builderConfigMap[loopStep.bID];
-        const plugIns = builderConfig.builder(loopStep.o, this._commonOptions, this._language, this._functionMap)
+        let plugIns;
+        try {
+            plugIns = new builderConfig.builder(loopStep.o, this._commonOptions, this._language, this._functionMap);
+        }
+        catch {
+            plugIns = builderConfig.builder(loopStep.o, this._commonOptions, this._language, this._functionMap)
+        }
+
         const filters = []
 
 

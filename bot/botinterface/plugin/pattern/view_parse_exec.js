@@ -2,7 +2,7 @@
  * @typedef {import("../../../kyo-kan/context").Context} Context
  */
 
-const { ClassConstructBuilder } = require("../utility/classconstructbuilder")
+
 
 
 const RENDERER_KEY = "renderer"
@@ -103,7 +103,7 @@ function VPEUtil(builder, renderers, execs, options) {
 
 }
 
-module.exports = { StepControllerClass: ViewParseExecTemplate, EXEC_KEY, RENDERER_KEY, VPEUtil }
+module.exports = { ViewParseExecTemplate, EXEC_KEY, RENDERER_KEY, VPEUtil }
 
 
 

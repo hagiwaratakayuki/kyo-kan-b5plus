@@ -15,7 +15,7 @@ const config = {
     channelSecret: CHANNEL_SECRET
 }
 /**
- * @type {client:any, blobClient:any}
+ * @type {{client:any, blobClient:any}}
  */
 let _clients = {};
 let _cacheTime;
@@ -37,8 +37,7 @@ async function getClients() {
 }
 
 app.post('/bot/line/webhook', middleware(config), async (req, res) => {
-    req.body.events // webhook event objects from LINE Platform
-    req.body.destination // user ID of the bot
+
     const switcher = new LineSwitcher();
     const { client, blobClient } = await getClients();
     await switcher.run(req.body.events, client, blobClient, req.body.destination);
