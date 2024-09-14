@@ -48,9 +48,7 @@ async function getAccessToken() {
 async function getChannelSecret(isLocal = false) {
 
     const secret = await loadSecret(isLocal, !isLocal)
-    /**
-     * @type {LineSecret}
-     */
+
     const ret = { channelSecret: secret.accessToken, channelId: secret.channelId }
     return ret;
 

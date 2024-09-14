@@ -1,6 +1,6 @@
 
 
-const { Switcher } = require("../../switcher");
+const { Switcher } = require("../../../botinterface/switcher");
 const { Handlers } = require("./handler")
 
 
@@ -14,9 +14,10 @@ class LineSwitcher extends Switcher {
      * 
      * @param {import("@line/bot-sdk").WebhookRequestBody} request 
      * @param {import("@line/bot-sdk").messagingApi.MessagingApiClient} client
-     * @param {import("@line/bot-sdk").messagingApi.MessagingApiBlobClient} blobClient  
+     * @param {import("@line/bot-sdk").messagingApi.MessagingApiBlobClient} blobClient
+     * @param {string} botId   
      */
-    async run(request, client, blobClient) {
+    async run(request, client, blobClient, botId) {
         const proms = []
         for (const event of request.events) {
             /**
