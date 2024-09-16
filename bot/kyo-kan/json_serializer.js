@@ -1,3 +1,5 @@
+const merge = require('deepmerge')
+
 class JSONSerializer {
     toJSON() {
         return this._toJSON();
@@ -28,12 +30,18 @@ class JSONSerializer {
             if (!element && elementType === 'object') {
                 continue;
             }
-            if (elementType === 'undefined' || elementType === 'function') {
+            if (elementType === 'undefined' || elementType === 'function' || elementType == 'symbol') {
                 continue;
             }
             if (elementType === 'object' && 'toJSON' in element === true) {
                 ret[key] = element.toJSON();
 
+            }
+            if (elementType === 'object') {
+                ret[key] = merge(element, {});
+            }
+            else if (Array.isArray(element)) {
+                ret[key] = merge(element, []);
             }
             else {
                 ret[key] = element;

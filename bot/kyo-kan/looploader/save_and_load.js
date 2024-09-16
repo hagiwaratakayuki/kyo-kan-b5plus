@@ -79,7 +79,56 @@ class BaseConstraction extends JSONSerializer {
 
 
     }
+    /**
+         * 
+         * @param {"now" |  "super"  | "top"} [loop=now]
+         * @param {number | "end" | "start"} [move=-1]  
+         */
+    getRelativePosition(loop = "now", move = -1) {
+        const loopScenarioPath = this._loopStepIndexPath
+        let loopStepIndex, step
+        if (loop === "top") {
+            loopStepIndex = loopScenarioPath[0] || this.getLoopStepIndex();
+            step = loopStepIndex[1]
 
+
+
+        }
+        else if (loop === "super") {
+            loopStepIndex = loopScenarioPath[loopScenarioPath.length - 1];
+            step = loopStepIndex[1]
+
+
+        }
+
+        if (move === "end") {
+            loopStepIndex = this.getLoopStepIndex()
+            step = this.getLoopScenario(loopStepIndex[0]).length - 1
+
+
+
+
+        }
+        if (move === "start") {
+            loopStepIndex = this.getLoopStepIndex()
+            step = 0
+
+        }
+        if (loop === "now") {
+            loopStepIndex = this.getLoopStepIndex()
+            step = loopStepIndex[1] + move
+            if (this.getLoopScenario(loopStepIndex[0]).length - 1 < step || step < 0) {
+                throw "can not move"
+            }
+
+
+
+        }
+        const ret = loopStepIndex.concat([])
+        ret[1] = step
+        return loopStepIndex;
+
+    }
 
 
 
@@ -630,56 +679,7 @@ class Loader extends BaseConstraction {
 
 
     }
-    /**
-     * 
-     * @param {"now" |  "super"  | "top"} [loop=now]
-     * @param {number | "end" | "start"} [move=-1]  
-     */
-    getRelativePosition(loop = "now", move = -1) {
-        const loopScenarioPath = this._loopStepIndexPath
-        let loopStepIndex, step
-        if (loop === "top") {
-            loopStepIndex = loopScenarioPath[0] || this.getLoopStepIndex();
-            step = loopStepIndex[1]
 
-
-
-        }
-        else if (loop === "super") {
-            loopStepIndex = loopScenarioPath[loopScenarioPath.length - 1];
-            step = loopStepIndex[1]
-
-
-        }
-
-        if (move === "end") {
-            loopStepIndex = this.getLoopStepIndex()
-            step = this.getLoopScenario(loopStepIndex[0]).length - 1
-
-
-
-
-        }
-        if (move === "start") {
-            loopStepIndex = this.getLoopStepIndex()
-            step = 0
-
-        }
-        if (loop === "now") {
-            loopStepIndex = this.getLoopStepIndex()
-            step = loopStepIndex[1] + move
-            if (this.getLoopScenario(loopStepIndex[0]).length - 1 < step || step < 0) {
-                throw "can not move"
-            }
-
-
-
-        }
-        const ret = loopStepIndex.concat([])
-        ret[1] = step
-        return loopStepIndex;
-
-    }
 
     getSubKey() {
         return this._subKeyPath[this._subKeyPath.length - 1]
