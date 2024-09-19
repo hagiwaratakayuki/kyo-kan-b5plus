@@ -14,11 +14,42 @@ const { getSubLoopType, getSubLoopTypeId } = require('./loop_type');
  * @typedef {import('./base_type').LoopStepIndex} LoopStepIndex
  * 
 */
+class LoopScenarios {
+    constructor() {
+        this.length = 0;
+    }
+    /**
+     * 
+     * @param {LoopScenario} scenario 
+     */
+    push(scenario) {
+        this[this.length] = scenario;
+        this.length++;
+
+    }
+    toJSON() {
+        let index = 0;
+        const limit = this.length
+        const values = {};
+        while (index < limit) {
+            if (index in this === false) {
+                continue;
+            }
+            values[index] = merge(this[index], {})
+        }
+        return { length, values };
+    }
+    fromJSON({ values, length }) {
+        this.length = length;
+
+        Object.assign(this, values);
+
+    }
+
+}
 
 
-
-
-
+// シナリオ　水平に並んだステップの塊。ステップ　プラグインとオプション　サブループを持つ。　サブループ　階層的に下として実行されるループ　サブループidとシナリオidのペアで表現される
 class BaseConstraction extends JSONSerializer {
 
     constructor() {
@@ -27,22 +58,24 @@ class BaseConstraction extends JSONSerializer {
          * @type {import('./base_type').BuilderConfig[]}
          */
         this._startConfigures = []
-
-        this._loopScenarioId = 0
-
         /**
          * @type {BuilderConfigMap}
          */
         this.builderConfigMap = {};
-        /**
-         * @type {LoopScenario[]}
-         */
-        this._loopScenarios = [[]]
+        this.initializeScenarioData();
+    }
+    initializeScenarioData() {
+        this._loopScenarioId = 0
+
+
+
+        this._loopScenarios = new LoopScenarios();
+        this._loopScenarios.push([]);
 
         this._nameToId = {}
 
-        this._loopTypes = {}
-        this._subLoopTypeMap = { 0: getSubLoopTypeId('loop') }
+
+        this._loopTypeMap = { 0: getSubLoopTypeId('loop') }
 
 
         this.resetPosition();
@@ -60,6 +93,10 @@ class BaseConstraction extends JSONSerializer {
     getLoopScenario(loopScenarioId) {
         const _loopScenarioId = typeof loopScenarioId === "undefined" ? this._loopScenarioId : loopScenarioId
         return this._loopScenarios[_loopScenarioId]
+    }
+    setLoopScenario(loopScenario, loopScenarioId) {
+        const _loopScenarioId = typeof loopScenarioId === "undefined" ? this._loopScenarioId : loopScenarioId
+        return this._loopScenarios[_loopScenarioId] = loopScenario;
     }
     getLoopScenarioByName(loopScenarioName) {
         const loopScenarioId = this._nameToId[loopScenarioName]
@@ -79,11 +116,12 @@ class BaseConstraction extends JSONSerializer {
 
 
     }
+
     /**
-         * 
-         * @param {"now" |  "super"  | "top"} [loop=now]
-         * @param {number | "end" | "start"} [move=-1]  
-         */
+     * 
+     * @param {"now" |  "super"  | "top"} [loop=now]
+     * @param {number | "end" | "start"} [move=-1]  
+    */
     getRelativePosition(loop = "now", move = -1) {
         const loopScenarioPath = this._loopStepIndexPath
         let loopStepIndex, step
@@ -95,6 +133,7 @@ class BaseConstraction extends JSONSerializer {
 
         }
         else if (loop === "super") {
+
             loopStepIndex = loopScenarioPath[loopScenarioPath.length - 1];
             step = loopStepIndex[1]
 
@@ -258,7 +297,144 @@ class Saver extends BaseConstraction {
 
 
     }
+    /**
+     * @param {Object?} options
+     * @param {string} builderID
+     * 
+     *  
+     */
+    updateLoopStep(options, builderID) {
 
+
+        /**
+         * @type {LoopStep}
+         */
+        const now = this.getLoopScenario()[this._step]
+        now.bID = builderID || now.builderId;
+        now.options = this._mergeOptions(now.bID, options);
+
+
+
+
+
+
+
+
+    }
+    /**
+     * @param {string} subLoopKey 
+     * @param {string | number} scenarioId 
+     * @param {boolean} [isAllowAddNew=true] 
+     */
+    updateSubLoop(subLoopKey, scenarioId, isAllowAddNew = true) {
+        let _scenarioId;
+        if (typeof scenarioId === 'string') {
+            if (scenarioId in this._nameToId === false) {
+                return false;
+            }
+            _subLoopId = this._nameToId[subLoopKey];
+        }
+        else {
+            _scenarioId = subLoopKey;
+        }
+        /**
+         * @type {LoopStep}
+         */
+        const now = this.getLoopScenario()[this._step]
+        if (isAllowAddNew === false && subLoopKey in now.s === false) {
+            return false;
+        }
+        now.s[subLoopKey]
+
+    }
+    deleteSubloop(subLoopKey) {
+        /**
+         * @type {LoopStep}
+         */
+        const now = this.getLoopScenario()[this._step];
+        if (subLoopKey in now === false) {
+            return false;
+        }
+        delete now.s[subLoopKey];
+        return true;
+
+    }
+
+    /**
+     * 
+     * @param {"now" |  "super"  | "top"} [loop=now]
+     * @param {number | "end" | "start"} [move=-1]
+     * @param {boolean} [isDelete=true] 
+     * @param {boolean} [isDeleteNoNamedOnly=true]   
+    */
+    moveRelativePosition(loop = "now", move = -1, isDelete = true, isDeleteNoNamedOnly = true) {
+        if (isDelete === false || move === "end") {
+            const position = this.getRelativePosition(loop, move);
+            this.setLoopStepIndex(position)
+            return true;
+        }
+        const loopStepIndexPath = this._loopStepIndexPath
+
+        if (loop === "top") {
+            this.initializeScenarioData();
+
+
+        }
+        else if (loop === "super") {
+            if (!this._loopStepIndexPath === true || this._loopStepIndexPath.length === 0) {
+                return false;
+            }
+            const [superLoopScenarioID, superStepNumber] = this._loopStepIndexPath[loopStepIndexPath.length - 1];
+            /**
+             * @type {LoopStep}
+             */
+            const superStep = this._loopScenarios[superLoopScenarioID][superStepNumber]
+            const nowScenarioId = this._loopScenarioId;
+            const subLoopKeys = Object.entries(superStep.s).filter(function ([key, value]) {
+                return value == nowScenarioId;
+            });
+            for (const [subLoopKey] of subLoopKeys) {
+                delete superStep.s[subLoopKey];
+            }
+            this._returnFromScenario();
+            if (isDelete === true) {
+                if (isDeleteNoNamedOnly === true) {
+                    if (Object.values(this._nameToId).indexOf(nowScenarioId) !== -1) {
+                        return;
+                    }
+
+                }
+                delete this._loopScenarios[nowScenarioId]
+
+            }
+
+
+        }
+
+
+
+        if (loop === "now") {
+
+            const nowStep = this._step;
+            const loopScenario = this.getLoopScenario();
+            let step;
+            if (move === "start") {
+                step = 0;
+
+            }
+            else {
+                step = nowStep + move
+                if (loopScenario.length - 1 < step || step < 0) {
+                    return false
+                }
+            }
+            this.setLoopScenario(loopScenario.slice(0, step + 1))
+            this._step = step;
+
+
+
+        }
+    }
     _mergeOptions(builderID, options) {
         const { options: basicOptions, mergeFunction = this._defaultMerge } = this.builderConfigMap[builderID]
         let _options
@@ -273,7 +449,7 @@ class Saver extends BaseConstraction {
     /**
      * 
      * @param {import('./base_type').SubLoopType} subLoopType
-     * @param {string} [subLoopKey = '']
+     * @param {string | number} [subLoopKey = '']
      * @param {string?} [loopScenarioName=null] 
      */
     startSubLoop(subLoopType, subLoopKey = '', loopScenarioName = null) {
@@ -344,7 +520,7 @@ class Saver extends BaseConstraction {
                 const loopScenario = []
                 this._loopScenarios.push(loopScenario)
                 this._nameToId[loopScenarioIdOrName] = loopScenarioId
-                this._subLoopTypeMap[loopScenarioId] = getSubLoopTypeId(subLoopType)
+                this._loopTypeMap[loopScenarioId] = getSubLoopTypeId(subLoopType)
                 return { loopScenario, loopScenarioId }
 
             }
@@ -357,7 +533,7 @@ class Saver extends BaseConstraction {
         const loopScenario = []
         this._loopScenarios.push(loopScenario)
         if (subLoopType !== false) {
-            this._subLoopTypeMap[loopScenarioId] = getSubLoopTypeId(subLoopType)
+            this._loopTypeMap[loopScenarioId] = getSubLoopTypeId(subLoopType)
         }
 
         return { loopScenario, loopScenarioId }
@@ -426,7 +602,7 @@ class Loader extends BaseConstraction {
 
     }
     isLoopEnd() {
-        return this._step >= this.getLoopScenario().length - 1 || getSubLoopType(this._subLoopTypeMap[this._loopScenarioId]) === "selection"
+        return this._step >= this.getLoopScenario().length - 1 || getSubLoopType(this._loopTypeMap[this._loopScenarioId]) === "selection"
     }
     setFunctionMap(functionMap) {
         Object.assign(this._functionMap, functionMap)
@@ -444,7 +620,7 @@ class Loader extends BaseConstraction {
 
             this.positionState = { isEnd: this.isTopLoop(), isSubLoopEnd: true }
         }
-        else if (getSubLoopType(this._subLoopTypeMap[loopStepIndex]) === 'selection') {
+        else if (getSubLoopType(this._loopTypeMap[loopStepIndex]) === 'selection') {
             this.positionState = { isEnd: false, isSubLoopEnd: true }
         }
         else {
@@ -501,7 +677,7 @@ class Loader extends BaseConstraction {
 
         if (this.isLoopEnd() === false) {
             this._step += 1
-            const subLoopType = getSubLoopType(this._subLoopTypeMap[this._loopScenarioId])
+            const subLoopType = getSubLoopType(this._loopTypeMap[this._loopScenarioId])
             if (subLoopType === 'selection') {
                 isSubLoopEnd = true
             }
@@ -542,7 +718,7 @@ class Loader extends BaseConstraction {
         const nowLoop = this._getLoopStep()
         const subLoopId = nowLoop.s[subKey]
 
-        const isSubLoopTypeSelection = getSubLoopType(this._subLoopTypeMap[subLoopId]) === "selection"
+        const isSubLoopTypeSelection = getSubLoopType(this._loopTypeMap[subLoopId]) === "selection"
         const step = isSubLoopTypeSelection ? subId : 0
         this._forwardToScenario([subLoopId, step])
         this._positionStates.push(this.positionState)
