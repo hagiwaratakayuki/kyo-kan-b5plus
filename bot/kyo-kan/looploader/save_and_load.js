@@ -502,16 +502,17 @@ class Saver extends BaseConstraction {
 
     }
     /**
-     * @param {string | number | null} [loopScenarioIdOrName=null]
+     * @param {string | number | null} [_loopScenarioIdOrName=null]
      * @param {string | false} [subLoopType="loop"]   
     * @returns {{loopScenario:LoopScenario, loopScenarioId:number}}
     */
     _getOrInitializeLoopScenario(loopScenarioIdOrName = null, subLoopType = "loop") {
-        const idOrNameType = typeof loopScenarioIdOrName
+        let _loopScenarioIdOrName = loopScenarioIdOrName;
+        let idOrNameType = typeof _loopScenarioIdOrName
 
-        if (idOrNameType === 'string') {
-            if (loopScenarioIdOrName in this._nameToId) {
-                const loopScenarioId = this._nameToId[loopScenarioIdOrName]
+        if (idOrNameType === 'string' && /^\d+$/.test(idOrNameType) === false) {
+            if (_loopScenarioIdOrName in this._nameToId) {
+                const loopScenarioId = this._nameToId[_loopScenarioIdOrName]
                 return { loopScenario: this.getLoopScenario(), loopScenarioId }
 
             }
@@ -519,15 +520,16 @@ class Saver extends BaseConstraction {
                 const loopScenarioId = this._loopScenarios.length
                 const loopScenario = []
                 this._loopScenarios.push(loopScenario)
-                this._nameToId[loopScenarioIdOrName] = loopScenarioId
+                this._nameToId[_loopScenarioIdOrName] = loopScenarioId
                 this._loopTypeMap[loopScenarioId] = getSubLoopTypeId(subLoopType)
                 return { loopScenario, loopScenarioId }
 
             }
 
         }
-        if (idOrNameType === 'number') {
-            return { loopScenario: this.getLoopScenario(loopScenarioIdOrName), loopScenarioId: idOrNameType }
+        if (idOrNameType === 'string' || idOrNameType === 'number') {
+            _loopScenarioIdOrName = idOrNameType === 'string' ? parseInt(loopScenarioIdOrName) : loopScenarioIdOrName
+            return { loopScenario: this.getLoopScenario(_loopScenarioIdOrName), loopScenarioId: _loopScenarioIdOrName }
         }
         const loopScenarioId = this._loopScenarios.length
         const loopScenario = []
