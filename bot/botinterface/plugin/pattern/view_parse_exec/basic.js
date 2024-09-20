@@ -1,6 +1,8 @@
 /**
- * @typedef {import("../../../kyo-kan/context").Context} Context
+ * @typedef {import("../../../../kyo-kan/context").Context} Context
  */
+
+const { ClassBasicTemplate } = require("../class_basic")
 
 
 
@@ -11,29 +13,11 @@ const EXEC_KEY = "exec"
 
 
 
-class ViewParseExecTemplate {
-    /**
-     * @template T
-     * @param {*} options 
-     * @param {*} commonOptions 
-     * @param {*} language 
-     * @param {T} functionMap 
-     */
-    constructor(options, commonOptions, language, functionMap) {
-
-
-        this.options = options
-        this.commonOptions = commonOptions,
-            this.language = language
-        /**
-         * @type {T}
-         */
-        this.functionMap = functionMap
-    }
+class ViewParseExecTemplate extends ClassBasicTemplate {
 
     /**
      * @param {Context} context
-     * @returns {import("../../../kyo-kan/plugin_type").StateResponse}
+     * @returns {import("../../../../kyo-kan").StateResponse}
     */
     in(request, context, stateController) {
 
@@ -45,7 +29,7 @@ class ViewParseExecTemplate {
 
     }
     /**
-     *  @returns {import("../../../kyo-kan/plugin_type").StateResponse}
+     *  @returns {import("../../../../kyo-kan/plugin_type").StateResponse}
     */
     afterRender(request, context, stateController) {
         return {
@@ -56,7 +40,7 @@ class ViewParseExecTemplate {
 
     }
     /**
-     * @returns { import("../../../kyo-kan/plugin_type").StateResponse }
+     * @returns { import("../../../../kyo-kan/plugin_type").StateResponse }
      */
 
     acceptRequest(request, context, stateController) {
@@ -68,7 +52,7 @@ class ViewParseExecTemplate {
 
     }
     /**
-     * @returns { import("../../../kyo-kan/plugin_type").StateResponse }
+     * @returns { import("../../../../kyo-kan/plugin_type").StateResponse }
      */
 
     exec(request, context, stateController) {
@@ -77,7 +61,7 @@ class ViewParseExecTemplate {
 }
 /**
  * View Parse Exec Pattern
- * @typedef {import("../../../kyo-kan/loopsceinario_configure/configure_type").LoopStepConfigure} LoopStepConfigure
+ * @typedef {import("../../../../kyo-kan/loopsceinario_configure/configure_type").LoopStepConfigure} LoopStepConfigure
  * @typedef {LoopStepConfigure[]} LoopStepConfigures
  * @param {*} builder
  * @param {LoopStepConfigures} renderers 

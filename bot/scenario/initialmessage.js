@@ -1,7 +1,7 @@
 const deepmerge = require("deepmerge");
 
 
-const { ViewParseExecTemplate, VPEUtil } = require("../botinterface/plugin/pattern/view_parse_exec");
+const { ViewParseExecTemplate, VPEUtil } = require("../botinterface/plugin/pattern/view_parse_exec/basic");
 const { SELECT_VIEW, SELECT_PARSE } = require("./common_buileders/selection");
 
 /**
@@ -23,9 +23,9 @@ const defaultOptions = {
             message: "やりたいことを選んでください",
             select: {
                 develop: "ボットを作る",
-                search: "ボットを探す",
+                //search: "ボットを探す",
                 execute: "開発したbotを使う",
-                edit: "開発したbotを編集する"
+                //edit: "開発したbotを編集する"
 
             }
         },

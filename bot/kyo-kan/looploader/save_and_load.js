@@ -267,6 +267,14 @@ class BaseConstraction extends JSONSerializer {
 
 
 class Saver extends BaseConstraction {
+    getJSONWithSpiltedBuiderConfig() {
+        const scenario = this.toJSON();
+        const { buiderConfigMap } = scenario;
+        delete scenario.buiderConfigMap;
+        return { buiderConfigMap, scenario }
+
+    }
+
     /**
      * 
      * @param {string} builderID
@@ -527,9 +535,9 @@ class Saver extends BaseConstraction {
             }
 
         }
-        if (idOrNameType === 'string' || idOrNameType === 'number') {
-            _loopScenarioIdOrName = idOrNameType === 'string' ? parseInt(loopScenarioIdOrName) : loopScenarioIdOrName
-            return { loopScenario: this.getLoopScenario(_loopScenarioIdOrName), loopScenarioId: _loopScenarioIdOrName }
+        if (idOrNameType !== 'undefined') {
+
+            return { loopScenario: this.getLoopScenario(loopScenarioIdOrName), loopScenarioId: loopScenarioIdOrName }
         }
         const loopScenarioId = this._loopScenarios.length
         const loopScenario = []
