@@ -6,16 +6,21 @@ const merge = require('deepmerge')
 
 
 /**
- * @typedef {import("./state_emitter").State} State
+ * @typedef {import("./plugin_type").State} State
+ * @typedef {import('./plugin_type').MoveHooks} HookNames
  * @typedef {import("./plugin_type").PlugIn} PlugIns
- * @typedef {{ request:any, response:any, context:any, loopStepIndex:any, state:State }} HistoryRecord
+ * @typedef {import('./history_record').HistoryRecord} HistoryRecord
  */
 /** 
  * @type {Array<State>}
  */
 
 const stateKeys = ["start", "in", "wait", "forwardOut", "forwardToSub", "returnFromSub", "back", 'break', 'continue']
+/**
+ * @typedef {onBack | onReturnFromSub | onBreak}
+ */
 
+const hooks = ["onBack", "onReturnFromSub", "onBreak"];
 
 /**
  *  @typedef {import("./plugin_type").StateResponse} StateResponse
@@ -230,7 +235,7 @@ class StateController extends JSONSerializer {
 
 
 
-        const hookResponses = await this._callHookFunction("forwardToSub", request, response, false);
+        const [isHookExist, hookResponses] = await this._callHookFunction("onForwardToSub", request, response, false);
         for (const hookResponse of hookResponses) {
             if (!!hookResponse.subLoopInit === true) {
                 _subLoopInit = Object.assign(_subLoopInit, hookResponse.subLoopInit || {})
@@ -269,39 +274,35 @@ class StateController extends JSONSerializer {
 
         return responses.concat(_responses)
     }
-
+    /**
+     * 
+     * @param {*} request 
+     * @param {StateResponse} response 
+     * @returns 
+     */
     async back(request, response) {
-        const stepIndex = this.loader.getRelativePosition("now", -1)
-        this.loader.setLoopStepIndex(stepIndex)
-        const responses = await this._callHookFunction("back", request, response, false)
-        if (this._emitter.getState() === "back") {
-            /**
-             * @type {import('./plugin_type').BackTarget}
-             */
-            //let backTarget = "in";
-
-            const limit = this._history.getNowHistoryLength() - 1;
-            for (let index = 0; index < limit; index++) {
-                /** @type {HistoryRecord} */
-                const { loopStepIndex, state, request: _request, context } = this._history.back();
-                if (state !== "in") {
-                    continue;
-                }
-                if (this.loader.isIndexEqual(loopStepIndex) === false) {
-                    this.continue;
-
-                }
-                this._history.back();
-                this._context = context;
-                this._emitter.setState(state)
-                this.loader.setLoopStepIndex(loopStepIndex)
-                const _response = await this._emitter.run(_request)
-                responses.push(_response)
+        const stepIndex = this.loader.getRelativePosition(response.relativeLoopType, response.move)
+        this.loader.setLoopStepIndex(stepIndex);
+        let responses = [];
+        responses.push(response)
+        //const [isHookExist, _responses] = await this._callHookFunction("onBack", request, response, false)
+        //responses = responses.concat(_responses)
 
 
-            }
+
+
+        if (response.isRewindHistry === true) {
+            const histryCursur = this._history.getHistoryCursor(stepIndex, "in")
+            this._history.rewind(histryCursur);
 
         }
+
+
+
+
+
+
+
 
 
 
@@ -390,27 +391,32 @@ class StateController extends JSONSerializer {
         const plugins = this.loader.buildTarget(bulderid, options)
         return await plugins[functionName].call(plugins, request, this._context, this, ...args)
     }
-    continue(request, response, isAutoForward = true) {
+    async continue(request, response, isAutoForward = true) {
         const stepIndex = this.loader.getRelativePosition("now", "start")
         this.loader.setLoopStepIndex(stepIndex)
-        return this._callHookFunction("continue", request, response, isAutoForward)
+        const [isHookExist, responses] = await this._callHookFunction("onContinue", request, response, isAutoForward)
+        responses.unshift(response)
 
     }
     /**
      * 
-     * @param {State} state 
+     * @param {HookNames} hookName 
      * @param {any} request 
      * @param {any} response 
      * @param {boolean} [isAutoForward=true] 
+     * @returns {Promise<[isHookExist:boolean, responses[]]>}
      */
-    async _callHookFunction(state, request, response, isAutoForward = true) {
+    async _callHookFunction(hookName, request, response, isAutoForward = true) {
         let responses = []
         const now = this.loader.getNow();
-        const callable = !!now[state]
-        if (callable) {
-            await this._call(state, now, request)
+        const isHookExist = !!now[hookName]
+        if (isHookExist === true) {
+            const hookResponse = await this._call(hookName, now, request)
+            if (hookResponse) {
+                responses.push(hookResponse)
+            }
             const responseState = this._emitter.getState()
-            if (responseState !== state && responseState !== "wait") {
+            if (responseState !== hookName && responseState !== "wait") {
                 const _responses = await this._emitter.run(request, response, isAutoForward);
                 responses = responses.concat(_responses)
             }
@@ -418,7 +424,7 @@ class StateController extends JSONSerializer {
         }
 
 
-        if (isAutoForward === true && this.isEnd() === false && (callable === false || this._emitter.getState() === "forwardOut")) {
+        if (isAutoForward === true && this.isEnd() === false && (isHookExist === false || this._emitter.getState() === "forwardOut")) {
             this._emitter.setState("in")
 
         }
@@ -427,7 +433,7 @@ class StateController extends JSONSerializer {
             responses = responses.concat(inResponses)
 
         }
-        return responses;
+        return [isHookExist, responses];
 
 
     }
@@ -448,9 +454,7 @@ class StateController extends JSONSerializer {
          * @type {State}
          */
         const callState = stateKeys.indexOf(funcname) === -1 ? this._emitter.getState() : funcname
-        if (this.isDebug === true || callState === "in" || callState === "wait") {
-            context = merge({}, this._context.toJSON())
-        }
+
 
 
 
@@ -463,6 +467,7 @@ class StateController extends JSONSerializer {
             this._callbacks.push(callback)
         }
         if (this.isDebug === true || callState === "in" || callState === "wait") {
+            const context = this._context.toJSON()
             /**
              * @type {HistoryRecord}
              */

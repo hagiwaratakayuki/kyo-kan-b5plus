@@ -1,6 +1,8 @@
+const deepmerge = require("deepmerge");
 const { NameSpaceRegistrater } = require("../contract/namspace");
 const { Saver } = require("../looploader/save_and_load");
 const crypto = require("node:crypto");
+const DEFAULT_OPTIONS = { builderIdPrefix: 'buider_' };
 
 
 /**
@@ -16,16 +18,21 @@ function SaveAndLoadConfig(loopScenarioConfigure, builderConfigureMap, options =
      * @type {Saver}
      */
     const saver = new saverClass()
+    const _options = deepmerge(DEFAULT_OPTIONS, options)
+
 
     saver.buildersRegistration(builderConfigureMap)
     for (const [name, loopScenario] of Object.entries(loopScenarioConfigure.LoopScenarios)) {
         saver.startNamedLoopScenario(name, loopScenario.type)
-        _registartion(loopScenarioConfigure, saver, options)
+        for (const namedScenarioConfigure of loopScenario.loopSteps) {
+            _registartion(namedScenarioConfigure, saver, _options)
+        }
+
         saver.endNamedScenario()
 
     }
     for (const loopStep of loopScenarioConfigure.RootScenario) {
-        _registartion(loopStep, saver, options)
+        _registartion(loopStep, saver, _options)
     }
     return saver
 
@@ -40,8 +47,9 @@ function SaveAndLoadConfig(loopScenarioConfigure, builderConfigureMap, options =
  */
 function _registartion(configureNode, saver, options) {
     let builderId
+    const _options = deepmerge(DEFAULT_OPTIONS, options);
     if (typeof configureNode.builder !== 'string') {
-        builderId = (options.builderIdPrefix || 'buider_') + crypto.randomUUID()
+        builderId = _options.builderIdPrefix + crypto.randomUUID()
         saver.builderRegistration(builderId, configureNode)
     }
     else {

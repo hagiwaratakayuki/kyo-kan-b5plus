@@ -12,6 +12,7 @@ const { getSubLoopType, getSubLoopTypeId } = require('./loop_type');
  * @typedef {import('./base_type').LoopScenario } LoopScenario
  * @typedef {import('./base_type').LoopState<LoopStep>} LoopState
  * @typedef {import('./base_type').LoopStepIndex} LoopStepIndex
+ * @typedef {import('../plugin_type').RelativeLoopType} RelativeLoopType
  * 
 */
 class LoopScenarios {
@@ -119,20 +120,21 @@ class BaseConstraction extends JSONSerializer {
 
     /**
      * 
-     * @param {"now" |  "super"  | "top"} [loop=now]
+     * @param {RelativeLoopType} [_loop="now"] 
      * @param {number | "end" | "start"} [move=-1]  
     */
     getRelativePosition(loop = "now", move = -1) {
+        const _loop = loop || "now";
         const loopScenarioPath = this._loopStepIndexPath
         let loopStepIndex, step
-        if (loop === "top") {
+        if (_loop === "top") {
             loopStepIndex = loopScenarioPath[0] || this.getLoopStepIndex();
             step = loopStepIndex[1]
 
 
 
         }
-        else if (loop === "super") {
+        else if (_loop === "super") {
 
             loopStepIndex = loopScenarioPath[loopScenarioPath.length - 1];
             step = loopStepIndex[1]
@@ -153,7 +155,7 @@ class BaseConstraction extends JSONSerializer {
             step = 0
 
         }
-        if (loop === "now") {
+        if (_loop === "now") {
             loopStepIndex = this.getLoopStepIndex()
             step = loopStepIndex[1] + move
             if (this.getLoopScenario(loopStepIndex[0]).length - 1 < step || step < 0) {

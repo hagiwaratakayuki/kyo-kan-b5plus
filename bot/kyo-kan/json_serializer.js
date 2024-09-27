@@ -27,17 +27,20 @@ class JSONSerializer {
             const element = this[key];
 
             const elementType = typeof element;
-            if (!element && elementType === 'object') {
-                continue;
-            }
+
             if (elementType === 'undefined' || elementType === 'function' || elementType == 'symbol') {
                 continue;
             }
-            if (elementType === 'object' && 'toJSON' in element === true) {
-                ret[key] = element.toJSON();
 
-            }
             if (elementType === 'object') {
+                if (!element === true) {
+                    continue
+                }
+                if ('toJSON' in element === true) {
+                    ret[key] = element.toJSON();
+                    continue
+
+                }
                 ret[key] = merge(element, {});
             }
             else if (Array.isArray(element)) {

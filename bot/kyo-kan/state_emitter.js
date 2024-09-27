@@ -1,5 +1,6 @@
 /**
  * @typedef {"start" | "in" | "wait" | "forwardOut" | "forwardToSub" | "returnFromSub" |  "break" | "cancel" | "back" | "continue"} State
+ * 
  * @typedef {{[stateKey in State]: (data:any) => void }} stateCallbacks
  */
 

@@ -15,7 +15,7 @@ class ScenarioConnector extends ClassBasicTemplate {
         return {
             state: "forwardToSub",
             subkey: this.subloop,
-            callback: "afterRender"
+
 
 
         }
@@ -23,7 +23,7 @@ class ScenarioConnector extends ClassBasicTemplate {
 
 }
 
-}
+
 /**
  * 
  * @typedef {import("../../../kyo-kan/loopsceinario_configure/configure_type").LoopStepConfigure} LoopStepConfigure
@@ -33,7 +33,8 @@ class ScenarioConnector extends ClassBasicTemplate {
  * @param {LoopStepConfigures} execs
  * @returns {LoopStepConfigure}
  */
-function VPEUtil(builder, renderers, execs, options) {
+
+function ScenarioConnectorUtil(builder, scenarioName, options) {
     /**
      * @type {LoopStepConfigure}
      */

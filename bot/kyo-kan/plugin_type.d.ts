@@ -1,8 +1,15 @@
-import type { State } from "./state_emitter";
+// PluginExecute(in, wait), ScenarioMoveState(returnFromSub, fowardToSub, forwardToSub, break, back, continue,  ) HookSate
 
+export type ExecuteState = "in" | "wait"
+export type MoveState = "back" | "break" | "returnFromSub" | "forwardToSub" | "continue" | "forwardOut"
+export type State = ExecuteState | MoveState
 
-export type PlugIn<CallbackType = Function> = Partial<{
+export type MoveHooks = `on${Capitalize<MoveState>}`
+
+export type PlugIn<CallbackType = Function, HookType = Function> = Partial<{
     [k in State]: CallbackType
+}> & Partial<{
+    [k in MoveHooks]: HookType
 }> & {
     in: CallbackType
 }
@@ -17,7 +24,8 @@ export type CommonOptions = {
 
 
 }
-export type BackTarget = "in" | "latest"
+export type RelativeLoopType = "now" | "super" | "top"
+export type MoveCount = number | "start"
 export type BaseOption = {
     namespace: string
 }
@@ -30,7 +38,9 @@ export type StateResponse<ClientResponseType = any> = {
     subkey?: string
     callback?: string //Funcname Use when state is wait. Default is "wait"
     subLoopInit?: any
-    backTarget?: BackTarget
+    relativeLoopType?: RelativeLoopType
+    move?: MoveCount
+    isRewindHistry?: boolean
     clientResponse?: ClientResponseType
 
 

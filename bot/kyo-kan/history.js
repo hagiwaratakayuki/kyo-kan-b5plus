@@ -1,12 +1,19 @@
 const { JSONSerializer } = require('./json_serializer');
-
+/**
+ * @typedef {import('./looploader/base_type').LoopStepIndex} LoopStepIndex
+ */
 class History extends JSONSerializer {
 
     constructor() {
         super();
+        /**
+         * @type {import('./history_record').HistoryRecords[]}
+         */
         this._histories = [[]];
+
         this._historyId = 0;
         this._cursor = -1;
+        this._index = {}
         /**
          * @type {{[historyId: any]: {fromID:any, nodeId:any}}}
          */
@@ -21,12 +28,50 @@ class History extends JSONSerializer {
         this._breakPointsList = {}
 
     }
+    /**
+     * 
+     * @param {import('./history_record').HistoryRecord} history 
+     */
     push(history) {
         const nowHistories = this._getNowHistories();
         nowHistories.push(history);
         this._setNowHistries(nowHistories)
 
 
+
+    }
+    /**
+     * 
+     * @param {import('./history_record').HistoryRecord} history 
+     */
+    _updateHistoryIndex(history) {
+        const key = this._getIndexKey(history.loopStepIndex);
+
+        const historyIndex = this._index[this._historyId] || {};
+        const stateIndex = historyIndex[key] || {};
+        stateIndex[history.state] = this._cursor;
+        historyIndex[key] = stateIndex;
+        this._index[this._historyId] = historyIndex
+    }
+    /**
+     * 
+     * @param {*} loopStepIndex 
+     * @param {*} state 
+     * @param {*} historyId 
+     * @returns {number | null}
+     */
+    getHistoryCursor(loopStepIndex, state, historyId) {
+        const key = this._getIndexKey(loopStepIndex);
+
+        const historyIndex = this._index[historyId || this._historyId] || {};
+        const stateIndex = historyIndex[key] || {};
+        return state in stateIndex ? stateIndex[state] : null;
+    }
+    /**
+     * @param {LoopStepIndex} loopStepIndex 
+     */
+    _getIndexKey(loopStepIndex) {
+        return loopStepIndex.join('_')
     }
     getHead() {
         const nowHistories = this._getNowHistories();
@@ -63,17 +108,18 @@ class History extends JSONSerializer {
     getNowHistoryLength() {
         return this._getNowHistories().length
     }
-    back(move = 1) {
+    rewind(move = 1) {
         const nowHistories = this._getNowHistories();
         const backedHistories = nowHistories.slice(0, nowHistories.length - move)
         this._setNowHistries(backedHistories)
         return this.getHead();
 
     }
+
     /**
      * 
      * @param {any} name 
-     * @returns {false | any}
+     *i @returns {false | any}
      */
     _getBreakpointCursorBack(name) {
         const breakpoints = this._breakPointsList[this._historyId] || [];
@@ -94,7 +140,7 @@ class History extends JSONSerializer {
     }
     _setNowHistries(histories) {
         this._histories[this._historyId] = histories;
-        this._cursor = histories.length
+        this._cursor = histories.length - 1;
     }
 
 
