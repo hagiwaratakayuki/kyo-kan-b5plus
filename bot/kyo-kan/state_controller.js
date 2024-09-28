@@ -37,6 +37,10 @@ class StateController extends JSONSerializer {
      */
     constructor(loader, contextClass = Context, emitterClass = StateEmitter, historyClass = History) {
         super();
+        //TODO シナリオidツリー実装 forward to sub
+
+        this._scenarioIdpath = [0]
+
         this.isDebug = false
         /**
          * @type {BasicLoader}
@@ -248,6 +252,7 @@ class StateController extends JSONSerializer {
             this._context.subKey = response.subkey
             const subloopStep = this.loader.forwardToSub(response.subid, response.subkey)
             this._context.forwardToSub(_subLoopInit)
+            this._scenarioIdpath.push(this.loader.getLoopStepIndex()[0])
             const _responses = await this._inProcess(request, subloopStep);
             responses = responses.concat(_responses);
         }
@@ -315,6 +320,7 @@ class StateController extends JSONSerializer {
         return responses
 
     }
+    //called from subloop forwardOut
     async returnFromSub(request, response, isAutoForward = true) {
 
         this._context.returnFromSub(request, response, isAutoForward = isAutoForward);
@@ -332,13 +338,15 @@ class StateController extends JSONSerializer {
     }
     /**
      * 
-     * @param {State[]} hookEvents 
+     * @param {State[]} hookEvents // TODO Move Hookにする
      * @returns 
      */
     async _subLoopFinishProcess(request, response, isAutoForward = true, hookEvents = []) {
         let responses = []
         this._context.subKey = this.loader.getSubKey();
         this._context.subId = this.loader.getSubId()
+        this._scenarioIdpath.pop()
+
         const initState = this._emitter.getState()
 
 
