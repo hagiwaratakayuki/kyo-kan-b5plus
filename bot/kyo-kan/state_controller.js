@@ -289,8 +289,13 @@ class StateController extends JSONSerializer {
         const backIndex = this.loader.getRelativePosition(response.relativeLoopType, response.move)
         const nowIndex = this.loader.getLoopStepIndex()
         if (backIndex[0] !== nowIndex[0]) {
-            this._callbacks.pop();
-            this._context.returnFromSub();
+
+            while (this._scenarioIdpath[this._scenarioIdpath.length - 1] !== backIndex[0]) {
+                this._callbacks.pop();
+                this._context.returnFromSub();
+                this._scenarioIdpath.pop()
+
+            }
         }
 
         this.loader.setLoopStepIndex(backIndex);
@@ -307,6 +312,7 @@ class StateController extends JSONSerializer {
             this._history.rewind(histryCursur);
 
         }
+        this._emitter.setState("in");
 
 
 
