@@ -323,7 +323,8 @@ class StateController extends JSONSerializer {
 
 
 
-        return responses
+
+        return responses.concat((await this._inProcess(request, now)))
 
     }
     //called from subloop forwardOut
