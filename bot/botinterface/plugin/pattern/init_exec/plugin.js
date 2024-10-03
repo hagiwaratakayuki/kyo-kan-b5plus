@@ -6,6 +6,7 @@ class InitExec extends ClassBasicTemplate {
      */
     async in() {
         return {
+            state: "forwardToSub",
             callback: "execute",
             subkey: InitiaraizeLoop
         }
@@ -14,9 +15,12 @@ class InitExec extends ClassBasicTemplate {
     /**
      * @type {import("../../../../kyo-kan/protocol").PluginCallbackProtocol}
      */
-    async execute() {
+    async execute(request, context, stateController) {
+
         return {
-            subkey: ExecLoop
+            state: "forwardToSub",
+            subkey: ExecLoop,
+            subLoopInit: { init: context.getSubLoopData() }
         }
     }
 }
