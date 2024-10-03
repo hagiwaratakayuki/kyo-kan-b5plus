@@ -83,9 +83,11 @@ class ChatSubLoopBase extends SigleCallBase {
 
     _getData(request, context, stateController) {
         const prompt = super._getData(request, context, stateController)
-        const logs = (context.getLoopData() || {})[this.options.logKey || "log"] || {}
+        const logs = (context.getLoopData() || {})[this.options.logKey || "log"] || []
         return { prompt, logs }
 
     }
 
 }
+
+module.exports = { ChatSubLoopBase, PromptTemplate, SingleCallOptions }

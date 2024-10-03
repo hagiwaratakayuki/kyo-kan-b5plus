@@ -4,7 +4,7 @@ import type { StateController } from "./state_controller";
 
 
 export type PlugInResponseProtocol<ClientResponseType> = Promise<StateResponse<ClientResponseType>>
-export type PluginCallbackProtocol<ClientResponseType = any> = (request: any, context: Context, stateController: StateController) => PlugInResponseProtocol<ClientResponseType>
+export type PluginCallbackProtocol<RequestType = any, ClientResponseType = any> = (request: RequestType, context: Context, stateController: StateController) => PlugInResponseProtocol<ClientResponseType>
 
 export type PluginFilterNextProtocol<ClientResponseType> = () => PlugInResponseProtocol<ClientResponseType>
 export type PluginFilterProtocol<ClientResponseType = any> = (next: PluginFilterNextProtocol<ClientResponseType>, ...args: Parameters<PluginCallbackProtocol>) => PluginRes

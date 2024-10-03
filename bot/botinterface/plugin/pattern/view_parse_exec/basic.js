@@ -17,7 +17,7 @@ class ViewParseExecTemplate extends ClassBasicTemplate {
 
     /**
      * @param {Context} context
-     * @returns {import("../../../../kyo-kan").StateResponse}
+     * @returns {import("../../../../kyo-kan/plugin_type").StateResponse}
     */
     in(request, context, stateController) {
 
