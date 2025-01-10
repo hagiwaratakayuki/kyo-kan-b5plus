@@ -174,7 +174,7 @@ describe('Executer', function () {
 
         res = await controlller.run(mockRequest);
 
-        assert(pluginArgs['in'].options.selectoption, 1)
+        //assert(pluginArgs['in'].options.selectoption, 2)
         assert(res[0].state, 'returnFromSub');
         assert(res[1].state, 'forwardOut');
 

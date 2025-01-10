@@ -31,8 +31,10 @@ class JSONSerializer {
             if (elementType === 'undefined' || elementType === 'function' || elementType == 'symbol') {
                 continue;
             }
-
-            if (elementType === 'object') {
+            if (Array.isArray(element)) {
+                ret[key] = merge(element, []);
+            }
+            else if (elementType === 'object') {
                 if (!element === true) {
                     continue
                 }
@@ -42,9 +44,6 @@ class JSONSerializer {
 
                 }
                 ret[key] = merge(element, {});
-            }
-            else if (Array.isArray(element)) {
-                ret[key] = merge(element, []);
             }
             else {
                 ret[key] = element;

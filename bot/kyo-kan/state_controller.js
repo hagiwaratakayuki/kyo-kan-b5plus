@@ -345,7 +345,7 @@ class StateController extends JSONSerializer {
     }
     /**
      * 
-     * @param {State[]} hookEvents // TODO Move Hookにする
+     * @param {State[]} hookEvents 
      * @returns 
      */
     async _subLoopFinishProcess(request, response, isAutoForward = true, hookEvents = []) {
@@ -483,7 +483,7 @@ class StateController extends JSONSerializer {
          * @type {StateResponse}
          */
         const response = await plugins[funcname].call(plugins, request, this._context, this, ...args)
-        if (callState === "wait") {
+        if (response.state === "wait") {
             const callback = "callback" in response ? response.callback : false
             this._callbacks.push(callback)
         }

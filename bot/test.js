@@ -1,20 +1,13 @@
+const { exec e } = require('child_process');
 
-class Test {
-    constructor() {
-        this.a = 1
-        this.b = 2
+exec("echo テスト", { encoding: "Shift_JIS" }, (error, stdout, stderr) => {
+    if (error) {
+        console.error(`error: ${error.message}`);
+        return;
     }
-    hoge(fuga = []) {
-        const [a = this.a, b = this.b] = fuga
-        console.log(a)
-        console.log(b)
+    if (stderr) {
+        console.error(`stderr: ${stderr}`);
+        return;
     }
-}
-class Test2 extends Test {
-
-}
-
-function Hoge() { }
-console.log(Object.getPrototypeOf(Test2))
-console.log(Object.getPrototypeOf(Test))
-console.log(Object.getPrototypeOf(Hoge))
+    console.log(`stdout: ${stdout}`);
+});

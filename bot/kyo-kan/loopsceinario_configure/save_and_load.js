@@ -68,7 +68,7 @@ function _registartion(configureNode, saver, options) {
             saver.startSubLoop(subLoop.type, subLoopKey)
             for (const subNode of subLoop.loopSteps) {
 
-                _registartion(subNode, saver)
+                _registartion(subNode, saver, _options)
             }
 
             saver.endSubLoop()

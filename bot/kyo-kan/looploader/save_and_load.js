@@ -18,6 +18,7 @@ const { getSubLoopType, getSubLoopTypeId } = require('./loop_type');
 class LoopScenarios {
     constructor() {
         this.length = 0;
+
     }
     /**
      * 
@@ -36,9 +37,10 @@ class LoopScenarios {
             if (index in this === false) {
                 continue;
             }
-            values[index] = merge(this[index], {})
+            values[index] = merge(this[index], [])
+            index += 1;
         }
-        return { length, values };
+        return { length: this.length, values };
     }
     fromJSON({ values, length }) {
         this.length = length;
@@ -53,8 +55,9 @@ class LoopScenarios {
 // シナリオ　水平に並んだステップの塊。ステップ　プラグインとオプション　サブループを持つ。　サブループ　階層的に下として実行されるループ　サブループidとシナリオidのペアで表現される
 class BaseConstraction extends JSONSerializer {
 
-    constructor() {
+    constructor(firstStep = 0) {
         super();
+        this._firstStep = firstStep;
         /**
          * @type {import('./base_type').BuilderConfig[]}
          */
@@ -92,7 +95,7 @@ class BaseConstraction extends JSONSerializer {
 
     }
     getLoopScenario(loopScenarioId) {
-        const _loopScenarioId = typeof loopScenarioId === "undefined" ? this._loopScenarioId : loopScenarioId
+        const _loopScenarioId = typeof loopScenarioId !== "number" && !loopScenarioId ? this._loopScenarioId : loopScenarioId
         return this._loopScenarios[_loopScenarioId]
     }
     setLoopScenario(loopScenario, loopScenarioId) {
@@ -111,7 +114,7 @@ class BaseConstraction extends JSONSerializer {
          * @type {LoopStepIndex[]}
         */
         this._loopStepIndexPath = []
-        this.setLoopStepIndex([0, -1])
+        this.setLoopStepIndex([0, this._firstStep])
 
 
 
@@ -269,6 +272,16 @@ class BaseConstraction extends JSONSerializer {
 
 
 class Saver extends BaseConstraction {
+    constructor() {
+        super(-1)
+    }
+    toJSON() {
+        /**
+         * @type {Array<keyof Saver>}
+         */
+        const filters = ['_firstStep'];
+        return super._toJSON(filters);
+    }
     getJSONWithSpiltedBuiderConfig() {
         const scenario = this.toJSON();
         const { buiderConfigMap } = scenario;
@@ -537,7 +550,7 @@ class Saver extends BaseConstraction {
             }
 
         }
-        if (idOrNameType !== 'undefined') {
+        if (idOrNameType !== 'undefined' && loopScenarioIdOrName !== null) {
 
             return { loopScenario: this.getLoopScenario(loopScenarioIdOrName), loopScenarioId: loopScenarioIdOrName }
         }
@@ -656,7 +669,7 @@ class Loader extends BaseConstraction {
         /**
          * @type {Array<keyof Loader>}
          */
-        const filters = ['_cache', '_cacheKey', '_isFirst', '_language'];
+        const filters = ['_cache', '_cacheKey', '_isFirst', '_language', '_firstStep'];
         return super._toJSON(filters);
     }
     /**
