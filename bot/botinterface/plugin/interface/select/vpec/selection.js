@@ -1,10 +1,10 @@
-const { selectViewBuilder, selectParserBuilder } = require("../../botinterface/plugin/interface/select/view/execute");
+const { selectViewBuilder, selectParserBuilder } = require("./execute");
 
 const SELECT_VIEW = "select.view"
 const SELECT_PARSE = "select.parse"
 
 /**
- * @type {import("../../kyo-kan/looploader/base_type").BuilderConfigMap}
+ * @type {import("../../../../../kyo-kan/looploader/base_type").BuilderConfigMap}
  *  
  */
 const builders = {}

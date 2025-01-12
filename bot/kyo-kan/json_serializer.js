@@ -64,12 +64,22 @@ class JSONSerializer {
 
             const prop = this[key]
             const data = jsonData[key];
-            if (typeof prop === 'object' && 'fromJSON' in prop) {
-                this[key].fromJSON(data);
+            if (Array.isArray(prop)) {
+                this[key] = merge(data, []);
+            }
+            else if (typeof prop === 'object') {
+                if (!data === true) {
+                    continue
+                }
+                if ('fromJSON' in prop) {
+                    this[key].fromJSON(data);
+                    continue
+
+                }
+                this[key] = merge(data, {});
             }
             else {
-
-                this[key] = data;
+                ret[key] = data;
             }
 
 

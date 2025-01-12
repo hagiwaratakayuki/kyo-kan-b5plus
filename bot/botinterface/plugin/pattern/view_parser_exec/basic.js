@@ -7,13 +7,13 @@ const { ClassBasicTemplate } = require("../class_basic")
 
 
 
-const RENDERER_KEY = "renderer"
-const EXEC_KEY = "exec"
+const VIEW_KEY = "view"
+const PARSE_KEY = "parse"
 
 
 
 
-class ViewParseExecTemplate extends ClassBasicTemplate {
+class ViewParseExecController extends ClassBasicTemplate {
 
     /**
      * @param {Context} context
@@ -23,7 +23,7 @@ class ViewParseExecTemplate extends ClassBasicTemplate {
 
         return {
             state: "forwardToSub",
-            subkey: RENDERER_KEY,
+            subkey: VIEW_KEY,
             callback: "afterRender"
         }
 
@@ -46,7 +46,7 @@ class ViewParseExecTemplate extends ClassBasicTemplate {
     acceptRequest(request, context, stateController) {
         return {
             state: "forwardToSub",
-            subkey: EXEC_KEY,
+            subkey: PARSE_KEY,
             callback: "exec"
         }
 
@@ -64,11 +64,11 @@ class ViewParseExecTemplate extends ClassBasicTemplate {
  * @typedef {import("../../../../kyo-kan/loopsceinario_configure/configure_type").LoopStepConfigure} LoopStepConfigure
  * @typedef {LoopStepConfigure[]} LoopStepConfigures
  * @param {*} builder
- * @param {LoopStepConfigures} renderers 
- * @param {LoopStepConfigures} execs
+ * @param {LoopStepConfigures} views 
+ * @param {LoopStepConfigures} parsers
  * @returns {LoopStepConfigure}
  */
-function VPEUtil(builder, renderers, execs, options) {
+function VPEUtil(builder, views, parsers, options) {
     /**
      * @type {LoopStepConfigure}
      */
@@ -80,14 +80,14 @@ function VPEUtil(builder, renderers, execs, options) {
         }
     }
 
-    ret.subLoops[RENDERER_KEY] = { type: "loop", loopSteps: renderers }
-    ret.subLoops[EXEC_KEY] = { type: "loop", loopSteps: execs }
+    ret.subLoops[VIEW_KEY] = { type: "loop", loopSteps: views }
+    ret.subLoops[PARSE_KEY] = { type: "loop", loopSteps: parsers }
     return ret
 
 
 }
 
-module.exports = { ViewParseExecTemplate, EXEC_KEY, RENDERER_KEY, VPEUtil }
+module.exports = { ViewParseExecController, EXEC_KEY: PARSE_KEY, RENDERER_KEY: VIEW_KEY, VPEUtil }
 
 
 

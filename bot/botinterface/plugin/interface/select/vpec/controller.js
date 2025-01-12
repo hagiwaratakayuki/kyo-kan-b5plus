@@ -1,8 +1,8 @@
 const deepmerge = require("deepmerge");
 
 
-const { ViewParseExecController: ViewParseExecTemplate, VPEUtil } = require("../botinterface/plugin/pattern/view_parser_exec/basic");
-const { SELECT_VIEW, SELECT_PARSE } = require("../botinterface/plugin/interface/select/vpec/selection");
+const { ViewParseExecController, VPEUtil } = require("../../../pattern/view_parser_exec/basic");
+const { SELECT_VIEW, SELECT_PARSE } = require("./selection");
 
 /**
  * @typedef {Import("../kyo-kan/context").Context} Context
@@ -34,17 +34,7 @@ const defaultOptions = {
     }
 }
 
-class InitialMessage extends ViewParseExecTemplate {
-    /**
-     * 
-     * @param {*} options 
-     * @param {*} commonOptions 
-     * @param {*} language 
-     * @param {import("../../standized_protocol/function_map/basic").StandardizedFunctionMap} funcMap 
-     */
-    constructor(options, commonOptions, language, funcMap) {
-        super(deepmerge(defaultOptions || {}, options || {}), commonOptions, language, funcMap)
-    }
+class BasicSelect extends ViewParseExecController {
     /**
      * 
      * @param {*} request 
@@ -68,7 +58,7 @@ class InitialMessage extends ViewParseExecTemplate {
 
 }
 
-const scenario = VPEUtil(InitialMessage, [
+const scenario = VPEUtil(BasicSelect, [
     { builder: SELECT_VIEW }
 ], [
     { builder: SELECT_PARSE }
