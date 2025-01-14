@@ -2,37 +2,7 @@ const deepmerge = require("deepmerge");
 
 
 const { ViewParseExecController, VPEUtil } = require("../../../pattern/view_parser_exec/basic");
-const { SELECT_VIEW, SELECT_PARSE } = require("./selection");
 
-/**
- * @typedef {Import("../kyo-kan/context").Context} Context
- */
-
-/**
- * @typedef {"develop" | "search" | "execute" | "edit"} FunctionName
- */
-/**
- * @type {FunctionName[]}
- */
-const functionNames = ["develop", "edit", "execute", "search"]
-
-
-const defaultOptions = {
-    i18n: {
-        ja: {
-            message: "やりたいことを選んでください",
-            select: {
-                develop: "ボットを作る",
-                //search: "ボットを探す",
-                execute: "開発したbotを使う",
-                //edit: "開発したbotを編集する"
-
-            }
-        },
-
-
-    }
-}
 
 class BasicSelect extends ViewParseExecController {
     /**

@@ -1,5 +1,5 @@
-const { abortAutomaton } = require('../util/abortAutomaton')
-const { i18noptions: i18nOptions } = require('./options')
+
+const { i18nOptions } = require('./options')
 const defaulti18nMap = { options: i18nOptions };
 /**
  * @typedef {import("../looploader/base_type").i18nFunc} i18nfunc

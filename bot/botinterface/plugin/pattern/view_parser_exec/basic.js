@@ -14,7 +14,9 @@ const PARSE_KEY = "parse"
 
 
 class ViewParseExecController extends ClassBasicTemplate {
-
+    constructor() {
+        super({}, {}, '', { i18n: function () { } })
+    }
     /**
      * @param {Context} context
      * @returns {import("../../../../kyo-kan/plugin_type").StateResponse}

@@ -37,7 +37,7 @@ class StateController extends JSONSerializer {
      */
     constructor(loader, contextClass = Context, emitterClass = StateEmitter, historyClass = History) {
         super();
-        //TODO シナリオidツリー実装 forward to sub
+
 
         this._scenarioIdpath = [0]
 
@@ -54,7 +54,8 @@ class StateController extends JSONSerializer {
          * @type {import("./state_emitter").StateEmitter}
          */
         this._emitter = new emitterClass(this)
-
+        this._isBooted = false;
+        this._isReboot = false;
 
         /**
          * @type {import("./history").History}
@@ -84,10 +85,9 @@ class StateController extends JSONSerializer {
         /**
          * @type {Array<keyof StateController>}
          */
-        const filters = ['_plugin'];
+        const filters = ['_plugin', '_isBooted'];
         return this._toJSON(filters)
     }
-
 
 
     /**
@@ -100,10 +100,34 @@ class StateController extends JSONSerializer {
             const _resumeData = isFirst === true ? { loader: resumeData } : resumeData
             this.fromJSON(_resumeData);
             if (isFirst === true) {
+                this._isReboot = false
                 this.loader.resetPosition()
             }
         }
-
+        if (this._isBooted == false) {
+            const bootPlugins = this.loader.loadBootPlugins()
+            /**
+             * @type {import('./plugin_type').BootPluginStates[]}
+             * */
+            const hookNames = []
+            if (this._isReboot == true) {
+                hookNames.push('onReboot');
+            }
+            else {
+                hookNames.push('onInitialBoot');
+            }
+            hookNames.push('onBoot');
+            const functionMap = this.loader.getFunctionMap()
+            for (const bootPlugin of bootPlugins) {
+                for (const hookName of hookNames) {
+                    if (hookName in bootPlugin) {
+                        bootPlugin[hookName].call(bootPlugin, functionMap)
+                    }
+                }
+            }
+            this._isReboot = true;
+            this._isBooted = true;
+        }
         return this._emitter.run(request)
     }
     destroy() {

@@ -1,9 +1,9 @@
 import { Basic } from "../../bot2bot/connecter/basic";
-import { Builder } from "../plugin_type";
+import { BootBuilder, Builder } from "../plugin_type";
 
 
 
-export type i18nFunc<T = string> = (key: string, lnaguage: string, options?: any) => T
+export type i18nFunc = (key: string, lnaguage: string, options?: any) => string
 
 export type Schema = any // json schema
 export type ShareValues = string[] // json path for Schema
@@ -34,7 +34,16 @@ export type BuilderConfig = {
 
 }
 
+
 export type BuilderConfigMap = { [builderID: string]: BuilderConfig }
+
+export type BootBuilderConfig = {
+    options?: any,
+    builder: BootBuilder,
+}
+
+
+
 export type SubLoopType = "selection" | "loop"
 
 

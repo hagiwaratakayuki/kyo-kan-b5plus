@@ -68,6 +68,7 @@ class BaseConstraction extends JSONSerializer {
         this.builderConfigMap = {};
         this.initializeScenarioData();
     }
+
     initializeScenarioData() {
         this._loopScenarioId = 0
 
@@ -282,7 +283,7 @@ class Saver extends BaseConstraction {
         const filters = ['_firstStep'];
         return super._toJSON(filters);
     }
-    getJSONWithSpiltedBuiderConfig() {
+    getJSONWithSpiltedBuilderConfig() {
         const scenario = this.toJSON();
         const { buiderConfigMap } = scenario;
         delete scenario.buiderConfigMap;
@@ -612,6 +613,37 @@ class Loader extends BaseConstraction {
 
 
 
+        /**
+         * 
+         * @type {import('./base_type').BootBuilderConfig[]} 
+         */
+        this._bootPluginBulderConfigs = []
+    }
+
+    /**
+     * 
+     * @param {import('./base_type').BootBuilderConfig[]} bootPluginBuilders 
+     */
+    registerBootPluginBuilders(bootPluginBuilders) {
+        this._bootPluginBulderConfigs = bootPluginBuilders
+    }
+
+    loadBootPlugins() {
+        const plugins = [];
+        for (const bootPluginBulderConfig of this._bootPluginBulderConfigs) {
+            let plugin;
+            try {
+                plugin = new bootPluginBulderConfig.builder(bootPluginBulderConfig)
+            } catch (error) {
+
+                plugin = bootPluginBulderConfig.builder(bootPluginBulderConfig)
+            }
+            plugins.push(plugin)
+        }
+        return plugins;
+    }
+    getFunctionMap() {
+        return this._functionMap
     }
     resetPosition() {
         /**

@@ -4,6 +4,12 @@ export type ExecuteState = "in" | "wait"
 export type MoveState = "back" | "break" | "returnFromSub" | "forwardToSub" | "continue" | "forwardOut"
 export type State = ExecuteState | MoveState
 
+export type FunctionMap = {
+    [k in string]: Function
+} & {
+    i18n: i18nFunc
+}
+
 export type MoveHooks = `on${Capitalize<MoveState>}`
 
 export type PlugIn<CallbackType = Function, HookType = Function> = Partial<{
@@ -14,6 +20,14 @@ export type PlugIn<CallbackType = Function, HookType = Function> = Partial<{
     in: CallbackType
 }
 
+export type BootHookFunction = (functionMap: FunctionMap) => void;
+export type BootPlugin = {
+    onFirstBoot?: BootHookFunction,
+    onReboot?: BootHookFunction,
+    onBoot?: BootHookFunction
+}
+export type BootPluginStates = keyof BootPlugin;
+export type BootBuilder = (options?: any) => BootPlugin;
 
 export type ExistComponents = {
     [k: string]: string
@@ -29,7 +43,7 @@ export type MoveCount = number | "start"
 export type BaseOption = {
     namespace: string
 }
-
+export type
 export type Builder<OptionsType = BaseOption, CommonOptionsType = CommonOptions, FunctionMapType = any, PluginType = PlugIn> = (options: OptionsType, CommonOptions: CommonOptionsType, language: string, functionMap: FunctionMapType) => PluginType
 
 export type StateResponse<ClientResponseType = any> = {

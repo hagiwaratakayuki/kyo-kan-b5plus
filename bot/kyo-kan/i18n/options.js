@@ -1,7 +1,7 @@
 /** 
 * @type {import("../looploader/base_type").i18nFunc}
 */
-function i18noptions(key, language, options) {
+function i18nOptions(key, language, options) {
     let message = (options.i18n || {})[language]
     for (const k of key.split('.')) {
         message = message[k] || {}
@@ -14,4 +14,4 @@ function i18noptions(key, language, options) {
 
 }
 
-module.exports = { i18noptions }
+module.exports = { i18nOptions }
