@@ -1,4 +1,4 @@
-import { i18nFunc } from "../../../kyo-kan/looploader/base_type";
+import { i18nFunc } from "../../../kyo-kan/plugin_type";
 import type { StandizedLoadBlob } from "./blob_class";
 import type { StandardizedLoadBlobResponse, StandardizedLoadBlobFunction } from "./load_function"
 

@@ -3,11 +3,16 @@
 export type ExecuteState = "in" | "wait"
 export type MoveState = "back" | "break" | "returnFromSub" | "forwardToSub" | "continue" | "forwardOut"
 export type State = ExecuteState | MoveState
+export type i18nFunc = (key: string, lnaguage: string, options?: any) => string;
+
+import { I18n as I18nClass } from "./i18n";
+export type i18n = typeof I18nClass
+
 
 export type FunctionMap = {
     [k in string]: Function
 } & {
-    i18n: i18nFunc
+    i18n: i18n
 }
 
 export type MoveHooks = `on${Capitalize<MoveState>}`
@@ -43,7 +48,7 @@ export type MoveCount = number | "start"
 export type BaseOption = {
     namespace: string
 }
-export type
+
 export type Builder<OptionsType = BaseOption, CommonOptionsType = CommonOptions, FunctionMapType = any, PluginType = PlugIn> = (options: OptionsType, CommonOptions: CommonOptionsType, language: string, functionMap: FunctionMapType) => PluginType
 
 export type StateResponse<ClientResponseType = any> = {
@@ -59,3 +64,4 @@ export type StateResponse<ClientResponseType = any> = {
 
 
 }
+

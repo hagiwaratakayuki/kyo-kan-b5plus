@@ -1,9 +1,7 @@
 import { Basic } from "../../bot2bot/connecter/basic";
-import { BootBuilder, Builder } from "../plugin_type";
+import { BootBuilder, Builder, i18nFunc } from "../plugin_type";
 
 
-
-export type i18nFunc = (key: string, lnaguage: string, options?: any) => string
 
 export type Schema = any // json schema
 export type ShareValues = string[] // json path for Schema

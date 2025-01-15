@@ -2,7 +2,8 @@ const { History } = require('./history')
 const { StateEmitter } = require('./state_emitter')
 const { Context } = require('./context');
 const { JSONSerializer } = require('./json_serializer');
-const merge = require('deepmerge')
+const merge = require('deepmerge');
+const { getI18n } = require('./i18n');
 
 
 /**
@@ -46,6 +47,14 @@ class StateController extends JSONSerializer {
          * @type {BasicLoader}
          */
         this.loader = loader;
+        /**
+         * @type {Partial<import('./plugin_type').FunctionMap>}
+         * 
+        */
+        const functionMap = loader.getFunctionMap()
+        if (!functionMap.il18n) {
+            functionMap.il18n = getI18n()
+        }
 
         for (const stateKey of stateKeys) {
             this[stateKey] = this[stateKey].bind(this)

@@ -1,27 +1,35 @@
 
 const { i18nOptions } = require('./options')
-const defaulti18nMap = { options: i18nOptions };
+
+
 /**
- * @typedef {import("../looploader/base_type").i18nFunc} i18nfunc
- * 
- * @template T
- * @param {T} i18nFuncMap
- * @returns {(key: keyof T) => i18nfunc} 
- * 
- */
-function i18nfunctionMaker(i18nFuncMap) {
-    /**
-     * 
-     * @param {keyof T} key 
-     * @returns {i18nfunc}
-     */
-    function ret(key) {
-        return i18nFuncMap[key];
+ * @typedef {import('../plugin_type').i18nFunc} i18nfunc
+ * */
+
+class I18n {
+    constructor() {
+        /**
+         * @type {i18nfunc[]}
+         */
+        this.i18nFuncs = []
     }
-    return ret;
+
+    getMessage(key, language, options) {
+        for (const func of this.i18nFuncs) {
+            const ret = func(key, language, options)
+            if (!ret === false) {
+                return ret;
+            }
+        }
+
+    }
 
 }
 
-const defaulti18nFunc = i18nfunctionMaker(defaulti18nMap);
 
-module.exports = { defaulti18nFunc, i18nfunctionMaker, defaulti18nMap }
+function getI18n() {
+    const ret = new I18n()
+    ret.i18nFuncs.push(i18nOptions)
+    return ret;
+}
+module.exports = { getI18n, I18n }
