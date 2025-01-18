@@ -6,7 +6,7 @@ export type State = ExecuteState | MoveState
 export type i18nFunc = (key: string, lnaguage: string, options?: any) => string;
 
 import { I18n as I18nClass } from "./i18n";
-export type i18n = typeof I18nClass
+export type i18n = I18nClass
 
 
 export type FunctionMap = {

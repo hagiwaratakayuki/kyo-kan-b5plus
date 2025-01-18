@@ -2,6 +2,7 @@
  * @typedef {import("../../../../kyo-kan/context").Context} Context
  */
 
+const { beforeAfterHook } = require("../../utility/beforeafterhook")
 const { ClassBasicTemplate } = require("../class_basic")
 
 
@@ -14,9 +15,7 @@ const PARSE_KEY = "parse"
 
 
 class ViewParseExecController extends ClassBasicTemplate {
-    constructor() {
-        super({}, {}, '', { i18n: function () { } })
-    }
+
     /**
      * @param {Context} context
      * @returns {import("../../../../kyo-kan/plugin_type").StateResponse}
@@ -65,17 +64,17 @@ class ViewParseExecController extends ClassBasicTemplate {
  * View Parse Exec Pattern
  * @typedef {import("../../../../kyo-kan/loopsceinario_configure/configure_type").LoopStepConfigure} LoopStepConfigure
  * @typedef {LoopStepConfigure[]} LoopStepConfigures
- * @param {*} builder
+ * @param {*} controller
  * @param {LoopStepConfigures} views 
  * @param {LoopStepConfigures} parsers
  * @returns {LoopStepConfigure}
  */
-function VPEUtil(builder, views, parsers, options) {
+function VPEUtil(controller, views, parsers, options) {
     /**
      * @type {LoopStepConfigure}
      */
     const ret = {
-        builder,
+        builder: controller,
         options,
         subLoops: {
 
@@ -84,12 +83,29 @@ function VPEUtil(builder, views, parsers, options) {
 
     ret.subLoops[VIEW_KEY] = { type: "loop", loopSteps: views }
     ret.subLoops[PARSE_KEY] = { type: "loop", loopSteps: parsers }
+
     return ret
 
 
 }
+/**
+ * 
+ * @param {*} controller 
+  * @param {LoopStepConfigures} views 
+ * @param {LoopStepConfigures} parsers 
+ * @param {import("./syncronaizer_ptotocol").beforeAfterHook} viewsHook 
+ * @param {import("./syncronaizer_ptotocol").beforeAfterHook} parsersHook 
+ * @param {*} options 
+ */
+function HookedVPEUtil(controller, views, parsers, viewsHook, parsersHook, options) {
+    const _views = beforeAfterHook(views, viewsHook)
+    const _parsers = beforeAfterHook(parsers, parsersHook)
+    return VPEUtil(controller, _views, _parsers, options);
+}
 
-module.exports = { ViewParseExecController, EXEC_KEY: PARSE_KEY, RENDERER_KEY: VIEW_KEY, VPEUtil }
+
+
+module.exports = { ViewParseExecController, PARSE_KEY, VIEW_KEY, VPEUtil, HookedVPEUtil }
 
 
 

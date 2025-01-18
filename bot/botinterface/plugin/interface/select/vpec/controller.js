@@ -1,10 +1,11 @@
-const deepmerge = require("deepmerge");
 
 
-const { ViewParseExecController, VPEUtil } = require("../../../pattern/view_parser_exec/basic");
 
+const { ViewParseExecController, HookedVPEUtil } = require("../../../pattern/view_parser_exec/basic");
+const { createBuilderIdMap } = require("./syncronaizer")
 
 class BasicSelect extends ViewParseExecController {
+
     /**
      * 
      * @param {*} request 
@@ -14,11 +15,15 @@ class BasicSelect extends ViewParseExecController {
     in(request, context, stateController) {
 
         const response = super.in(request, context, stateController)
-        const i18nFunc = this.functionMap.i18n('options');
-        const subLoopInit = { message: i18nFunc('message', this.language, this.options) }
-        subLoopInit.options = {}
-        for (const key of Object.keys(functionNames)) {
-            subLoopInit.options[key] = i18nFunc('select.' + key, this.language, this.options)
+
+        const subLoopInit = { message: this.functionMap.i18n('message', this.language), options: [] }
+
+        /**
+         * @type {import("../protocol").Options}
+         */
+        const options = this.options;
+        for (const key of options.selects) {
+            subLoopInit.options.push({ key, message: this.functionMap.i18n.getMessage('selects.' + key, this.language, this.options) })
 
         }
         response.subLoopInit = subLoopInit
@@ -28,12 +33,39 @@ class BasicSelect extends ViewParseExecController {
 
 }
 
-const scenario = VPEUtil(BasicSelect, [
-    { builder: SELECT_VIEW }
-], [
-    { builder: SELECT_PARSE }
-])
+/**
+ * @typedef {import("../../../pattern/view_parser_exec/basic").LoopStepConfigure} LoopStepConfigure
+ * 
+*/
+/**
+ * @this {import("./syncronaizer").builderIdMap}  
+ * @param {import("../protocol").Configuration} view 
+ * @param {import("../protocol").Configuration} parser 
+ */
+function scenarioGenerater(controllerOptions, view, parser) {
+    /**
+     * @type {LoopStepConfigure}
+     */
+    const views = [{ builder: this.view, options: view?.options }]
+    /**
+     * @type {LoopStepConfigure}
+     */
+    const parsers = [{ builder: this.parser, options: parser?.options }]
+    return HookedVPEUtil(this.controller, views, parsers, view.hooks, parser.hooks, controllerOptions)
+
+}
+
+/**
+ * 
+ * 
+ * @param {import("./syncronaizer").builderIdMap} builderIdMap
+ * 
+ */
+function createScenarioGenerater(controllerId, builderIdMap) {
+    const _builderIdMap = createBuilderIdMap(controllerId, builderIdMap)
+    return scenarioGenerater.bind(_builderIdMap)
+
+}
 
 
-
-module.exports = { scenario }
+module.exports = { BasicSelect, createScenarioGenerater, scenarioGenerater }

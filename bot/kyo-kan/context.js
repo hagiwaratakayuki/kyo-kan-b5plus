@@ -1,7 +1,10 @@
 
 const deepmerge = require('deepmerge');
 const { JSONSerializer } = require('./json_serializer')
-
+/**
+ * @template Data, SubLoopData, LoopData, GlobalData
+ * 
+*/
 class Context extends JSONSerializer {
     /**
      * @typedef {import('./history').History} History
@@ -9,8 +12,17 @@ class Context extends JSONSerializer {
      */
     constructor(history) {
         super();
-        this._globalData = {}
 
+        /**
+         * @type {GlobalData}
+         */
+        this._globalData = null
+
+        /**
+         * @type {SubLoopData?}
+         */
+
+        this._subLoopData = undefined
         this._loopDatas = [{}]
         this._datas = []
         /**
@@ -63,12 +75,20 @@ class Context extends JSONSerializer {
     setGlobalData(data) {
         this._globalData = data;
     }
+    /**
+     * 
+     * @returns {Data}
+     */
     getData() {
         return this._datas[this._datas.length - 1]
     }
     setData(data) {
         this._datas[this._datas.length - 1] = data
     }
+    /**
+     * 
+     * @returns {LoopData}
+     */
     getLoopData() {
         return this._loopDatas[this._loopDatas.length - 1]
     }
@@ -80,14 +100,12 @@ class Context extends JSONSerializer {
 
 
     }
+    /**
+     * 
+     * @returns {SubLoopData}
+     */
     getSubLoopData() {
         return this._subLoopData
-    }
-    setUpperStepData(data) {
-        return this._datas[this._datas.length - 2] = data
-    }
-    getUpperStepData() {
-        return this._datas[this._datas.length - 2]
     }
 
 
