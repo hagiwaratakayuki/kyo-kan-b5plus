@@ -53,6 +53,7 @@ function getScenarioStep(selectOptions, viewConfig, parserConfig) {
     const controllerOption = { i18n, selects }
     const ret = _scenarioGenerater(controllerOption, viewConfig, parserConfig)
     ret.subLoops[OPTION_SUBLOOP_NAME] = selectOptionList;
+    return ret;
 
 }
 setFuctionSelectBuilderConfig()// initiarize
