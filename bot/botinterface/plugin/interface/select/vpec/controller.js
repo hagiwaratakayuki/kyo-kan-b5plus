@@ -3,7 +3,7 @@
 
 const { ViewParseExecController, HookedVPEUtil } = require("../../../pattern/view_parser_exec/basic");
 const { createBuilderIdMap } = require("./syncronaizer")
-const I18N_SELECT_OPTION_MESSAGE_NAMESPACE = "select"
+const I18N_SELECT_OPTION_LABEL_NAMESPACE = "select"
 class BasicSelect extends ViewParseExecController {
 
     /**
@@ -16,14 +16,14 @@ class BasicSelect extends ViewParseExecController {
 
         const response = super.in(request, context, stateController)
 
-        const subLoopInit = { message: this.functionMap.i18n('message', this.language), options: [] }
+        const subLoopInit = { message: this.functionMap.i18n('message', this.language), options: [], title: this.functionMap.i18n('title', this.language) }
 
         /**
          * @type {import("../protocol").Options}
          */
         const options = this.options;
         for (const value of options.selects) {
-            subLoopInit.options.push({ value, label: this.functionMap.i18n.getMessage([I18N_SELECT_OPTION_MESSAGE_NAMESPACE, value], this.language, this.options) })
+            subLoopInit.options.push({ value, label: this.functionMap.i18n.getMessage([I18N_SELECT_OPTION_LABEL_NAMESPACE, value], this.language, this.options) })
 
         }
         response.subLoopInit = subLoopInit
@@ -68,4 +68,4 @@ function createScenarioGenerater(controllerId, builderIdMap) {
 }
 
 
-module.exports = { BasicSelect, createScenarioGenerater, scenarioGenerater, I18N_SELECT_OPTION_MESSAGE_NAMESPACE }
+module.exports = { BasicSelect, createScenarioGenerater, scenarioGenerater, I18N_SELECT_OPTION_MESSAGE_NAMESPACE: I18N_SELECT_OPTION_LABEL_NAMESPACE }

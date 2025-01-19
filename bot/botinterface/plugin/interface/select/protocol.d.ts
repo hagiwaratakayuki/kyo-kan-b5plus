@@ -1,5 +1,8 @@
-export type Options = {
-    message: string,
+import type { StandardizedSelectionResponseBase } from "../../../standized_protocol/responsetypes/basic"
+
+
+export type Options = Omit<StandardizedSelectionResponseBase, "responseType"> & {
+
     selects: [],
     namespace?: string
 }

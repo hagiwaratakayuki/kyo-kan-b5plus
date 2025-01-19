@@ -1,4 +1,4 @@
-import { LoopStepConfigure } from "../../../../../kyo-kan/loopsceinario_configure/configure_type"
+import { PluginConfig, LoopStepConfigure } from "../../../../../kyo-kan/loopsceinario_configure/configure_type"
 import { i18nPluginOptionValue } from "../../../../../kyo-kan/plugin_type"
 
 export type SelectOptionMessage = {

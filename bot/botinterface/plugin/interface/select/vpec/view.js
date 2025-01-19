@@ -12,10 +12,9 @@ function selectViewBuilder(options, commonOptions, language, functionMap) {
         */
         in: function (request, context, stateController) {
 
-            const messageKey = this.options.messageKey || "message";
-            const titleKey = this.options.titleKey || "title";
+
             /**
-             * @type {{options: {value:string, label:string} }}
+             * @type {{options: {value:string, label:string}, title?:string, message?:string }}
              * */
             const loopData = context.getLoopData();
 
@@ -24,8 +23,8 @@ function selectViewBuilder(options, commonOptions, language, functionMap) {
              * */
             const ret = {
                 clientResponse: {
-                    message: loopData[messageKey],
-                    title: loopData[titleKey],
+                    message: loopData.message,
+                    title: loopData.title,
                     options: loopData.options
                 }
             };

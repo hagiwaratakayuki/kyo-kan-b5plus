@@ -6,7 +6,7 @@ const { defaulti18nFunc } = require('../kyo-kan/i18n/index')
 describe('Executer', function () {
 
     it('execute scenario', async function () {
-        const loader = new Loader(true, 'ja', {}, { i18n: defaulti18nFunc })
+        const loader = new Loader(true, 'ja', {}, {})
         loader.fromJSON(config)
         const controller = new StateController(loader)
 

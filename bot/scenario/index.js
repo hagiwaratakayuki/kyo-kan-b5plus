@@ -1,5 +1,5 @@
 const { SaveAndLoadConfig } = require('../kyo-kan/loopsceinario_configure/save_and_load')
-const { builders } = require('./common_buileders/builders')
+const { builders } = require('./buileders')
 const InitialMessage = require("./initialmessage")
 
 
