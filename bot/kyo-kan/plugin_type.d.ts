@@ -7,10 +7,11 @@ export type i18nFunc = (key: string, lnaguage: string, options?: any) => string;
 
 import { I18n as I18nClass } from "./i18n";
 export type i18n = I18nClass
-
-
+export type i18nPluginOptionValue<MessageType = any> = {
+    [ISOLanguageName in string]: MessageType
+}
 export type FunctionMap = {
-    [k in string]: Function
+    [k in string]: any
 } & {
     i18n: i18n
 }
@@ -46,7 +47,7 @@ export type CommonOptions = {
 export type RelativeLoopType = "now" | "super" | "top"
 export type MoveCount = number | "start"
 export type BaseOption = {
-    namespace: string
+    i18n: i18nPluginOptionValue
 }
 
 export type Builder<OptionsType = BaseOption, CommonOptionsType = CommonOptions, FunctionMapType = any, PluginType = PlugIn> = (options: OptionsType, CommonOptions: CommonOptionsType, language: string, functionMap: FunctionMapType) => PluginType

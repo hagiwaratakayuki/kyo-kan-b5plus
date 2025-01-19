@@ -14,8 +14,11 @@ function selectViewBuilder(options, commonOptions, language, functionMap) {
 
             const messageKey = this.options.messageKey || "message";
             const titleKey = this.options.titleKey || "title";
-            const optionsKey = this.options.optionsKey || 'options';
+            /**
+             * @type {{options: {value:string, label:string} }}
+             * */
             const loopData = context.getLoopData();
+
             /**
              * @type {import('../../../../standized_protocol/responsetypes/basic').StandardizedSelectionStateResponse}
              * */
@@ -23,7 +26,7 @@ function selectViewBuilder(options, commonOptions, language, functionMap) {
                 clientResponse: {
                     message: loopData[messageKey],
                     title: loopData[titleKey],
-                    options: loopData[optionsKey]
+                    options: loopData.options
                 }
             };
             return ret;

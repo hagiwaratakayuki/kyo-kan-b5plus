@@ -1,12 +1,12 @@
 
 const { BasicSelect } = require("../vpec/controller");
 
-const FUNTION_SUBLOOP_NAME = "functions"
+const OPTION_SUBLOOP_NAME = "options"
 
 /**
  * @typedef {import("../protocol").SelectResult} SelectResult
  * */
-class FunctionSelect extends BasicSelect {
+class PluginSelect extends BasicSelect {
     /**
      * 
      * @param {*} request 
@@ -23,11 +23,11 @@ class FunctionSelect extends BasicSelect {
 
         return {
             state: 'forwardToSub',
-            subkey: FUNTION_SUBLOOP_NAME,
+            subkey: OPTION_SUBLOOP_NAME,
             subid
         }
 
 
     }
 }
-module.exports = { FunctionSelect }
+module.exports = { PluginSelect, OPTION_SUBLOOP_NAME }
