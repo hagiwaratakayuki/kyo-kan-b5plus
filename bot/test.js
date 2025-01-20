@@ -1,4 +1,4 @@
-const { exec e } = require('child_process');
+const { exec } = require('child_process');
 
 exec("echo テスト", { encoding: "Shift_JIS" }, (error, stdout, stderr) => {
     if (error) {

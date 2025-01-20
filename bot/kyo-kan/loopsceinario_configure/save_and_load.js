@@ -2,7 +2,7 @@ const deepmerge = require("deepmerge");
 const { NameSpaceRegistrater } = require("../contract/namspace");
 const { Saver } = require("../looploader/save_and_load");
 const crypto = require("node:crypto");
-const DEFAULT_OPTIONS = { builderIdPrefix: 'buider_' };
+const DEFAULT_OPTIONS = { builderIdPrefix: 'builder_' };
 
 
 /**

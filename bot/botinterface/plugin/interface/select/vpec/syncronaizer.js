@@ -26,7 +26,7 @@ function selectionConfigurationSynchronaize(controller, controllerId, builderIdM
     const builders = synchronizeConfiguration(controller, selectViewBuilder, selectParserBuilder, _builderIdMap);
     return { builders, builderIdMap: _builderIdMap }
 }
-function createBuilderIdMap(controllerId) {
+function createBuilderIdMap(controllerId, builderIdMap) {
     /**
      * @type {Partial<builderIdMap>}
     */

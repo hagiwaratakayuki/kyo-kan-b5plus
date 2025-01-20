@@ -29,14 +29,16 @@ const hooks = ["onBack", "onReturnFromSub", "onBreak"];
 
 class StateController extends JSONSerializer {
     /**
-     * @typedef {import('./looploader/save_and_load').Loader} BasicLoader 
-     * @param {BasicLoader} loader 
+     * @typedef {import('./looploader/save_and_load').Loader} BasicLoader
+     *  
+     * @param {BasicLoader} loader
+     * @param {string} language  
      * @param {Function} contextClass  
      * @param {Function} emitterClass
      * @param {Function} historyClass 
      * 
      */
-    constructor(loader, contextClass = Context, emitterClass = StateEmitter, historyClass = History) {
+    constructor(loader, language, contextClass = Context, emitterClass = StateEmitter, historyClass = History) {
         super();
 
 
@@ -52,9 +54,11 @@ class StateController extends JSONSerializer {
          * 
         */
         const functionMap = loader.getFunctionMap()
+        loader.setLanguage(language)
         if (!functionMap.il18n) {
-            functionMap.il18n = getI18n()
+            functionMap.i18n = getI18n(language)
         }
+
 
         for (const stateKey of stateKeys) {
             this[stateKey] = this[stateKey].bind(this)

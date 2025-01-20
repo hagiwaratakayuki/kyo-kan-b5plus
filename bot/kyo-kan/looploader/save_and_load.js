@@ -619,7 +619,12 @@ class Loader extends BaseConstraction {
          */
         this._bootPluginBulderConfigs = []
     }
-
+    setLanguage(language) {
+        this._language = language
+    }
+    getLanguage(language) {
+        return this._language
+    }
     /**
      * 
      * @param {import('./base_type').BootBuilderConfig[]} bootPluginBuilders 

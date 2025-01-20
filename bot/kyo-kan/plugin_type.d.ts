@@ -3,13 +3,17 @@
 export type ExecuteState = "in" | "wait"
 export type MoveState = "back" | "break" | "returnFromSub" | "forwardToSub" | "continue" | "forwardOut"
 export type State = ExecuteState | MoveState
-export type i18nFunc = (key: string, lnaguage: string, options?: any) => string;
+
+
+
 
 import { I18n as I18nClass } from "./i18n";
 export type i18n = I18nClass
 export type i18nPluginOptionValue<MessageType = any> = {
     [ISOLanguageName in string]: MessageType
 }
+export type i18nInterfaceFunc = (key: string | string[], pluginOptions: i18nPluginOptionValue)
+export type i18nFunc = (key: string | string[], language: string, pluginOptions: i18nPluginOptionValue) => string;
 export type FunctionMap = {
     [k in string]: any
 } & {

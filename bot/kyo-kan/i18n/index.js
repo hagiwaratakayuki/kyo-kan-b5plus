@@ -7,16 +7,17 @@ const { i18nOptions } = require('./options')
  * */
 
 class I18n {
-    constructor() {
+    constructor(language) {
         /**
          * @type {i18nfunc[]}
          */
         this.i18nFuncs = []
+        this.language = language
     }
 
-    getMessage(key, language, options) {
+    getMessage(key, options) {
         for (const func of this.i18nFuncs) {
-            const ret = func(key, language, options)
+            const ret = func(key, this.language, options)
             if (!ret === false) {
                 return ret;
             }
@@ -27,8 +28,8 @@ class I18n {
 }
 
 
-function getI18n() {
-    const ret = new I18n()
+function getI18n(language) {
+    const ret = new I18n(language)
     ret.i18nFuncs.push(i18nOptions)
     return ret;
 }

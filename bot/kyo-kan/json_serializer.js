@@ -79,7 +79,7 @@ class JSONSerializer {
                 this[key] = merge(data, {});
             }
             else {
-                ret[key] = data;
+                this[key] = data;
             }
 
 

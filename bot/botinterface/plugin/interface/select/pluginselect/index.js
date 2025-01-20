@@ -9,7 +9,7 @@ const { PluginSelect: PluginSelect, OPTION_SUBLOOP_NAME } = require("./controlle
 let _scenarioGenerater = null;
 
 let _buiders = null
-const DEFAULT_CONTROLLER_ID = "select.functionselect";
+const DEFAULT_CONTROLLER_ID = "select.pluginselect";
 function setPluginSelectBuilderConfig(args = {}) {
     const { controllerId = DEFAULT_CONTROLLER_ID, builderIdMap = {} } = args
     const { builders, builderIdMap: _builderIdMap } = selectionConfigurationSynchronaize(PluginSelect, controllerId, builderIdMap)
