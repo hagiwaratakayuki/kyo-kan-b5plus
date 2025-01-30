@@ -20,18 +20,5 @@ class ClassBasicTemplate {
     }
 
 }
-/**
- * @this {typeof ClassBasicTemplate & {fuga:string}}
- */
-const t = ClassBasicTemplate
 
-class test extends t {
-    hoge() {
-        /**
-         * @type {{fuga:string}}
-         */
-        const t = this.functionMap
-
-    }
-}
 module.exports = { ClassBasicTemplate }

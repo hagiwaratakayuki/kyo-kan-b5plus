@@ -1,5 +1,5 @@
 
-const { getPluginScenarioStep } = require("../botinterface/plugin/interface/select/pluginselect");
+const { getPluginScenarioStep } = require("../../botinterface/plugin/interface/select/pluginselect");
 
 /*
 

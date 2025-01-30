@@ -1,5 +1,5 @@
 const deepmerge = require("deepmerge");
-const { createScenarioGenerater, I18N_SELECT_OPTION_MESSAGE_NAMESPACE } = require("../vpec/controller");
+const { createScenarioGenerater, I18N_SELECT_OPTION_LABEL_NAMESPACE: I18N_SELECT_OPTION_MESSAGE_NAMESPACE } = require("../vpec/controller");
 const { selectionConfigurationSynchronaize } = require("../vpec/syncronaizer");
 const { PluginSelect: PluginSelect, OPTION_SUBLOOP_NAME } = require("./controller");
 
@@ -9,13 +9,24 @@ const { PluginSelect: PluginSelect, OPTION_SUBLOOP_NAME } = require("./controlle
 let _scenarioGenerater = null;
 
 let _buiders = null
+
+let _configuredBuilderIDMap
 const DEFAULT_CONTROLLER_ID = "select.pluginselect";
 function setPluginSelectBuilderConfig(args = {}) {
     const { controllerId = DEFAULT_CONTROLLER_ID, builderIdMap = {} } = args
     const { builders, builderIdMap: _builderIdMap } = selectionConfigurationSynchronaize(PluginSelect, controllerId, builderIdMap)
     _scenarioGenerater = createScenarioGenerater(controllerId, _builderIdMap)
     _buiders = builders
+    _configuredBuilderIDMap = _builderIdMap
 
+
+}
+/**
+ * 
+ * @returns {import("../vpec/syncronaizer").builderIdMap}
+ */
+function getConFiguredBuilderMap() {
+    return _configuredBuilderIDMap
 }
 
 function getPluginSelectBuilder() {
@@ -60,5 +71,5 @@ function getPluginScenarioStep(selectOptions, messageConfig, viewConfig, parserC
 }
 setPluginSelectBuilderConfig()// initiarize
 
-module.exports = { getPluginSelectBuilder, setPluginSelectBuilderConfig, getPluginScenarioStep }
+module.exports = { getConFiguredBuilderMap, getPluginSelectBuilder, setPluginSelectBuilderConfig, getPluginScenarioStep }
 

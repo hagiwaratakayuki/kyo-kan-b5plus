@@ -1,7 +1,7 @@
-const { Loader } = require('../kyo-kan/looploader/save_and_load')
-const { StateController } = require('../kyo-kan/state_controller')
-const { config } = require('./index')
-const { defaulti18nFunc } = require('../kyo-kan/i18n/index')
+const { Loader } = require('../../kyo-kan/looploader/save_and_load')
+const { StateController } = require('../../kyo-kan/state_controller')
+const { config } = require('../index')
+const { defaulti18nFunc } = require('../../kyo-kan/i18n/index')
 
 describe('Executer', function () {
 
@@ -13,7 +13,7 @@ describe('Executer', function () {
         console.log((await controller.run({})))
 
         /**
-         * @type {import('../botinterface/standized_protocol/requestype/basic').StandardizedRequestSelect}
+         * @type {import('../../botinterface/standized_protocol/requestype/basic').StandardizedRequestSelect}
          */
         const seconndRequest = {
             type: "select",

@@ -1,10 +1,7 @@
-
-
-
 const { ViewParseExecController, HookedVPEUtil } = require("../../../pattern/view_parser_exec/basic");
 const { createBuilderIdMap } = require("./syncronaizer")
 const I18N_SELECT_OPTION_LABEL_NAMESPACE = "select"
-class BasicSelect extends ViewParseExecController {
+class BasicCreater extends ViewParseExecController {
 
     /**
      * 
@@ -68,4 +65,4 @@ function createScenarioGenerater(controllerId, builderIdMap) {
 }
 
 
-module.exports = { BasicSelect, createScenarioGenerater, scenarioGenerater, I18N_SELECT_OPTION_LABEL_NAMESPACE }
+module.exports = { BasicCreater, createScenarioGenerater, scenarioGenerater, I18N_SELECT_OPTION_MESSAGE_NAMESPACE: I18N_SELECT_OPTION_LABEL_NAMESPACE }
