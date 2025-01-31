@@ -9,7 +9,7 @@ const merge = require("deepmerge");
 
 
 /**
- * @typedef {import("../../../pattern/view_parser_exec/syncronaizer_ptotocol").builderIdMap} builderIdMap
+ * @typedef {import("../../../pattern/view_parser_exec/protocol").builderIdMap} builderIdMap
  *  
  */
 /**

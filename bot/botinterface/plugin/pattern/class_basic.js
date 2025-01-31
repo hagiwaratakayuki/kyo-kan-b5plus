@@ -1,11 +1,14 @@
 
+/**
+ * @template functionMapType, optionType
+ */
 class ClassBasicTemplate {
     /**
      * 
-     * @param {*} options 
+     * @param {optionType} options 
      * @param {*} commonOptions 
      * @param {*} language 
-     * @param {import("../../../kyo-kan/plugin_type").FunctionMap} functionMap 
+     * @param {import("../../../kyo-kan/plugin_type").FunctionMap & functionMapType} functionMap 
      */
     constructor(options, commonOptions, language, functionMap) {
 
@@ -13,9 +16,7 @@ class ClassBasicTemplate {
         this.options = options
         this.commonOptions = commonOptions;
         this.language = language
-        /**
-         * @property {import("../../../kyo-kan/plugin_type").FunctionMap}
-         */
+
         this.functionMap = functionMap
     }
 

@@ -4,12 +4,11 @@ const { PIPELINE_LOOP, PipeLine } = require("./plugin")
  * 
  * @typedef {import("../../../../kyo-kan/loopsceinario_configure/configure_type").LoopStepConfigure} LoopStepConfigure
  * @typedef {LoopStepConfigure[]} LoopStepConfigures
- * @param {*} builder
- * @param {LoopStepConfigures} initialaizers 
- * @param {LoopStepConfigures} execs
+
+ * @param {LoopStepConfigures} loopSteps
  * @returns {LoopStepConfigure}
  */
-function PipeLine(steps) {
+function PipeLine(loopSteps) {
     /**
      * @type {LoopStepConfigure}
      */
@@ -21,7 +20,7 @@ function PipeLine(steps) {
         }
     }
 
-    ret.subLoops[PIPELINE_LOOP] = { type: "loop", loopSteps: initialaizers }
+    ret.subLoops[PIPELINE_LOOP] = { type: "loop", loopSteps }
 
     return ret
 

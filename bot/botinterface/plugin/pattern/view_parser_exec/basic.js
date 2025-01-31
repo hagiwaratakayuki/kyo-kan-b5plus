@@ -13,20 +13,43 @@ const PARSE_KEY = "parse"
 
 
 
-
+/**
+ * @extends ClassBasicTemplate<import("./protocol").VPEFunctionMap, import("./protocol").VPEOptions>
+ */
 class ViewParseExecController extends ClassBasicTemplate {
 
     /**
-     * @param {Context} context
-     * @returns {import("../../../../kyo-kan/plugin_type").StateResponse}
+     * @param {import("./protocol").VPEContext} context
+     * @returns {import("../../../../kyo-kan/plugin_type").StateResponse<any, ViewParseExecController>}
     */
     in(request, context, stateController) {
 
-        return {
-            state: "forwardToSub",
-            subkey: VIEW_KEY,
-            callback: "afterRender"
+        const isStepPlatform = this.functionMap.isStepPlatform()
+        if (isStepPlatform == true || this.options.isSingle == true) {
+            return {
+                state: "forwardToSub",
+                subkey: VIEW_KEY,
+                callback: "afterRender"
+            }
         }
+        else {
+            const mode = context.getLoopData()?.mode || "view"
+            if (mode == "view") {
+                return {
+                    state: "forwardToSub",
+                    subkey: VIEW_KEY,
+
+                }
+            }
+            if (mode == "parse") {
+                return {
+                    state: "forwardToSub",
+                    subkey: PARSE_KEY,
+                    callback: "exec"
+                }
+            }
+        }
+
 
     }
     /**
@@ -41,7 +64,7 @@ class ViewParseExecController extends ClassBasicTemplate {
 
     }
     /**
-     * @returns { import("../../../../kyo-kan/plugin_type").StateResponse }
+     * @returns { import("../../../../kyo-kan/plugin_type").StateResponse<any, ViewParseExecController> }
      */
 
     acceptRequest(request, context, stateController) {
@@ -93,8 +116,8 @@ function VPEUtil(controller, views, parsers, options) {
  * @param {*} controller 
   * @param {LoopStepConfigures} views 
  * @param {LoopStepConfigures} parsers 
- * @param {import("./syncronaizer_ptotocol").beforeAfterHook} viewsHook 
- * @param {import("./syncronaizer_ptotocol").beforeAfterHook} parsersHook 
+ * @param {import("./protocol").beforeAfterHook} viewsHook 
+ * @param {import("./protocol").beforeAfterHook} parsersHook 
  * @param {*} options 
  */
 function HookedVPEUtil(controller, views, parsers, viewsHook, parsersHook, options) {

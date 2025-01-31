@@ -54,13 +54,14 @@ export type BaseOption = {
     i18n: i18nPluginOptionValue
 }
 
+
 export type Builder<OptionsType = BaseOption, CommonOptionsType = CommonOptions, FunctionMapType = any, PluginType = PlugIn> = (options: OptionsType, CommonOptions: CommonOptionsType, language: string, functionMap: FunctionMapType) => PluginType
 
-export type StateResponse<ClientResponseType = any> = {
+export type StateResponse<ClientResponseType = any, PluginType = any> = {
     state?: State
     subid?: number
     subkey?: string
-    callback?: string //Funcname Use when state is wait. Default is "wait"
+    callback?: keyof PluginType //Funcname Use when state is wait. Default is "wait"
     subLoopInit?: any
     relativeLoopType?: RelativeLoopType
     move?: MoveCount
