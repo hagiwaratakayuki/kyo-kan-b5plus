@@ -29,7 +29,6 @@ export type PlugIn<CallbackType = Function, HookType = Function> = Partial<{
 }> & {
     in: CallbackType
 }
-
 export type BootHookFunction = (functionMap: FunctionMap) => void;
 export type BootPlugin = {
     onFirstBoot?: BootHookFunction,
@@ -57,12 +56,12 @@ export type BaseOption = {
 
 export type Builder<OptionsType = BaseOption, CommonOptionsType = CommonOptions, FunctionMapType = any, PluginType = PlugIn> = (options: OptionsType, CommonOptions: CommonOptionsType, language: string, functionMap: FunctionMapType) => PluginType
 
-export type StateResponse<ClientResponseType = any, PluginType = any> = {
+export type StateResponse<ClientResponseType = any, PluginType = any, subLoopInitType = any> = {
     state?: State
     subid?: number
     subkey?: string
     callback?: keyof PluginType //Funcname Use when state is wait. Default is "wait"
-    subLoopInit?: any
+    subLoopInit?: subLoopInitType
     relativeLoopType?: RelativeLoopType
     move?: MoveCount
     isRewindHistry?: boolean
@@ -71,3 +70,6 @@ export type StateResponse<ClientResponseType = any, PluginType = any> = {
 
 }
 
+export type BuilderRegistartionDatas = {
+    [id: string]: Builder
+} 

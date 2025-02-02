@@ -14,7 +14,9 @@ const PARSE_KEY = "parse"
 
 
 /**
- * @extends ClassBasicTemplate<import("./protocol").VPEFunctionMap, import("./protocol").VPEOptions>
+ * 
+ *  @template functionMapType, optionType
+  * @extends ClassBasicTemplate<functionMapType & import("./protocol").VPEFunctionMap, optionType & import("./protocol").VPEOptions>
  */
 class ViewParseExecController extends ClassBasicTemplate {
 

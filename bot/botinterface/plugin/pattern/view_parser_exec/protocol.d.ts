@@ -1,5 +1,6 @@
 import type { Context } from "../../../../kyo-kan/context"
 import { LoopStepConfigure } from "../../../../kyo-kan/loopsceinario_configure/configure_type"
+import { RenderingMode } from "../../interface/form/protocol"
 
 export type builderIdMap = {
     view: string,
@@ -18,5 +19,5 @@ export type VPEHook = {
 export type VPEFunctionMap = {
     isStepPlatform: () => boolean
 }
-export type VPEContext = Context<any, any, { mode: "view" | "parse" }, any>
-export type VPEOptions = { isSingle: boolean }
+export type VPEContext = Context<any, any, RenderingMode, any>
+export type VPEOptions = { isSingle?: boolean }
