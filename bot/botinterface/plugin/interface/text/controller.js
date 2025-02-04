@@ -1,76 +1,32 @@
 
+const { VIEW_KEY } = require("../../pattern/view_parser_exec/basic");
+const { FormComponentController, createComponentScenarioGenerater } = require("../form/component");
 
-
-
-
-const { Context } = require("../../../../kyo-kan/context")
-const { ViewParseExecController } = require("../../pattern/view_parser_exec/basic")
-const { createBuilderIdMap } = require("./syncronaizer")
-const I18N_SELECT_OPTION_LABEL_NAMESPACE = "select"
-class TextController extends ViewParseExecController {
-
+class TextInputController extends FormComponentController {
     /**
      * 
      * @param {*} request 
-     * @param {*} context 
+     * @param {import("../../../../kyo-kan/context").Context<any,import("./protocol").Configuration, any, any>} context 
      * @param {*} stateController 
      */
     in(request, context, stateController) {
+        const response = super.in(request, context, stateController);
+        if (response.subkey == VIEW_KEY) {
+            /**
+             * @type {import("./protocol").Configuration}
+             */
+            const subLoopInit = response.subLoopInit
+            subLoopInit.isTextArea = this.options.isTextArea || false;
+            const placeHolder = this.functionMap.i18n.getMessage('placeHolder', this.options)
+            if (!placeHolder == false) {
+                subLoopInit.placeHolder = placeHolder;
 
-        const response = super.in(request, context, stateController)
-
-        const subLoopInit = { message: this.functionMap.i18n.getMessage('message', this.options), options: [], title: this.functionMap.i18n.getMessage('title', this.options) }
-
-
-        response.subLoopInit = subLoopInit
-        return response
-
+            }
+        }
+        return response;
     }
-    /**
-     * 
-     * @param {*} request 
-     * @param {Context} context 
-     * @param {*} stateController 
-     */
-    exec(request, context, stateController) {
-        context.setLoopData(this.options.formKey, { value: context.getSubLoopData() })
-    }
-
 }
-
-/**
- * @typedef {import("../../../pattern/view_parser_exec/basic").LoopStepConfigure} LoopStepConfigure
- * 
-*/
-/**
- * @this {import("./syncronaizer").builderIdMap}  
- * @param {import("../protocol").Configuration} view 
- * @param {import("../protocol").Configuration} parser 
- */
-function scenarioGenerater(controllerOptions, view, parser) {
-    /**
-     * @type {LoopStepConfigure}
-     */
-    const views = [{ builder: this.view, options: view?.options }]
-    /**
-     * @type {LoopStepConfigure}
-     */
-    const parsers = [{ builder: this.parser, options: parser?.options }]
-    return HookedVPEUtil(this.controller, views, parsers, view?.hooks, parser?.hooks, controllerOptions)
-
-}
-
-/**
- * 
- * 
- * @param {import("./syncronaizer").builderIdMap} builderIdMap
- * 
- */
-function createScenarioGenerater(controllerId, builderIdMap) {
-    const _builderIdMap = createBuilderIdMap(controllerId, builderIdMap)
-    return scenarioGenerater.bind(_builderIdMap)
-
-}
+module.exports = { TextInputController }
 
 
-module.exports = { BasicSelect, createScenarioGenerater, scenarioGenerater, I18N_SELECT_OPTION_LABEL_NAMESPACE }
+

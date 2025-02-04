@@ -32,7 +32,7 @@ function selectViewBuilder(options, commonOptions, language, functionMap) {
 
         },
     };
-    return plugins;
+    return ret;
 
 }
 

@@ -19,7 +19,7 @@ function selectViewBuilder(options, commonOptions, language, functionMap) {
             const loopData = context.getLoopData();
 
             /**
-             * @type {import('../../../../standized_protocol/responsetypes/basic').StandardizedSelectionStateResponse}
+             * @type {import('../../../standized_protocol/requestype/basic').StandardizedRequestText}
              * */
             const ret = {
                 clientResponse: {

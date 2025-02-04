@@ -2,7 +2,7 @@
  * @param {{id:any}} options
  * @param {import('../../../../standized_protocol/function_map/basic').StandardizedFunctionMap} functionMap
  */
-function selectParserBuilder(options, commonOptions, language, functionMap) {
+function standardizedParser(options, commonOptions, language, functionMap) {
 
     const ret = {
         'functionMap': functionMap,
@@ -33,6 +33,7 @@ function selectParserBuilder(options, commonOptions, language, functionMap) {
                         loopData.value = req.value
                     }
                 }
+                context.setLoopData(loopData)
             }
 
 
@@ -43,5 +44,5 @@ function selectParserBuilder(options, commonOptions, language, functionMap) {
     return ret;
 
 }
-
-module.exports = { selectParserBuilder }
+const STANDARDIZED_REQUEST_PARSER = "StandardizedRequestParser";
+module.exports = { standardizedParser, STANDARDIZED_REQUEST_PARSER }

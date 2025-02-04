@@ -7,19 +7,17 @@ export type StandardizedREquestTypeImage = "image"
 export type StandardizedRequestTypeLocation = "location"
 
 
-export type StandardizedRequestBasic<PlatformType = any, StandardizedRequestTypeT = string> = {
+export type StandardizedRequestBasic<PlatformType = any, StandardizedRequestType = string> = {
 
     platform: PlatformType
-    type: StandardizedRequestTypeT
+    type: StandardizedRequestType
+    key: string
+    value: any
 
 }
 
-export type StandardizedRequestText<PlatformType = any> = StandardizedRequestBasic<PlatformType, StandardizedRequestTypeText> & {
-    text: string
-}
-export type StandardizedRequestSelect<PlatformType = any> = StandardizedRequestBasic<PlatformType, StandardizedRequestTypeSelect> & {
-    select: string
-}
+export type StandardizedRequestText<PlatformType = any> = StandardizedRequestBasic<PlatformType, StandardizedRequestTypeText>
+export type StandardizedRequestSelect<PlatformType = any> = StandardizedRequestBasic<PlatformType, StandardizedRequestTypeSelect>
 export type StandardizedRequestLocation<PlatformType = any> = StandardizedRequestBasic<PlatformType, StandardizedRequestTypeLocation> & {
     text?: string
     adress?: string

@@ -5,7 +5,7 @@
 class ClassBasicTemplate {
     /**
      * 
-     * @param {optionType} options 
+     * @param {optionType & import("../../../kyo-kan/plugin_type").BaseOption} options 
      * @param {*} commonOptions 
      * @param {*} language 
      * @param {import("../../../kyo-kan/plugin_type").FunctionMap & functionMapType} functionMap 

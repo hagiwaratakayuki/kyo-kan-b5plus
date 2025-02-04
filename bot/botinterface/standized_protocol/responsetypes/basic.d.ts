@@ -23,8 +23,11 @@ export type StandardizedSelectOptionBase<ValueType = string> = {
 
 }
 
-
-
+export type StandardizedResponseTypeTextInput = "text"
+export type StandrazedTextInputResponse = StandardizedClientResponseCommon<StandardizedResponseTypeTextInput> & {
+    isTextArea: boolean
+    placeHolder?: string
+}
 
 export type StandardizedSelectionResponseBase<ResponseTypeName, SelectOptionType = StandardizedSelectOptionBase> = StandardizedClientResponseCommon<StandardizedClientResponseCommon> & {
 
