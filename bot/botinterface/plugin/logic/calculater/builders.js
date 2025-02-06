@@ -1,10 +1,11 @@
 
 /**
  * @type {{[operater: string]:{
- *      scenario?:Funtion
- *      builder:
+ *      scenarioGenerater?:Funtion
+ *      builder:any
  * }}}
  */
-const builders = {
+const logicBuilders = {
 
 }
+module.exports = { logicBuilders }

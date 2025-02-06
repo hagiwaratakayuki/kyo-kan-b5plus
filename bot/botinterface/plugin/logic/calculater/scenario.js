@@ -5,31 +5,48 @@
 
 const deepmerge = require("deepmerge");
 const { CALCULATE_BUILDER } = require("./consts");
+const { logicBuilders } = require("./builders");
 
 /**
  * 
  * @param {import("./protocol").Formura} formura
- * @param {string} facade  
+ * @param {Function} facadeGenerater  
  */
-function scenarioGenerater(formura, facade = CALCULATE_BUILDER) {
+function scenarioGenerater(formura, facadeGenerater = CALCULATE_BUILDER) {
 
 
     /**
      * @type {LoopStepConfigure}
      */
-    const ret = {
-        builder: facade,
-        options: {},
-        subLoops: {}
-    }
+    const [ret, formuras2subLoopArray] = facadeGenerater(formura)
     const formuraScenario = []
     const targetScenarioPath = []
 
     let targetScenario = formuraScenario
     targetScenarioPath.push(targetScenario)
-    for (const param of formura.params) {
-        const options = deepmerge(param, {})
-        delete options.formura
+    /**
+     * @type {[import("./protocol").Formura, LoopStepConfigure][]}
+     */
+    let formuras = [].concat(formuras2subLoopArray)
+
+    while (formuras.length > 0) {
+        /**
+         * @type {[import("./protocol").Formura, LoopStepConfigure[]]}
+         */
+        const [targetFormura, targetSubloop] = formuras.pop()
+        const scenarioGenerater = logicBuilders[targetFormura.operater]
+        const [loopStepConfigure, formuras2subLoopArray] = scenarioGenerater(targetFormura, targetScenario)
+        targetSubloop.push(loopStepConfigure)
+        if (formuras2subLoopArray) {
+            formuras = formuras.concat(formuras2subLoopArray)
+        }
+
+
+
     }
 
+
+
 }
+
+function formuraToscenario

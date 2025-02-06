@@ -8,10 +8,10 @@ export type Param = {
     target?: Target
     formura?: Formura
 }
-export type Formura<OperaterOptionType = any> = {
-    operater?: Operater
-    options?: OperaterOptionType
-    params: Param[]
+export type Formura = {
+    operater: string
+    options?: any
+    params: any
 
 
 }
