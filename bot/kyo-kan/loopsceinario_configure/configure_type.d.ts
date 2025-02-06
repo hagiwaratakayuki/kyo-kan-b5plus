@@ -25,7 +25,14 @@ export type loopScenario = {
 
 
 }
+export type BuilderScenarioConfig = {
+    [builderid in string]: {
+        builder: any
+        commonOption: any
+        scenarioBulder: Function
 
+    }
+}
 
 export type LoopScenarioConfigure = {
     RootScenario: LoopStepConfigure[]

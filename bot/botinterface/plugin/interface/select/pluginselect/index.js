@@ -29,7 +29,7 @@ function getConFiguredBuilderMap() {
     return _configuredBuilderIDMap
 }
 
-function getPluginSelectBuilder() {
+function getBuilder() {
     return _buiders
 }
 /**
@@ -71,5 +71,5 @@ function getPluginScenarioStep(selectOptions, messageConfig, viewConfig, parserC
 }
 setPluginSelectBuilderConfig()// initiarize
 
-module.exports = { getConFiguredBuilderMap, getPluginSelectBuilder, setPluginSelectBuilderConfig, getPluginScenarioStep }
+module.exports = { getConFiguredBuilderMap, getBuilder, setPluginSelectBuilderConfig, getPluginScenarioStep }
 

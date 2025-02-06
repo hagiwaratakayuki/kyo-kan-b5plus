@@ -1,7 +1,7 @@
 
 
 
-const { getPluginSelectBuilder } = require("../../botinterface/plugin/interface/select/pluginselect")
+const pluginselect = require("../../botinterface/plugin/interface/select/pluginselect")
 
 const builders = {}
 //暫定
@@ -11,6 +11,6 @@ builders.execute = {
 builders.develop = {
     builder: function () { }
 }
-Object.assign(builders, getPluginSelectBuilder())
+Object.assign(builders, pluginselect.getBuilder())
 
 module.exports = { builders }
