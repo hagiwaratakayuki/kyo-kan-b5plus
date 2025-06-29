@@ -10,6 +10,7 @@ export type StandardizedRequestTypeLocation = "location"
 export type StandardizedRequestBasic<PlatformType = any, StandardizedRequestType = string> = {
 
     platform: PlatformType
+    sessionKey?: string
     type: StandardizedRequestType
     key: string
     value: any

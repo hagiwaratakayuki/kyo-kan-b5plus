@@ -8,7 +8,7 @@ const { CALCULATE_BUILDER } = require("./consts");
 const { logicBuilders } = require("./builders");
 
 /**
- * 
+ * todo デフォルトのシナリオジェネレーター実装する
  * @param {import("./protocol").Formura} formura
  * @param {Function} facadeGenerater  
  */
@@ -44,9 +44,9 @@ function scenarioGenerater(formura, facadeGenerater = CALCULATE_BUILDER) {
 
 
     }
+    return ret
 
 
 
 }
 
-function formuraToscenario

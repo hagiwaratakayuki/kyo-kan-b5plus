@@ -10,7 +10,7 @@ export type StandardizedClientResponseCommon<ResponseTypeName = string> = {
 
 export type ResponseTypeMessage = "message"
 export type StandardizedMessageResponse = StandardizedClientResponseCommon<ResponseTypeMessage>
-export type StandardizedMessageStateResponse = StateResponse<StandardizedMessageResponse>
+export type StandardizedMessageStateResponse<PluginType = any, SubLoopInitType = any> = StateResponse<StandardizedMessageResponse, PluginType, SubLoopInitType>
 
 
 export type StandardizedResponseTypeSelection = "selection"
@@ -38,19 +38,24 @@ export type StandardizedSelectionResponseBase<ResponseTypeName, SelectOptionType
 export type StandardizedSelectionResponse<SelectOptionType = StandardizedSelectOptionBase> = StandardizedSelectionResponseBase<StandardizedResponseTypeSelection, SelectOptionType> & {
     isMultiple?: boolean
 }
-export type StandardizedSelectionStateResponse<SelectOptionType = StandardizedSelectOptionBase> = StateResponse<StandardizedSelectionResponse<SelectOptionType>>
+export type StandardizedSelectionStateResponse<PluginType = any, SubLoopInitType = any, SelectOptionType = StandardizedSelectOptionBase> = StateResponse<StandardizedSelectionResponse<SelectOptionType>, PluginType, SubLoopInitType>
 
 export type StandardizedSelectionResponseYN<SelectOptionType = StandardizedSelectOptionBase> = StandardizedSelectionResponseBase<StandardizedResponseTypeYN, StandardizedSelectOptionBase>
 
-export type StandardizedSelectionStateResponseYN<SelectOptionType = StandardizedSelectOptionBase> = StateResponse<StandardizedSelectionResponse<SelectOptionType>>
+export type StandardizedSelectionStateResponseYN<PluginType = any, SubLoopInitType = any, SelectOptionType = StandardizedSelectOptionBase> = StateResponse<StandardizedSelectionResponse<SelectOptionType>, PluginType = any, SubLoopInitType = any >
 
-export type StandardizedScenarioSwitchCientResponse<ScenarioInitType = any> = {
+export type StandardizedScenarioId = {
+    isSpecific?: boolean
+    key: string
+
+}
+export type StandardizedScenarioSwitchCientResponse<ScenarioInitType = any, ScenarioIdType> = {
     scenarioId: any,
     scenarioInit?: ScenarioInitType,
     reset?: boolean
 }
 
-export type StandardizedScenarioSwitchResponse<ScenarioInitType = any> = StateResponse<StandardizedScenarioSwitchCientResponse<ScenarioInitType>>
+export type StandardizedScenarioSwitchResponse<ScenarioInitType = any, PluginType = any, SubLoopInitType = any> = StateResponse<StandardizedScenarioSwitchCientResponse<ScenarioInitType>>
 
 
 
