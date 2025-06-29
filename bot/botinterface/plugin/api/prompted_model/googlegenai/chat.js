@@ -1,4 +1,22 @@
-import { GoogleGenAI, Type } from "@google/genai";
+/**
+ * @typedef {import("@google/genai")} GoogleGenAi
+ * @type {GoogleGenAi}
+ */
+let google;
+
+/**
+ * @param {string} apiKey
+ * @param {import("@google/genai").GoogleGenAIOptions} options 
+ */
+async function load(apiKey, options = {}) {
+    if (typeof google == 'undefined') {
+        google = await import("@google/genai")
+    }
+    const _options = Object.assign({}, { apiKey }, options)
+    return google.GoogleGenAI(_options)
+
+
+}
 
 const ai = new GoogleGenAI({ "GOOGLE_API_KEY" });
 
